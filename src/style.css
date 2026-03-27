@@ -188,17 +188,34 @@ nav {
 
 .logo {
   margin-right: 20px;
+  flex-shrink: 0; /* Don't shrink logo area */
+}
+
+.logo-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
 }
 
 .nav-links {
   display: flex;
-  gap: 20px; /* Reduced gap to fit more items */
+  gap: 15px; /* Further reduced to prevent overflow */
   position: relative;
   align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .nav-links a {
-  font-size: 0.85rem; /* Slightly smaller font */
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.8rem; /* Smaller font for better fit */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: var(--transition-smooth);
   white-space: nowrap;
 }
 
@@ -276,7 +293,7 @@ body.page-enter {
   position: relative;
   z-index: 2;
   max-width: 800px;
-  padding-bottom: 10vh; /* Push content up slightly */
+  padding-top: 100px; /* Add space for the fixed header */
 }
 
 .hero h1 {
