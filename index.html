@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STRADA Bike Shop | Performance sobre duas rodas</title>
+    <link rel="stylesheet" href="./src/style.css">
+  </head>
+  <body>
+    <header id="header">
+      <nav class="container">
+        <div class="logo">
+          <img src="/src/assets/logo.png" alt="STRADA Bike Shop" id="nav-logo">
+        </div>
+        <div class="menu-toggle" id="mobile-menu">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+        <ul class="nav-links">
+          <li><a href="#inicio" class="active">Início</a></li>
+          <li><a href="./vestuario.html">Vestuário</a></li>
+          <li><a href="#bicicletas">Bicicletas</a></li>
+          <li><a href="#acessorios">Acessórios</a></li>
+          <li><a href="#contato">Contato</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section id="inicio" class="hero">
+        <video autoplay muted loop playsinline class="hero-video">
+          <source src="/src/assets/hero-video.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+          <h1 class="reveal">Todos os caminhos te levam <span class="highlight">a STRADA</span></h1>
+          <p class="reveal">Descubra a tecnologia e o design das melhores marcas do ciclismo mundial. Sinta a velocidade em cada pedalada.</p>
+          <div class="hero-btns reveal">
+            <a href="#bicicletas" class="btn btn-primary">Explorar Produtos</a>
+            <a href="#contato" class="btn btn-outline">Falar com Especialista</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="bicicletas" class="products">
+        <div class="container">
+          <div class="category-discover reveal">
+            <h3>Descubra sua <span class="highlight">bike</span></h3>
+            <p>Escolha o seu terreno e encontre a parceira ideal para sua próxima jornada.</p>
+            
+            <div class="category-cards">
+              <div class="category-card" data-category="Cidade / Elétrica">
+                <div class="card-bg urban-bg"></div>
+                <div class="card-content">
+                  <h4>Uso Urbano</h4>
+                  <span>Explorar cidade</span>
+                </div>
+              </div>
+              <div class="category-card" data-category="Mountain Bike">
+                <div class="card-bg mtb-bg"></div>
+                <div class="card-content">
+                  <h4>Mountain Bike</h4>
+                  <span>Dominar trilhas</span>
+                </div>
+              </div>
+              <div class="category-card" data-category="Speed">
+              <div class="card-bg speed-bg"></div>
+              <div class="card-content">
+                <h4>Speed</h4>
+                <span>Performance Pura</span>
+              </div>
+            </div>
+
+            <!-- New E-Bike Card -->
+            <div class="category-card" data-category="Bikes Elétricas">
+              <div class="card-bg ebike-bg"></div>
+              <div class="card-content">
+                <h4>Bikes Elétricas</h4>
+                <span>O Futuro é Agora</span>
+              </div>
+            </div>
+
+            <!-- Kids Bike Card -->
+            <div class="category-card" data-category="Bike Infantil">
+              <div class="card-bg kids-bg"></div>
+              <div class="card-content">
+                <h4>Bike Infantil</h4>
+                <span>Primeiras Aventuras</span>
+              </div>
+            </div>
+
+
+            </div>
+          </div>
+
+          <div class="section-header reveal">
+            <h2>PROMOÇÕES <span class="highlight">IMPERDÍVEIS</span></h2>
+            <div class="divider"></div>
+          </div>
+          
+          <div class="product-grid" id="bikes-grid">
+
+            <!-- Products will be injected by JavaScript -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Services Section -->
+      <section id="servicos" class="services">
+        <div class="container">
+          <div class="section-header reveal">
+            <h2>CONHEÇA NOSSOS <span class="highlight">SERVIÇOS</span></h2>
+            <div class="divider"></div>
+          </div>
+          
+          <div class="services-grid">
+            <div class="service-item reveal" id="workshop-card">
+              <div class="service-icon">🛠️</div>
+              <h3>OFICINA</h3>
+              <p>Mecânicos especializados para todos os tipos de bikes.</p>
+              <button class="btn btn-detail" style="margin-top: 15px; font-size: 0.8rem;">
+                Ver Revisões
+                <span class="btn-icon">→</span>
+              </button>
+            </div>
+            <div class="service-item reveal">
+              <div class="service-icon">🚿</div>
+              <h3>LAVAGEM</h3>
+              <p>Limpeza técnica profunda para proteger seus componentes.</p>
+            </div>
+          </div>
+
+          <div class="services-cta reveal">
+            <p>Deixe sua bike zero de novo, agende uma revisão!</p>
+            <a href="https://wa.me/5571984666696?text=Quero%20agendar%20uma%20revis%C3%A3o" target="_blank" class="btn btn-primary">
+              Agendar Revisão
+              <span class="btn-icon">→</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="contato" class="contact">
+        <div class="container">
+          <div class="contact-card reveal">
+            <div class="contact-info">
+              <h2>Fale Conosco</h2>
+              <p>Tem dúvidas sobre o modelo ideal? Nossa equipe está pronta para ajudar.</p>
+              <div class="contact-details">
+                <div class="detail-item">
+                  <span class="icon">📍</span>
+                  <p>Av. das Trilhas, 123 - Centro</p>
+                </div>
+                <div class="detail-item">
+                  <span class="icon">📞</span>
+                  <p>(71) 98466-6696</p>
+                </div>
+              </div>
+              <a href="https://wa.me/5571984666696" target="_blank" class="btn btn-primary">Chamar no WhatsApp</a>
+            </div>
+            <div class="contact-image">
+              <img src="/src/assets/contact-bike.png" alt="Equipe Strada">
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-logo">
+            <img src="/src/assets/logo.png" alt="STRADA Bike Shop">
+          </div>
+          <div class="footer-links">
+            <h4>Menu</h4>
+            <ul>
+              <li><a href="#inicio">Home</a></li>
+              <li><a href="#bicicletas">Produtos</a></li>
+              <li><a href="#contato">Contato</a></li>
+            </ul>
+          </div>
+          <div class="footer-social">
+            <h4>Siga-nos</h4>
+            <div class="social-icons">
+              <a href="#">IG</a>
+              <a href="#">FB</a>
+              <a href="#">YT</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 STRADA Bike Shop. Todos os direitos reservados. Foco em visualização de produtos. <a href="/admin.html" style="font-size: 0.7rem; opacity: 0.5;">Área Administrativa</a></p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Workshop Modal -->
+    <div id="workshop-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>NOSSAS <span class="highlight">REVISÕES</span></h2>
+            <div class="modal-divider"></div>
+            
+            <div class="revisions-grid">
+                <div class="revision-item">
+                    <div class="revision-header">
+                        <h3>BÁSICA</h3>
+                        <span class="price-tag">Consulte</span>
+                    </div>
+                    <ul>
+                        <li>Lavagem técnica simples</li>
+                        <li>Lubrificação de corrente</li>
+                        <li>Regulagem de freios</li>
+                        <li>Regulagem de câmbios</li>
+                        <li>Calibragem de pneus</li>
+                    </ul>
+                </div>
+
+                <div class="revision-item">
+                    <div class="revision-header">
+                        <h3>INTERMEDIÁRIA</h3>
+                        <span class="price-tag">Consulte</span>
+                    </div>
+                    <ul>
+                        <li>Tudo da Revisão Básica</li>
+                        <li>Limpeza técnica da transmissão</li>
+                        <li>Alinhamento de rodas</li>
+                        <li>Verificação de torques</li>
+                        <li>Lubrificação de cabos</li>
+                    </ul>
+                </div>
+
+                <div class="revision-item featured">
+                    <div class="revision-header">
+                        <div class="header-main">
+                            <h3>GERAL</h3>
+                            <span class="popular-badge">A mais popular</span>
+                        </div>
+                        <span class="price-tag">Consulte</span>
+                    </div>
+                    <ul>
+                        <li>Tudo da Intermediária</li>
+                        <li>Desmontagem completa</li>
+                        <li>Lubrificação de todos os rolamentos</li>
+                        <li>Sangria de freios hidráulicos</li>
+                        <li>Check-up geral de segurança</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="modal-cta">
+                <a href="https://wa.me/5571984666696?text=Quero%20agendar%20uma%20revis%C3%A3o" target="_blank" class="btn btn-primary">AGENDAR AGORA</a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./src/main.ts?v=2"></script>
+  </body>
+</html>

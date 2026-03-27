@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vestuário | STRADA Bike Shop</title>
+    <link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+    <header id="header">
+        <nav class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="./src/assets/logo.png" alt="STRADA BIKESHOP">
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="vestuario.html" class="active">Vestuário</a></li>
+                <li><a href="index.html#bicicletas">Bicicletas</a></li>
+                <li><a href="index.html#acessorios">Acessórios</a></li>
+                <li><a href="index.html#contato">Contato</a></li>
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section for Vestuário -->
+        <section class="hero">
+            <video autoplay muted loop playsinline class="hero-video">
+                <source src="/src/assets/vestuario-video.mp4" type="video/mp4">
+            </video>
+
+            <div class="hero-overlay"></div>
+            <div class="container hero-content">
+                <h1 class="reveal">CONHEÇA A NOVA <span class="highlight">CAMISA DA LOJA</span></h1>
+                <p class="reveal">Performance e estilo unidos no novo uniforme oficial da Strada.</p>
+                <div class="hero-btns reveal">
+                    <a href="https://wa.me/5571984666696?text=Quero%20conhecer%20a%20nova%20camisa%20da%20loja" target="_blank" class="btn btn-primary">ADQUIRIR AGORA</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Discovery Section for Apparel -->
+        <section class="category-discover reveal">
+            <div class="container">
+                <h3>ESCOLHA SEU ESTILO</h3>
+                <p>Equipamentos de alta performance para todos os esportes.</p>
+                
+                <div class="category-cards">
+                    <div class="category-card" data-category="Crossfit">
+                        <div class="card-bg crossfit-bg"></div>
+                        <div class="card-content">
+                            <h4>Crossfit</h4>
+                            <span>Força e Resiliência</span>
+                        </div>
+                    </div>
+                    <div class="category-card" data-category="Mountain Bike">
+                        <div class="card-bg mtb-apparel-bg"></div>
+                        <div class="card-content">
+                            <h4>Mountain Bike</h4>
+                            <span>Adrenalina na Trilha</span>
+                        </div>
+                    </div>
+                    <div class="category-card" data-category="Corrida">
+                        <div class="card-bg run-bg"></div>
+                        <div class="card-content">
+                            <h4>Corrida</h4>
+                            <span>Sinta o Movimento</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Showcase for Apparel -->
+        <section class="products" id="vestuario-section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <h2 id="category-title">NOSSO <span class="highlight">VESTUÁRIO</span></h2>
+                    <div class="divider"></div>
+                </div>
+                
+                <div class="product-grid" id="vestuario-grid">
+                    <!-- Apparel items injected by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <!-- Same as index.html -->
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="./src/assets/logo.png" alt="STRADA BIKESHOP">
+                </div>
+                <div class="footer-links">
+                    <h4>Menu</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="vestuario.html">Vestuário</a></li>
+                        <li><a href="index.html#bicicletas">Produtos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <h4>Siga-nos</h4>
+                    <div class="social-links">
+                        <a href="#">Instagram</a>
+                        <a href="#">Facebook</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 STRADA BIKESHOP. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="./src/vestuario.ts"></script>
+    <script type="module" src="./src/main.ts"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Produtos | STRADA Bike Shop</title>
+    <link rel="stylesheet" href="./src/style.css">
+  </head>
+  <body>
+    <header id="header" class="scrolled">
+      <nav class="container">
+        <div class="logo">
+          <a href="/"><img src="/src/assets/logo.png" alt="STRADA Bike Shop" id="nav-logo"></a>
+        </div>
+        <div class="menu-toggle" id="mobile-menu">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+        <ul class="nav-links">
+          <li><a href="/">Início</a></li>
+          <li><a href="./vestuario.html">Vestuário</a></li>
+          <li><a href="/products.html" class="active">Bicicletas</a></li>
+          <li><a href="#acessorios">Acessórios</a></li>
+          <li><a href="#contato">Contato</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main style="padding-top: 100px;">
+      <section class="products">
+        <div class="container">
+          <div class="section-header reveal">
+            <h2 id="page-title">Nossas <span class="highlight">Bicicletas</span></h2>
+            <div class="divider"></div>
+          </div>
+          
+          <div class="product-grid" id="products-grid">
+            <!-- Products will be injected by JavaScript -->
+          </div>
+          
+          <div style="text-align: center; margin-top: 50px;">
+            <a href="/" class="btn btn-outline">Voltar para Início</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-logo">
+            <img src="/src/assets/logo.png" alt="STRADA Bike Shop">
+          </div>
+          <div class="footer-links">
+            <h4>Menu</h4>
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/products.html">Produtos</a></li>
+              <li><a href="#contato">Contato</a></li>
+            </ul>
+          </div>
+          <div class="footer-social">
+            <h4>Siga-nos</h4>
+            <div class="social-icons">
+              <a href="#">IG</a>
+              <a href="#">FB</a>
+              <a href="#">YT</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 STRADA Bike Shop. Todos os direitos reservados. <a href="/admin.html" style="font-size: 0.7rem; opacity: 0.5;">Área Administrativa</a></p>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/products.ts"></script>
+  </body>
+</html>
