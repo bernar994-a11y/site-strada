@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bike Café | STRADA Bike Shop</title>
+    <meta name="description" content="Bike Café STRADA — O ponto de encontro de quem vive sobre duas rodas. Café especial, lanches funcionais e um espaço pensado para ciclistas e para todos.">
     <link rel="stylesheet" href="./src/style.css">
 </head>
 <body class="cafe-page">
@@ -33,84 +34,245 @@
     </header>
 
     <main>
-        <!-- Hero Section for Café -->
+        <!-- ═══════════════════════════════════════════════
+             SEÇÃO 1 — HERO
+        ═══════════════════════════════════════════════ -->
         <section class="hero cafe-hero" style="background: none;">
             <video autoplay muted loop playsinline class="hero-video">
                 <source src="./src/assets/cafe-video.mp4" type="video/mp4">
             </video>
-            <div class="hero-overlay" style="background: rgba(45, 30, 15, 0.45);"></div>
-            <div class="container hero-content">
-                <h1 class="reveal" style="font-size: 4.5rem; letter-spacing: -2px;">CONHEÇA NOSSO <span class="cafe-accent">CAFÉ</span></h1>
-                <p class="reveal" style="font-size: 1.2rem; margin-bottom: 40px; color: #fff;">Um porto seguro para recarregar as energias e celebrar a paixão pelo pedal.</p>
-                <div class="hero-btns reveal">
-                    <a href="#menu" class="btn btn-cafe">VER CARDÁPIO</a>
-                    <a href="https://wa.me/5571984666696?text=Quero%20visitar%20o%20Bike%20Cafe" target="_blank" class="btn btn-outline">COMO CHEGAR</a>
+            <div class="hero-overlay" style="background: linear-gradient(180deg, rgba(26,18,8,0.6) 0%, rgba(26,18,8,0.75) 100%);"></div>
+            <div class="container hero-content" style="text-align: center; max-width: 900px; margin: 0 auto;">
+                <span class="cafe-hero-tag reveal">☕ BIKE CAFÉ STRADA</span>
+                <h1 class="reveal" style="font-size: 4rem; letter-spacing: -1px; line-height: 1.05;">ONDE O PEDAL <span class="cafe-accent">ENCONTRA O SABOR</span></h1>
+                <p class="reveal" style="font-size: 1.2rem; margin: 25px auto 45px; color: rgba(255,255,255,0.9); max-width: 600px; line-height: 1.7;">Mais que um café. Um ponto de encontro para quem vive sobre duas rodas — e para quem quer viver essa energia.</p>
+                <div class="hero-btns reveal" style="justify-content: center;">
+                    <a href="#cardapio" class="btn btn-cafe">EXPLORAR CARDÁPIO</a>
+                    <a href="https://wa.me/5571984666696?text=Quero%20visitar%20o%20Bike%20Cafe" target="_blank" class="btn btn-outline">VENHA NOS VISITAR</a>
                 </div>
             </div>
         </section>
 
-        <!-- Redesigned Sabor & Energia Section -->
-        <section class="menu-experience" id="menu">
+        <!-- ═══════════════════════════════════════════════
+             SEÇÃO 2 — SOBRE O BIKE CAFÉ
+        ═══════════════════════════════════════════════ -->
+        <section class="cafe-section" id="sobre">
             <div class="container">
-                <div class="section-header reveal">
-                    <h2>SABOR & <span class="cafe-accent">ENERGIA</span></h2>
-                    <p>Uma curadoria pensada para a performance e o prazer de quem pedala.</p>
+                <div class="cafe-about-grid reveal">
+                    <div class="cafe-about-text">
+                        <span class="exp-tag">NOSSA ESSÊNCIA</span>
+                        <h2>UM CAFÉ COM <span class="cafe-accent">ALMA DE CICLISTA</span></h2>
+                        <p>O Bike Café STRADA nasceu da vontade de criar algo que não existia: um espaço onde o ciclismo encontra o prazer de um bom café. Aqui, cada detalhe foi pensado por quem pedala, para quem pedala.</p>
+                        <p>Mas não se engane — nosso café é para todos. Para quem busca um ambiente autêntico, com personalidade, boa música e sabores que surpreendem. Venha como está. De lycra, de roupa casual, de sandália. Aqui, o que importa é a boa energia.</p>
+                    </div>
+                    <div class="cafe-about-img">
+                        <img src="./src/assets/cafe-interior.png" alt="Interior do Bike Café STRADA">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════
+             SEÇÃO 3 — CONEXÃO COM O CICLISMO
+        ═══════════════════════════════════════════════ -->
+        <section class="cafe-section cafe-section-alt" id="ciclismo">
+            <div class="container">
+                <div class="cafe-about-grid reverse reveal">
+                    <div class="cafe-about-text">
+                        <span class="exp-tag">CULTURA BIKE</span>
+                        <h2>NASCEMOS <span class="cafe-accent">DO PEDAL</span></h2>
+                        <p>Somos parte da STRADA Bike Shop — referência no ciclismo baiano. Essa vivência nos dá algo que nenhum outro café tem: a autenticidade de quem vive esse universo todos os dias.</p>
+                        <p>Aqui, a conversa sobre relação de marcha se mistura com o aroma do espresso. O dono do café é o mesmo mecânico que regula sua bike. Essa proximidade é o nosso maior trunfo.</p>
+                        <div class="cafe-stats">
+                            <div class="cafe-stat">
+                                <span class="cafe-stat-number">10+</span>
+                                <span class="cafe-stat-label">anos de ciclismo</span>
+                            </div>
+                            <div class="cafe-stat">
+                                <span class="cafe-stat-number">2em1</span>
+                                <span class="cafe-stat-label">café + bike shop</span>
+                            </div>
+                            <div class="cafe-stat">
+                                <span class="cafe-stat-number">100%</span>
+                                <span class="cafe-stat-label">paixão real</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cafe-about-img">
+                        <img src="./src/assets/cafe-community.png" alt="Comunidade de ciclistas no Bike Café">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════
+             SEÇÃO 4 — CARDÁPIO / O QUE VOCÊ ENCONTRA
+        ═══════════════════════════════════════════════ -->
+        <section class="cafe-section" id="cardapio">
+            <div class="container">
+                <div class="section-header reveal" style="text-align: center;">
+                    <h2>O QUE VOCÊ ENCONTRA <span class="cafe-accent">AQUI</span></h2>
+                    <p style="max-width: 600px; margin: 0 auto;">Cada item do nosso cardápio é uma escolha consciente. Sabor, energia e qualidade — sem atalhos.</p>
                     <div class="divider"></div>
                 </div>
 
-                <!-- Row 1: Coffee -->
-                <div class="exp-row reveal">
-                    <div class="exp-content">
-                        <span class="exp-tag">O BOOST IDEAL</span>
-                        <h3>CAFÉS ESPECIAIS</h3>
-                        <p>Trabalhamos com grãos de torra média selecionados por especialistas. O equilíbrio perfeito entre aroma e cafeína para o seu pré-treino ou aquele momento de relaxamento pós-pedal.</p>
-                        <ul class="exp-list">
-                            <li>Espressos e Filtrados</li>
-                            <li>Grãos de Origem Única</li>
-                            <li>Métodos Hario V60 e Chemex</li>
-                        </ul>
+                <div class="cafe-menu-cards reveal">
+                    <div class="cafe-card">
+                        <div class="cafe-card-icon">☕</div>
+                        <h3>Cafés Especiais</h3>
+                        <p>Grãos selecionados, torra média, métodos como Hario V60 e Chemex. Do espresso clássico ao coado artesanal.</p>
                     </div>
-                    <div class="exp-image">
-                        <img src="./src/assets/cafe-interior.png" alt="Cafés Especiais">
+                    <div class="cafe-card">
+                        <div class="cafe-card-icon">🥤</div>
+                        <h3>Sucos & Detox</h3>
+                        <p>Combinações funcionais com frutas frescas, gengibre e hortelã. Hidratação e recuperação pós-treino garantidas.</p>
+                    </div>
+                    <div class="cafe-card">
+                        <div class="cafe-card-icon">🥪</div>
+                        <h3>Lanches Funcionais</h3>
+                        <p>Wraps proteicos, sanduíches naturais e bowls de açaí. Energia que sustenta sem pesar.</p>
+                    </div>
+                    <div class="cafe-card">
+                        <div class="cafe-card-icon">🍰</div>
+                        <h3>Doces & Confeitaria</h3>
+                        <p>Bolos caseiros, brownies e tortas artesanais. Porque todo ciclista merece uma recompensa doce.</p>
                     </div>
                 </div>
 
-                <!-- Row 2: Snacks (Reverse) -->
-                <div class="exp-row reverse reveal">
-                    <div class="exp-content">
-                        <span class="exp-tag">COMBUSTÍVEL REAL</span>
-                        <h3>LANCHES FUNCIONAIS</h3>
-                        <p>Nosso cardápio foi desenhado para nutrir sem pesar. De bowls de açaí a sanduíches de fermentação natural, cada ingrediente tem um propósito na sua rotina de ciclista.</p>
+                <div style="text-align: center; margin-top: 50px;" class="reveal">
+                    <a href="https://wa.me/5571984666696?text=Quero%20ver%20o%20card%C3%A1pio%20completo" target="_blank" class="btn btn-cafe">VER CARDÁPIO COMPLETO</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════
+             SEÇÃO 5 — EXPERIÊNCIA NO ESPAÇO
+        ═══════════════════════════════════════════════ -->
+        <section class="cafe-section cafe-section-alt" id="experiencia">
+            <div class="container">
+                <div class="cafe-about-grid reveal">
+                    <div class="cafe-about-text">
+                        <span class="exp-tag">O AMBIENTE</span>
+                        <h2>FEITO PRA VOCÊ <span class="cafe-accent">FICAR</span></h2>
+                        <p>Madeira, aço e o cheiro de café fresco. Nosso espaço mistura o rústico do ciclismo com o conforto de um lounge moderno. Ideal pra trabalhar remotamente, reunir o grupo de pedal ou simplesmente desconectar.</p>
                         <ul class="exp-list">
-                            <li>Bowl de Frutas e Granola</li>
-                            <li>Sourdough de Abacate e Ovo</li>
-                            <li>Omeletes e Wraps Fit</li>
+                            <li>Mesas amplas com tomadas USB</li>
+                            <li>Wi-Fi de alta velocidade</li>
+                            <li>Música ambiente curada</li>
+                            <li>Iluminação acolhedora e fotogênica</li>
                         </ul>
                     </div>
-                    <div class="exp-image">
-                        <img src="./src/assets/cafe-snacks.png" alt="Lanches Saudáveis">
+                    <div class="cafe-about-img">
+                        <img src="./src/assets/cafe-espresso.png" alt="Café sendo preparado">
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Supportive Spot Section -->
-        <section class="ponto-apoio">
-            <div class="container reveal">
-                <div class="contact-card" style="border-color: var(--cafe-primary); background: rgba(26,26,26,0.95);">
-                    <div class="contact-info">
-                        <h2 class="cafe-accent">PONTO DE APOIO</h2>
-                        <p>Disponibilizamos suporte para pequenas manutenções rápidas, carregamento de e-bikes e, claro, um café por conta da casa para nossos clientes.</p>
-                        <ul style="margin-top: 20px;">
-                            <li style="margin-bottom: 10px;">✅ Wi-fi liberado para subir seu treino pro Strava</li>
-                            <li style="margin-bottom: 10px;">✅ Suporte para estacionar sua bike com segurança</li>
-                            <li style="margin-bottom: 10px;">✅ Tomadas para recarregar seu GPS ou E-bike</li>
-                        </ul>
-                        <a href="https://wa.me/5571984666696" target="_blank" class="btn btn-cafe" style="margin-top: 30px;">FALAR CONOSCO</a>
+        <!-- ═══════════════════════════════════════════════
+             SEÇÃO 6 — PARA TODOS OS PÚBLICOS
+        ═══════════════════════════════════════════════ -->
+        <section class="cafe-section" id="para-todos">
+            <div class="container">
+                <div class="section-header reveal" style="text-align: center;">
+                    <h2>PRA QUEM É O <span class="cafe-accent">BIKE CAFÉ?</span></h2>
+                    <p style="max-width: 650px; margin: 0 auto;">Spoiler: pra todo mundo. Mas especialmente pra você.</p>
+                    <div class="divider"></div>
+                </div>
+
+                <div class="cafe-audience-grid reveal">
+                    <div class="cafe-audience-card">
+                        <span class="cafe-audience-emoji">🚴</span>
+                        <h4>Ciclistas</h4>
+                        <p>Seu ponto de partida e chegada. Estacione a bike com segurança, recarregue o corpo e compartilhe quilômetros.</p>
                     </div>
-                    <div class="contact-image">
-                       <img src="./src/assets/studio-bg.png" alt="Bike Cafe Vibe" style="height: 100%; object-fit: cover; opacity: 0.6;">
+                    <div class="cafe-audience-card">
+                        <span class="cafe-audience-emoji">💻</span>
+                        <h4>Nômades Digitais</h4>
+                        <p>Wi-Fi rápido, ambiente silencioso pela manhã e café que não acaba. Seu escritório favorito.</p>
                     </div>
+                    <div class="cafe-audience-card">
+                        <span class="cafe-audience-emoji">👨‍👩‍👧</span>
+                        <h4>Famílias</h4>
+                        <p>Espaço acolhedor pra um lanche no fim de tarde. Sem pressa, sem frescura, com muito sabor.</p>
+                    </div>
+                    <div class="cafe-audience-card">
+                        <span class="cafe-audience-emoji">🏃</span>
+                        <h4>Esportistas</h4>
+                        <p>Corredores, atletas de CrossFit, praticantes de yoga. A energia daqui é contagiante pra qualquer modalidade.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════
+             SEÇÃO 7 — DIFERENCIAIS
+        ═══════════════════════════════════════════════ -->
+        <section class="cafe-section cafe-section-alt" id="diferenciais">
+            <div class="container">
+                <div class="section-header reveal" style="text-align: center;">
+                    <h2>POR QUE ESCOLHER O <span class="cafe-accent">BIKE CAFÉ?</span></h2>
+                    <div class="divider"></div>
+                </div>
+
+                <div class="cafe-diff-grid reveal">
+                    <div class="cafe-diff-item">
+                        <span class="cafe-diff-icon">🔧</span>
+                        <div>
+                            <h4>Manutenção rápida</h4>
+                            <p>Ajustes básicos enquanto você toma seu café. Sim, é real.</p>
+                        </div>
+                    </div>
+                    <div class="cafe-diff-item">
+                        <span class="cafe-diff-icon">🔌</span>
+                        <div>
+                            <h4>Recarga de e-bikes</h4>
+                            <p>Tomadas dedicadas para recarregar sua bike elétrica ou GPS.</p>
+                        </div>
+                    </div>
+                    <div class="cafe-diff-item">
+                        <span class="cafe-diff-icon">🅿️</span>
+                        <div>
+                            <h4>Bicicletário seguro</h4>
+                            <p>Estacione tranquilo. Seu equipamento fica protegido.</p>
+                        </div>
+                    </div>
+                    <div class="cafe-diff-item">
+                        <span class="cafe-diff-icon">📱</span>
+                        <div>
+                            <h4>Suba pro Strava</h4>
+                            <p>Wi-Fi liberado pra você subir seu treino na mesma hora.</p>
+                        </div>
+                    </div>
+                    <div class="cafe-diff-item">
+                        <span class="cafe-diff-icon">🤝</span>
+                        <div>
+                            <h4>Comunidade ativa</h4>
+                            <p>Eventos, encontros de pedal e networking ciclístico.</p>
+                        </div>
+                    </div>
+                    <div class="cafe-diff-item">
+                        <span class="cafe-diff-icon">🛒</span>
+                        <div>
+                            <h4>Loja integrada</h4>
+                            <p>Precisa de peça ou acessório? A STRADA Bike Shop está ao lado.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════
+             SEÇÃO 8 — CTA FINAL
+        ═══════════════════════════════════════════════ -->
+        <section class="cafe-cta-final" id="cta">
+            <div class="container reveal" style="text-align: center;">
+                <h2>FAÇA UMA PAUSA <span class="cafe-accent">NO SEU PEDAL</span></h2>
+                <p style="max-width: 550px; margin: 20px auto 40px; font-size: 1.1rem; color: var(--text-muted); line-height: 1.8;">Estamos de portas abertas pra você. Traga sua bike, traga seus amigos, ou venha só. O café tá passando.</p>
+                <div class="hero-btns" style="justify-content: center; flex-wrap: wrap;">
+                    <a href="https://wa.me/5571984666696?text=Quero%20visitar%20o%20Bike%20Cafe" target="_blank" class="btn btn-cafe">VISITE O BIKE CAFÉ</a>
+                    <a href="https://wa.me/5571984666696?text=Quero%20ver%20o%20card%C3%A1pio" target="_blank" class="btn btn-outline">CONHEÇA NOSSO CARDÁPIO</a>
+                    <a href="index.html" class="btn btn-outline">VOLTAR À LOJA</a>
                 </div>
             </div>
         </section>
