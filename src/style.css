@@ -18,6 +18,8 @@
   
   --shadow-orange: 0 10px 30px rgba(245, 166, 35, 0.2);
   --glow-orange: 0 0 15px rgba(245, 166, 35, 0.5);
+  --cafe-primary: #D48C45;
+  --cafe-hover: #e59e5a;
 }
 
 * {
@@ -953,6 +955,79 @@ body.page-enter {
     background-color: var(--text-light);
     transition: 0.3s;
   }
+/* Bike Café Styles */
+.cafe-hero {
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('./assets/studio-bg.png'); /* Placeholder, will be replaced with video/image */
+  background-size: cover;
+  background-position: center;
+}
+
+.cafe-accent {
+  color: var(--cafe-primary);
+}
+
+.btn-cafe {
+  background: linear-gradient(135deg, var(--cafe-primary) 0%, #a66a2e 100%);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(212, 140, 69, 0.3);
+}
+
+.btn-cafe:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, var(--cafe-hover) 0%, var(--cafe-primary) 100%);
+  box-shadow: 0 8px 25px rgba(212, 140, 69, 0.5);
+}
+
+.cafe-logo-hero {
+  max-width: 300px;
+  margin: 0 auto 30px;
+  filter: drop-shadow(0 0 20px rgba(212, 140, 69, 0.4));
+}
+
+.menu-section {
+  padding: var(--section-padding);
+  background-color: var(--bg-darker);
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  margin-top: 50px;
+}
+
+.menu-item {
+  background-color: var(--bg-dark);
+  padding: 30px;
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(212, 140, 69, 0.1);
+  transition: var(--transition-smooth);
+  text-align: center;
+}
+
+.menu-item:hover {
+  border-color: var(--cafe-primary);
+  transform: translateY(-10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.menu-icon {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.menu-item h3 {
+  color: var(--cafe-primary);
+  margin-bottom: 10px;
+}
+
+.ponto-apoio {
+  padding: var(--section-padding);
+  background: linear-gradient(rgba(26,26,26,0.9), rgba(26,26,26,0.9)), url('./assets/studio-bg.png');
+  background-size: cover;
+  background-attachment: fixed;
+}
 
   .menu-toggle.active .bar:nth-child(2) { opacity: 0; }
   .menu-toggle.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }

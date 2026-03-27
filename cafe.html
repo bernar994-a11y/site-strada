@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bike Café | STRADA Bike Shop</title>
+    <link rel="stylesheet" href="./src/style.css">
+</head>
+<body class="cafe-page">
+    <header id="header">
+        <nav class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="./src/assets/logo.png" alt="STRADA BIKESHOP">
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="cafe.html" class="active">Conheça nosso café</a></li>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="vestuario.html">Vestuário</a></li>
+                <li><a href="index.html#bicicletas">Bicicletas</a></li>
+                <li><a href="index.html#acessorios">Acessórios</a></li>
+                <li><a href="index.html#contato">Contato</a></li>
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section for Café -->
+        <section class="hero cafe-hero">
+            <div class="hero-overlay" style="background: rgba(45, 30, 15, 0.4);"></div>
+            <div class="container hero-content">
+                <img src="./src/assets/bike-cafe-logo.png" alt="Bike Café" class="cafe-logo-hero reveal">
+                <h1 class="reveal">O PONTO DE ENCONTRO <span class="cafe-accent">DO CICLISTA</span></h1>
+                <p class="reveal">Muito mais que um café, um porto seguro para recarregar as energias e celebrar a paixão pelo pedal.</p>
+                <div class="hero-btns reveal">
+                    <a href="#menu" class="btn btn-cafe">VER CARDÁPIO</a>
+                    <a href="https://wa.me/5571984666696?text=Quero%20visitar%20o%20Bike%20Cafe" target="_blank" class="btn btn-outline">COMO CHEGAR</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Values Section -->
+        <section class="menu-section" id="menu">
+            <div class="container">
+                <div class="section-header reveal">
+                    <h2>SABOR & <span class="cafe-accent">ENERGIA</span></h2>
+                    <p>Preparamos tudo com o mesmo cuidado que temos com a sua bike.</p>
+                    <div class="divider" style="background-color: var(--cafe-primary);"></div>
+                </div>
+                
+                <div class="menu-grid">
+                    <div class="menu-item reveal">
+                        <span class="menu-icon">☕</span>
+                        <h3>CAFÉS ESPECIAIS</h3>
+                        <p>Grãos selecionados com torra média para o boost ideal pré ou pós treino.</p>
+                    </div>
+                    <div class="menu-item reveal">
+                        <span class="menu-icon">🥪</span>
+                        <h3>LANCHES LEVES</h3>
+                        <p>Opções saudáveis e energéticas pensadas na dieta do ciclista de performance.</p>
+                    </div>
+                    <div class="menu-item reveal">
+                        <span class="menu-icon">🤝</span>
+                        <h3>COMUNIDADE</h3>
+                        <p>O lugar perfeito para compartilhar histórias de trilhas e planejar o próximo pedal.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Supportive Spot Section -->
+        <section class="ponto-apoio">
+            <div class="container reveal">
+                <div class="contact-card" style="border-color: var(--cafe-primary); background: rgba(26,26,26,0.95);">
+                    <div class="contact-info">
+                        <h2 class="cafe-accent">PONTO DE APOIO</h2>
+                        <p>Disponibilizamos suporte para pequenas manutenções rápidas, carregamento de e-bikes e, claro, um café por conta da casa para nossos clientes.</p>
+                        <ul style="margin-top: 20px;">
+                            <li style="margin-bottom: 10px;">✅ Wi-fi liberado para subir seu treino pro Strava</li>
+                            <li style="margin-bottom: 10px;">✅ Suporte para estacionar sua bike com segurança</li>
+                            <li style="margin-bottom: 10px;">✅ Tomadas para recarregar seu GPS ou E-bike</li>
+                        </ul>
+                        <a href="https://wa.me/5571984666696" target="_blank" class="btn btn-cafe" style="margin-top: 30px;">FALAR CONOSCO</a>
+                    </div>
+                    <div class="contact-image">
+                       <img src="./src/assets/studio-bg.png" alt="Bike Cafe Vibe" style="height: 100%; object-fit: cover; opacity: 0.6;">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="./src/assets/logo.png" alt="STRADA BIKESHOP">
+                </div>
+                <div class="footer-links">
+                    <h4>Menu</h4>
+                    <ul>
+                        <li><a href="index.html">Início</a></li>
+                        <li><a href="cafe.html">Bike Café</a></li>
+                        <li><a href="vestuario.html">Vestuário</a></li>
+                        <li><a href="index.html#bicicletas">Produtos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <h4>Siga-nos</h4>
+                    <div class="social-links">
+                        <a href="#">Instagram</a>
+                        <a href="#">Facebook</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 STRADA BIKESHOP. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="./src/cafe.ts"></script>
+    <script type="module" src="./src/main.ts"></script>
+</body>
+</html>
