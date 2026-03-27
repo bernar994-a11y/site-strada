@@ -161,15 +161,20 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: nowrap; /* Prevent items from jumping to next line */
 }
 
 .logo img.main-logo {
-  height: 35px;
+  height: 32px; /* Slightly smaller */
+  width: auto;
+  object-fit: contain;
   transition: var(--transition-smooth);
 }
 
 .logo img.cafe-logo-nav {
-  height: 40px;
+  height: 38px; /* Slightly smaller */
+  width: auto;
+  object-fit: contain;
   transition: var(--transition-smooth);
 }
 
@@ -200,21 +205,22 @@ nav {
 
 .nav-links {
   display: flex;
-  gap: 15px; /* Further reduced to prevent overflow */
+  gap: 12px; /* Even tighter for better fit */
   position: relative;
   align-items: center;
   list-style: none;
   margin: 0;
   padding: 0;
+  flex-shrink: 1; /* Allow to shrink if needed */
 }
 
 .nav-links a {
   color: #fff;
   text-decoration: none;
   font-weight: 700;
-  font-size: 0.8rem; /* Smaller font for better fit */
+  font-size: 0.75rem; /* Smaller font to ensure all 6 links fit */
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   transition: var(--transition-smooth);
   white-space: nowrap;
 }
