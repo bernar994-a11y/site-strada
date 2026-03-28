@@ -1036,9 +1036,75 @@ body.page-enter {
   font-weight: bold;
 }
 
+/* Workshop Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+}
+
+.modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.4s ease;
+}
+
+.modal-content {
+    background-color: var(--bg-darker);
+    margin: auto;
+    padding: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 90%;
+    max-width: 900px;
+    border-radius: 24px;
+    position: relative;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.close-modal {
+    position: absolute;
+    right: 30px;
+    top: 25px;
+    color: var(--text-muted);
+    font-size: 32px;
+    font-weight: 300;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+}
+
+.close-modal:hover {
+    color: var(--primary);
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(90deg);
+}
+
+.modal-divider {
+    height: 2px;
+    width: 60px;
+    background: var(--primary);
+    margin: 20px auto 40px;
+}
+
 .modal-cta {
   text-align: center;
 }
+
 
 @keyframes slideUp {
   from { transform: translateY(40px); opacity: 0; }
