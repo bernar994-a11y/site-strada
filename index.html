@@ -19,7 +19,7 @@
         </div>
         
         <ul class="nav-links">
-            <li><a href="cafe.html">Conheça nosso café</a></li>
+
             <li><a href="index.html" class="active">Início</a></li>
             <li><a href="vestuario.html">Vestuário</a></li>
             <li><a href="#bicicletas">Bicicletas</a></li>
@@ -136,6 +136,19 @@
               <div class="service-icon">🚿</div>
               <h3>LAVAGEM</h3>
               <p>Limpeza técnica profunda para proteger seus componentes.</p>
+              <a href="https://wa.me/5571984666696?text=Quero%20agendar%20uma%20lavagem" target="_blank" class="btn btn-detail" style="margin-top: 15px; font-size: 0.8rem; text-decoration: none; display: inline-block;">
+                Agendar lavagem
+                <span class="btn-icon">→</span>
+              </a>
+            </div>
+            <div class="service-item reveal">
+              <div class="service-icon">🔩</div>
+              <h3>MONTAGEM</h3>
+              <p>Montagem profissional de bicicletas novas e equipamentos.</p>
+              <a href="https://wa.me/5571984666696?text=Quero%20agendar%20uma%20montagem" target="_blank" class="btn btn-detail" style="margin-top: 15px; font-size: 0.8rem; text-decoration: none; display: inline-block;">
+                Agendar montagem
+                <span class="btn-icon">→</span>
+              </a>
             </div>
           </div>
 
@@ -238,6 +251,51 @@
     </div>
 
 
+    <!-- Product Modal -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content product-modal-content">
+            <span class="close-product-modal close-modal">&times;</span>
+            <div class="product-modal-grid">
+                <div class="product-modal-image" style="cursor: zoom-in;">
+                    <div style="width: 100%; height: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center; border-radius: var(--border-radius);">
+                        <img id="modal-product-image" src="" alt="Produto" style="transition: transform 0.1s ease-out;">
+                    </div>
+                    <div id="modal-product-badge" class="product-badge" style="top: 20px; left: 20px;"></div>
+                    <div id="modal-seguro-seal" class="seguro-seal" style="display: none; top: -10px; right: -10px;">
+                        <span class="seal-icon">🔒</span><span class="seal-text">14 MESES<br>SEGURO GRÁTIS</span>
+                    </div>
+                </div>
+                <div class="product-modal-info">
+                    <h2 id="modal-product-title">Nome do Produto</h2>
+                    <span id="modal-product-category" style="color: var(--primary); font-size: 0.9rem; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">Categoria</span>
+                    <div class="modal-divider" style="margin: 15px 0; width: 50px;"></div>
+                    <p id="modal-product-desc" style="margin-bottom: 25px; color: var(--text-muted); line-height: 1.6;">Descrição completa do produto.</p>
+                    
+                    <div class="product-colors" style="margin-bottom: 25px;">
+                        <h4 style="margin-bottom: 12px; font-size: 0.9rem; color: #fff;">Cores Disponíveis:</h4>
+                        <div style="display: flex; gap: 12px;" id="modal-color-options">
+                            <div class="color-dot active" style="width: 30px; height: 30px; border-radius: 50%; background-color: #2F2F2F; cursor: pointer; border: 2px solid var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.5);"></div>
+                            <div class="color-dot" style="width: 30px; height: 30px; border-radius: 50%; background-color: #8B0000; cursor: pointer; border: 2px solid transparent; box-shadow: 0 4px 10px rgba(0,0,0,0.5);"></div>
+                            <div class="color-dot" style="width: 30px; height: 30px; border-radius: 50%; background-color: #E6E6FA; cursor: pointer; border: 2px solid transparent; box-shadow: 0 4px 10px rgba(0,0,0,0.5);"></div>
+                        </div>
+                    </div>
+
+                    <div id="modal-product-price-container" class="product-price" style="margin-bottom: 5px; align-items: flex-end;">
+                        <!-- Price injected by JS -->
+                    </div>
+                    <div id="modal-installments" style="color: #2ecc71; font-size: 0.95rem; margin-bottom: 30px; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 1.2rem;">💳</span> Em até 12x sem juros no cartão
+                    </div>
+                    
+                    <a id="modal-whatsapp-btn" href="#" target="_blank" class="btn btn-primary" style="width: 100%; text-align: center; padding: 15px; font-size: 1.1rem;">
+                        Adquirir Agora
+                        <span class="btn-icon">🛍️</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer id="footer" class="footer">
         <div class="container">
             <div class="footer-content">
@@ -257,9 +315,11 @@
                 <div class="footer-social">
                     <h4>Siga-nos</h4>
                     <div class="social-links">
-                        <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
-                        <a href="#"><i class="fab fa-facebook"></i> Facebook</a>
-                        <a href="#"><i class="fab fa-youtube"></i> YouTube</a>
+                        <a href="https://instagram.com/strada.bikeshop" target="_blank"><i class="fab fa-instagram"></i> strada.bikeshop</a>
+                    </div>
+                    <div class="official-reseller" style="margin-top: 25px;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Somos Revendedores Oficiais</span>
+                        <img src="https://logodownload.org/wp-content/uploads/2021/04/oggi-bikes-logo.png" alt="OGGI Bikes" style="height: 25px; opacity: 0.9; object-fit: contain;">
                     </div>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-import { DEFAULT_PRODUCTS } from './store';
+import { getProducts } from './store';
 import type { Product } from './store';
 import { initNav } from './nav';
 
@@ -8,7 +8,8 @@ const renderApparel = (subcategory?: string) => {
     if (!grid || !title) return;
 
     // Filter products by category 'Vestuário' and optional subcategory
-    let filtered = DEFAULT_PRODUCTS.filter((p: Product) => p.category === 'Vestuário');
+    const allProducts = getProducts();
+    let filtered = allProducts.filter((p: Product) => p.category === 'Vestuário');
     
     if (subcategory) {
         filtered = filtered.filter((p: Product) => p.subcategory === subcategory);
@@ -46,7 +47,15 @@ const renderApparel = (subcategory?: string) => {
                     Ver Detalhes
                     <span class="btn-icon">→</span>
                 </button>
+                <a href="https://wa.me/5571984666696?text=Ola%20tenho%20interesse%20neste%20produto:%20${encodeURIComponent(product.name)}" 
+                   class="btn btn-whatsapp" 
+                   target="_blank" 
+                   rel="noopener noreferrer">
+                  Adquirir Agora
+                  <span class="btn-icon">🛍️</span>
+                </a>
             </div>
+
         </div>
     `).join('');
 

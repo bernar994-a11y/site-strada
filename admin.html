@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin | STRADA Bike Shop</title>
     <link rel="stylesheet" href="./src/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
     <style>
         * { box-sizing: border-box; }
         body { background: var(--bg-dark); color: var(--text-light); }
@@ -112,7 +113,11 @@
     <!-- Login -->
     <div id="login-screen" class="login-overlay">
         <div class="login-box">
-            <img src="/src/assets/logo.png" alt="STRADA" style="height: 50px; margin-bottom: 25px;">
+            <div class="logo-group" style="justify-content: center; margin-bottom: 25px;">
+                <img src="./src/assets/logo.png" alt="STRADA" style="height: 50px;">
+                <div class="logo-divider"></div>
+                <img src="./src/assets/bike-cafe-logo.png" alt="Bike Café" style="height: 40px;">
+            </div>
             <h2>Acesso Restrito</h2>
             <p>Painel administrativo da STRADA Bike Shop</p>
             <input type="password" id="admin-password" placeholder="Senha de administrador">
@@ -128,7 +133,11 @@
         <header id="header" class="scrolled">
             <nav class="container">
                 <div class="logo">
-                    <a href="/"><img src="/src/assets/logo.png" alt="STRADA" style="height: 38px;"></a>
+                    <a href="index.html" class="logo-group">
+                        <img src="./src/assets/logo.png" alt="STRADA BIKESHOP" class="main-logo">
+                        <div class="logo-divider"></div>
+                        <img src="./src/assets/bike-cafe-logo.png" alt="Bike Café" class="cafe-logo-nav">
+                    </a>
                 </div>
                 <ul class="nav-links">
                     <li><a href="/" style="color: var(--text-muted);">← Voltar ao Site</a></li>
@@ -252,17 +261,17 @@
                         <label>Nome do Produto</label>
                         <input type="text" id="p-name" required placeholder="Ex: Strada Carbon X">
                     </div>
-                    <div class="form-group">
-                        <label>Categoria</label>
-                        <select id="p-category">
-                            <option value="Uso Urbano">🚲 Uso Urbano</option>
-                            <option value="Mountain Bike">🏔️ Mountain Bike</option>
-                            <option value="Speed">⚡ Speed</option>
-                            <option value="Bikes Elétricas">🔋 Bikes Elétricas</option>
-                            <option value="Bike Infantil">👶 Bike Infantil</option>
-                            <option value="Vestuário">👕 Vestuário</option>
-                            <option value="Acessórios">🎒 Acessórios</option>
-                        </select>
+                    <div class="form-group full">
+                        <label>Categorias</label>
+                        <div id="p-categories-container" style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 8px; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; color: white; width: auto; margin: 0;"><input type="checkbox" value="Uso Urbano" class="cat-checkbox"> 🚲 Uso Urbano</label>
+                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; color: white; width: auto; margin: 0;"><input type="checkbox" value="Mountain Bike" class="cat-checkbox"> 🏔️ Mountain Bike</label>
+                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; color: white; width: auto; margin: 0;"><input type="checkbox" value="Speed" class="cat-checkbox"> ⚡ Speed</label>
+                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; color: white; width: auto; margin: 0;"><input type="checkbox" value="Bikes Elétricas" class="cat-checkbox"> 🔋 Bikes Elétricas</label>
+                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; color: white; width: auto; margin: 0;"><input type="checkbox" value="Bike Infantil" class="cat-checkbox"> 👶 Bike Infantil</label>
+                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; color: white; width: auto; margin: 0;"><input type="checkbox" value="Vestuário" class="cat-checkbox"> 👕 Vestuário</label>
+                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; color: white; width: auto; margin: 0;"><input type="checkbox" value="Acessórios" class="cat-checkbox"> 🎒 Acessórios</label>
+                        </div>
                     </div>
                     <div class="form-group" id="subcategory-group" style="display:none;">
                         <label>Subcategoria (Vestuário)</label>
@@ -281,9 +290,19 @@
                         <textarea id="p-desc" rows="3" required placeholder="Características do produto..."></textarea>
                     </div>
                     <div class="form-group full">
-                        <label>Foto do Produto</label>
+                        <label>Foto Principal do Produto</label>
                         <input type="file" id="p-image" accept="image/*">
                         <img id="p-preview" class="preview-img" alt="Preview">
+                    </div>
+                    <div class="form-group full" style="margin-top: 10px; border-top: 1px solid var(--gray-medium); padding-top: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <label style="margin: 0; color: #fff;">Variantes de Cores (Opcional)</label>
+                            <button type="button" id="add-color-variant-btn" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.75rem;">+ Adicionar Cor</button>
+                        </div>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 15px; margin-top: -10px;">Adicione opções de cores com fotos específicas para este modelo.</p>
+                        <div id="color-variants-container" style="display: flex; flex-direction: column; gap: 15px;">
+                            <!-- Variants will be injected here -->
+                        </div>
                     </div>
                     <div class="form-group full">
                         <div class="toggle-row">
@@ -310,13 +329,32 @@
                     </div>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" class="btn-save">✓ Salvar Produto</button>
-                    <button type="button" class="btn-cancel-form" id="cancel-btn">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" id="cancel-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 2;">Salvar Produto</button>
                 </div>
+                <div id="form-status" style="margin-top: 15px; text-align: center; display: none; font-weight: bold; padding: 10px; border-radius: 8px;"></div>
             </form>
         </div>
     </div>
 
+    <!-- Cropper Modal -->
+    <div id="cropper-modal" class="form-modal" style="z-index: 2000;">
+        <div class="form-box" style="max-width: 800px; display: flex; flex-direction: column; gap: 15px;">
+            <h2 style="margin-top: 0;">Recortar Imagem</h2>
+            <div style="width: 100%; max-height: 60vh; background: #000; border-radius: 8px; overflow: hidden; display: flex; justify-content: center; align-items: center;">
+                <img id="cropper-image" src="" style="display: block; max-width: 100%;">
+            </div>
+            <div class="form-actions" style="margin-top: 20px;">
+                <button type="button" class="btn btn-secondary" id="cropper-cancel-btn">Cancelar</button>
+                <div style="display: flex; gap: 10px; flex: 2;">
+                    <button type="button" class="btn btn-outline" id="cropper-bg-rm-btn" style="flex: 1; border-color: #9b59b6; color: #9b59b6;" title="Usa IA offline no navegador para remover o fundo">✨ Remover Fundo (IA)</button>
+                    <button type="button" class="btn btn-primary" id="cropper-save-btn" style="flex: 1;">Apenas Recortar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <script type="module" src="/src/admin.ts"></script>
 </body>
 </html>
