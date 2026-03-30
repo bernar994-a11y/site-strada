@@ -1088,11 +1088,79 @@ body.page-enter {
 }
 
 @media (max-width: 768px) {
+  /* Modals */
+  .product-modal-content {
+    padding: 20px;
+    margin-top: 20px;
+    width: 95%;
+  }
   .product-modal-grid {
     grid-template-columns: 1fr;
     gap: 20px;
   }
   .product-modal-image {
-    height: 250px;
+    height: 220px;
+    padding: 10px;
+  }
+  .product-modal-info h2 {
+    font-size: 1.5rem;
+  }
+  .product-colors h4 {
+    font-size: 0.8rem !important;
+  }
+
+  /* Typography */
+  .hero h1 { font-size: 2.2rem; }
+  .section-header h2 { font-size: 1.8rem; }
+  .hero p { font-size: 1rem; }
+
+  /* Sections */
+  .products, .categories, .contact, .services, .about {
+    padding: 40px 5%;
+  }
+
+  /* Components: Product Cards */
+  .product-image {
+    height: 180px;
+  }
+  .product-card:hover {
+    transform: translateY(-3px); /* Menos salto em telas de toque */
+  }
+  .product-info {
+    padding: 15px;
+  }
+  .product-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+  }
+  
+  /* Components: Category Cards */
+  .category-card {
+    height: 160px;
+  }
+  .card-content h4 {
+    font-size: 1.2rem;
+  }
+
+  /* Footer & General */
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    text-align: center;
+  }
+  .footer-logo img {
+    margin: 0 auto 20px;
+  }
+
+  /* Buttons & Inputs */
+  .btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    width: 100%;
+    justify-content: center;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    padding: 10px;
+    font-size: 0.9rem;
   }
 }
