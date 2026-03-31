@@ -3,11 +3,13 @@ import { getProducts } from './store'
 import { initNav } from './nav'
 
 // Load Products
-const renderProducts = (categoryFilter?: string) => {
+const renderProducts = async (categoryFilter?: string) => {
   const grid = document.getElementById('bikes-grid');
   if (!grid) return;
 
-  let products = getProducts();
+  grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">Configurando conexão com Vercel Postgres...</div>';
+
+  let products = await getProducts();
   
   if (categoryFilter) {
     // Match any category inside the categories array or fallback to primary category
@@ -307,10 +309,10 @@ const setupWorkshopModal = () => {
 };
 
 // Initialize
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   console.log('DOM Loaded - Initializing site...');
   initNav();
-  renderProducts();
+  await renderProducts();
   setupMobileMenu();
   setupHeader();
   setupFilters();

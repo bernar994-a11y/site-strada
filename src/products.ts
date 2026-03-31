@@ -2,10 +2,12 @@ import './style.css'
 import { getProducts } from './store'
 import { initNav } from './nav'
 
-const renderProducts = () => {
+const renderProducts = async () => {
   const grid = document.getElementById('products-grid');
   const titleElement = document.getElementById('page-title');
   if (!grid) return;
+
+  grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">Sincronizando com o Vercel Postgres...</div>';
 
   // Get category from URL
   const urlParams = new URLSearchParams(window.location.search);
@@ -15,7 +17,7 @@ const renderProducts = () => {
     titleElement.innerHTML = `${categoryFilter} <span class="highlight">Strada</span>`;
   }
 
-  let products = getProducts();
+  let products = await getProducts();
   
   if (categoryFilter) {
     products = products.filter(p => p.categories?.includes(categoryFilter) || p.category === categoryFilter);
@@ -213,8 +215,8 @@ const setupMobileMenu = () => {
     });
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  renderProducts();
+document.addEventListener('DOMContentLoaded', async () => {
+  await renderProducts();
   setupMobileMenu();
   setupProductModalEvents();
   initNav();

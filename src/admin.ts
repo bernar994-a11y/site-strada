@@ -13,19 +13,19 @@ let cropper: any = null;
 let currentCropTarget: 'main' | number | null = null;
 
 // ─── Auth ────────────────────────────────────────────────
-const checkAuth = () => {
+const checkAuth = async () => {
     if (sessionStorage.getItem('strada_admin_logged') === 'true') {
         document.getElementById('login-screen')!.style.display = 'none';
         document.getElementById('admin-dashboard')!.style.display = 'block';
-        renderAll();
+        await renderAll();
     }
 };
 
-document.getElementById('login-btn')?.addEventListener('click', () => {
+document.getElementById('login-btn')?.addEventListener('click', async () => {
     const pass = (document.getElementById('admin-password') as HTMLInputElement).value;
     if (pass === 'strada2026') {
         sessionStorage.setItem('strada_admin_logged', 'true');
-        checkAuth();
+        await checkAuth();
     } else {
         document.getElementById('login-error')!.style.display = 'block';
     }
@@ -49,8 +49,8 @@ const updateKPIs = (products: Product[]) => {
 };
 
 // ─── Filter + Search ─────────────────────────────────────
-const getFilteredProducts = (): Product[] => {
-    let products = getProducts();
+const getFilteredProducts = async (): Promise<Product[]> => {
+    let products = await getProducts();
 
     if (activeFilter === 'bikes') {
         products = products.filter(p => p.categories?.some(c => BIKE_CATS.includes(c)) || BIKE_CATS.includes(p.category));
@@ -74,14 +74,16 @@ const getFilteredProducts = (): Product[] => {
 };
 
 // ─── Render Table ─────────────────────────────────────────
-const renderAdminProducts = () => {
+const renderAdminProducts = async () => {
     const list = document.getElementById('admin-product-list');
     if (!list) return;
+    
+    list.innerHTML = `<tr><td colspan="5"><div style="text-align: center; padding: 40px; color: var(--text-muted);">Sincronizando com a Vercel Postgres...</div></td></tr>`;
 
-    const allProducts = getProducts();
+    const allProducts = await getProducts();
     updateKPIs(allProducts);
 
-    const filtered = getFilteredProducts();
+    const filtered = await getFilteredProducts();
 
     if (filtered.length === 0) {
         list.innerHTML = `<tr><td colspan="5"><div class="empty-state"><span class="emoji">🔍</span>Nenhum produto encontrado.</div></td></tr>`;
@@ -120,41 +122,42 @@ const renderAdminProducts = () => {
 
     // Delete
     document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', async (e) => {
             const id = parseInt((e.target as HTMLElement).dataset.id!);
-            if (confirm('Tem certeza que deseja excluir este produto?')) {
-                deleteProduct(id);
-                renderAdminProducts();
+            if (confirm('Tem certeza que deseja excluir este produto do Banco de Dados?')) {
+                await deleteProduct(id);
+                await renderAdminProducts();
             }
         });
     });
 
     // Edit
     document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', async (e) => {
             const id = parseInt((e.target as HTMLElement).dataset.id!);
-            const product = getProducts().find(p => p.id === id);
+            const products = await getProducts();
+            const product = products.find(p => p.id === id);
             if (product) openForm(product);
         });
     });
 };
 
-const renderAll = () => renderAdminProducts();
+const renderAll = async () => await renderAdminProducts();
 
 // ─── Filter Tabs ──────────────────────────────────────────
 document.querySelectorAll('.filter-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
+    tab.addEventListener('click', async () => {
         document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
         activeFilter = (tab as HTMLElement).dataset.filter || 'all';
-        renderAdminProducts();
+        await renderAdminProducts();
     });
 });
 
 // ─── Search ───────────────────────────────────────────────
-document.getElementById('search-input')?.addEventListener('input', (e) => {
+document.getElementById('search-input')?.addEventListener('input', async (e) => {
     searchTerm = (e.target as HTMLInputElement).value;
-    renderAdminProducts();
+    await renderAdminProducts();
 });
 
 // ─── Form ─────────────────────────────────────────────────
@@ -438,6 +441,21 @@ fileInput.addEventListener('change', () => {
     }
 });
 
+// --- Vercel Blob Helper ---
+const uploadToBlob = async (base64: string, name: string) => {
+    if (!base64.startsWith('data:image')) return base64; // Already a URL
+    
+    const response = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ base64Image: base64, filename: `${name}-${Date.now()}` })
+    });
+    
+    if (!response.ok) throw new Error('Falha no upload para o Vercel Blob');
+    const data = await response.json();
+    return data.url;
+};
+
 // Submit
 document.getElementById('save-product-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -469,19 +487,31 @@ document.getElementById('save-product-form')?.addEventListener('submit', async (
         console.log('Categorias:', selectedCats);
         console.log('Preço original do input:', priceVal);
 
+        // 1. Upload Main Image if needed
+        statusEl.innerText = 'Fazendo upload da imagem principal...';
+        const finalMainImage = await uploadToBlob(currentImageUrl || '/src/assets/bike-1.png', nameVal.replace(/\s+/g, '-').toLowerCase());
+
+        // 2. Upload Variant Images if needed
+        statusEl.innerText = 'Fazendo upload das variações de cores...';
+        const finalVariants = await Promise.all(colorVariants.map(async (v) => ({
+            name: v.name,
+            hex: v.hex,
+            image: await uploadToBlob(v.image, `variant-${v.name.replace(/\s+/g, '-').toLowerCase()}`)
+        })));
+
         const productData: any = {
             name: nameVal,
             category: mainCat,
             categories: selectedCats,
             description: (document.getElementById('p-desc') as HTMLTextAreaElement).value,
             price: parseFloat(priceVal),
-            image: currentImageUrl || '/src/assets/bike-1.png',
+            image: finalMainImage,
             onSale: onsaleCheckbox.checked,
             originalPrice: onsaleCheckbox.checked ? parseFloat(originalPriceInput.value) : undefined,
             subcategory: selectedCats.includes('Vestuário') ? (document.getElementById('p-subcategory') as HTMLSelectElement).value : undefined,
             seguro: seguroCheckbox.checked,
             studioBackground: studioCheckbox.checked,
-            colors: colorVariants.length > 0 ? colorVariants.map(v => ({ name: v.name, hex: v.hex, image: v.image })) : undefined
+            colors: finalVariants.length > 0 ? finalVariants : undefined
         };
 
         if (isNaN(productData.price)) {
@@ -490,13 +520,13 @@ document.getElementById('save-product-form')?.addEventListener('submit', async (
 
         if (id) {
             console.log('Atualizando produto existente:', id);
-            updateProduct({ ...productData, id: parseInt(id) });
+            await updateProduct({ ...productData, id: parseInt(id) });
         } else {
             console.log('Adicionando novo produto');
-            addProduct(productData);
+            await addProduct(productData);
         }
 
-        console.log('Salvo com sucesso no localStorage!');
+        console.log('Salvo com sucesso no Banco de Dados (Postgres)!');
         
         statusEl.style.backgroundColor = 'rgba(46, 204, 113, 0.2)';
         statusEl.style.color = '#2ecc71';

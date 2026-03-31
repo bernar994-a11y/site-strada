@@ -105,49 +105,44 @@ export const DEFAULT_PRODUCTS: Product[] = [
   }
 ];
 
-const STORAGE_KEY = 'strada_products';
-
-export const getProducts = (): Product[] => {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (!stored) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_PRODUCTS));
-    return DEFAULT_PRODUCTS;
-  }
+export const getProducts = async (): Promise<Product[]> => {
   try {
-    return JSON.parse(stored);
-  } catch (e) {
-    console.error('Error parsing products from localStorage', e);
+    const res = await fetch('/api/products');
+    if (!res.ok) throw new Error('API Error');
+    const data = await res.json();
+    return data.map((d: any) => ({
+      ...d,
+      onSale: d.onSale || false,
+      studioBackground: d.studioBackground || false,
+      seguro: d.seguro || false
+    }));
+  } catch (error) {
+    console.warn('Backend indisponível. Usando fallback padrão.', error);
     return DEFAULT_PRODUCTS;
   }
 };
 
-export const saveProducts = (products: Product[]) => {
-  console.log('--- Gravando no localStorage ---');
-  console.log('Total de produtos:', products.length);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+export const addProduct = async (product: Omit<Product, 'id'>): Promise<Product> => {
+  const res = await fetch('/api/products', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(product)
+  });
+  if (!res.ok) throw new Error('Erro ao salvar no Postgres');
+  return await res.json();
 };
 
-export const addProduct = (product: Omit<Product, 'id'>) => {
-  const products = getProducts();
-  const newProduct = { ...product, id: Date.now() };
-  console.log('Adicionando novo produto ao array:', newProduct.name);
-  products.push(newProduct);
-  saveProducts(products);
-  return newProduct;
+export const updateProduct = async (updatedProduct: Product): Promise<Product> => {
+  const res = await fetch('/api/products', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updatedProduct)
+  });
+  if (!res.ok) throw new Error('Erro ao atualizar no Postgres');
+  return await res.json();
 };
 
-export const updateProduct = (updatedProduct: Product) => {
-  const products = getProducts();
-  const index = products.findIndex(p => p.id === updatedProduct.id);
-  if (index !== -1) {
-    console.log('Atualizando produto no array:', updatedProduct.id);
-    products[index] = updatedProduct;
-    saveProducts(products);
-  }
-};
-
-export const deleteProduct = (id: number) => {
-  const products = getProducts();
-  const filtered = products.filter(p => p.id !== id);
-  saveProducts(filtered);
+export const deleteProduct = async (id: number): Promise<void> => {
+  const res = await fetch(`/api/products?id=${id}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('Erro ao deletar no Postgres');
 };
