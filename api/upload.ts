@@ -7,16 +7,23 @@ export default async function handler(req: any, res: any) {
     const { base64Image, filename } = req.body;
     
     if (!base64Image) {
+      console.error('ERRO: base64Image ausente no body');
       return res.status(400).json({ error: 'Missing base64 image data' });
     }
+
+    console.log('Iniciando processamento da imagem:', filename);
 
     // Remove the data URI scheme prefix to get raw base64 string
     const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, "");
     const buffer = Buffer.from(base64Data, 'base64');
     
+    console.log('Tamanho do buffer gerado:', buffer.length, 'bytes');
+
     const contentType = base64Image.startsWith('data:image/webp') ? 'image/webp' : 'image/jpeg';
     const extension = contentType.split('/')[1];
     const finalFilename = `${filename || `bike-strada-${Date.now()}`}.${extension}`;
+
+    console.log('Fazendo upload para Supabase Storage:', finalFilename);
 
     // Upload to Supabase Storage (Bucket: 'products')
     const { data, error } = await supabase.storage
@@ -27,9 +34,11 @@ export default async function handler(req: any, res: any) {
       });
 
     if (error) {
-       console.error('Supabase Storage Error detail:', error);
-       throw error;
+       console.error('ERRO SUPABASE STORAGE:', error);
+       return res.status(500).json({ error: error.message });
     }
+
+    console.log('Upload concluído com sucesso:', data.path);
 
     // Get Public URL
     const { data: { publicUrl } } = supabase.storage
@@ -38,7 +47,7 @@ export default async function handler(req: any, res: any) {
 
     return res.status(200).json({ url: publicUrl });
   } catch (error: any) {
-    console.error('Storage Upload Error:', error);
-    return res.status(500).json({ error: error.message || 'Internal Server Error' });
+    console.error('STORAGE CRASH ERROR:', error);
+    return res.status(500).json({ error: error.message || 'Server runtime error' });
   }
 }
