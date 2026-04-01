@@ -1,7 +1,6 @@
-import { put } from '@vercel/blob';
+import { supabase } from './supabase';
 
 export default async function handler(req: any, res: any) {
-  // Configuração simples para JSON no body
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
 
   try {
@@ -16,17 +15,30 @@ export default async function handler(req: any, res: any) {
     const buffer = Buffer.from(base64Data, 'base64');
     
     const contentType = base64Image.startsWith('data:image/webp') ? 'image/webp' : 'image/jpeg';
-    const finalFilename = filename || `bike-strada-${Date.now()}`;
+    const extension = contentType.split('/')[1];
+    const finalFilename = `${filename || `bike-strada-${Date.now()}`}.${extension}`;
 
-    // Faz o upload no Vercel Blob
-    const blob = await put(finalFilename, buffer, {
-      access: 'public',
-      contentType,
-    });
+    // Upload to Supabase Storage (Bucket: 'products')
+    const { data, error } = await supabase.storage
+      .from('products')
+      .upload(finalFilename, buffer, {
+        contentType,
+        upsert: true
+      });
 
-    return res.status(200).json({ url: blob.url });
+    if (error) {
+       console.error('Supabase Storage Error detail:', error);
+       throw error;
+    }
+
+    // Get Public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('products')
+      .getPublicUrl(data.path);
+
+    return res.status(200).json({ url: publicUrl });
   } catch (error: any) {
-    console.error('Blob Upload Error:', error);
+    console.error('Storage Upload Error:', error);
     return res.status(500).json({ error: error.message });
   }
 }

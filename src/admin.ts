@@ -451,7 +451,7 @@ const uploadToBlob = async (base64: string, name: string) => {
         body: JSON.stringify({ base64Image: base64, filename: `${name}-${Date.now()}` })
     });
     
-    if (!response.ok) throw new Error('Falha no upload para o Vercel Blob');
+    if (!response.ok) throw new Error('Falha no upload para o Supabase Storage');
     const data = await response.json();
     return data.url;
 };
