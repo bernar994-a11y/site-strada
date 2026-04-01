@@ -78,7 +78,7 @@ const renderAdminProducts = async () => {
     const list = document.getElementById('admin-product-list');
     if (!list) return;
     
-    list.innerHTML = `<tr><td colspan="5"><div style="text-align: center; padding: 40px; color: var(--text-muted);">Sincronizando com a Vercel Postgres...</div></td></tr>`;
+    list.innerHTML = `<tr><td colspan="5"><div style="text-align: center; padding: 40px; color: var(--text-muted);">Sincronizando com o Supabase...</div></td></tr>`;
 
     const allProducts = await getProducts();
     updateKPIs(allProducts);
@@ -526,7 +526,7 @@ document.getElementById('save-product-form')?.addEventListener('submit', async (
             await addProduct(productData);
         }
 
-        console.log('Salvo com sucesso no Banco de Dados (Postgres)!');
+        console.log('Salvo com sucesso no Banco de Dados (Supabase)!');
         
         statusEl.style.backgroundColor = 'rgba(46, 204, 113, 0.2)';
         statusEl.style.color = '#2ecc71';

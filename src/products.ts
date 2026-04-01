@@ -7,7 +7,7 @@ const renderProducts = async () => {
   const titleElement = document.getElementById('page-title');
   if (!grid) return;
 
-  grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">Sincronizando com o Vercel Postgres...</div>';
+  grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">Sincronizando com o Supabase...</div>';
 
   // Get category from URL
   const urlParams = new URLSearchParams(window.location.search);

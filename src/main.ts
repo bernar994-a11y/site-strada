@@ -7,7 +7,7 @@ const renderProducts = async (categoryFilter?: string) => {
   const grid = document.getElementById('bikes-grid');
   if (!grid) return;
 
-  grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">Configurando conexão com Vercel Postgres...</div>';
+  grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">Configurando conexão com Supabase...</div>';
 
   let products = await getProducts();
   
