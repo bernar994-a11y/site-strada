@@ -39,6 +39,6 @@ export default async function handler(req: any, res: any) {
     return res.status(200).json({ url: publicUrl });
   } catch (error: any) {
     console.error('Storage Upload Error:', error);
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 }
