@@ -1,72 +1,74 @@
-import { supabase } from './supabase';
+import { createClient } from '@supabase/supabase-js';
+
+// ─── Configuração Local (Proteção contra falhas de importação externa) ──────
+const S_URL = process.env.SUPABASE_URL || '';
+const S_KEY = process.env.SUPABASE_ANON_KEY || '';
 
 export default async function handler(req: any, res: any) {
-  // 1. Pre-logic catch for any unexpected crash
   try {
+    // 1. Verificações Iniciais
     if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido' });
-
-    const { base64Image, filename } = req.body;
-    
-    if (!base64Image) {
-      console.error('[Storage Error] base64Image ausente');
-      return res.status(400).json({ error: 'Dados da imagem não recebidos' });
+    if (!S_URL || !S_KEY) {
+       console.error('[CRITICAL] Variáveis SUPABASE_URL ou SUPABASE_ANON_KEY não encontradas na Vercel.');
+       return res.status(500).json({ error: 'Configuração de servidor incompleta (Env Vars)' });
     }
 
-    // 2. Sanitize Filename (Evitar espaços e caracteres especiais que travam o Storage)
-    const rawSafeName = (filename || 'image')
+    const { base64Image, filename } = req.body;
+    if (!base64Image) return res.status(400).json({ error: 'Imagem não enviada' });
+
+    // 2. Criar Cliente Supabase (dentro do handler para evitar crashes de cache/import)
+    const supabase = createClient(S_URL, S_KEY);
+
+    // 3. Processar Nome do Arquivo (Sanitização Extrema)
+    const safeName = (filename || 'upload')
       .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '') // Remove acentos
-      .replace(/[^a-z0-9]/g, '-')     // Remove tudo que não for letra/número
-      .replace(/-+/g, '-');           // Remove hífens duplicados
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove acentos
+      .replace(/[^a-z0-9]/g, '-')                      // Remove símbolos
+      .replace(/-+/g, '-')                             // Remove hífens extras
+      .substring(0, 50);                               // Limita tamanho
 
-    const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, "");
-    const buffer = Buffer.from(base64Data, 'base64');
-    
-    let contentType = 'image/jpeg';
-    if (base64Image.startsWith('data:image/webp')) contentType = 'image/webp';
-    else if (base64Image.startsWith('data:image/png')) contentType = 'image/png';
-    else if (base64Image.startsWith('data:image/gif')) contentType = 'image/gif';
+    const finalPath = `${safeName}-${Date.now()}.webp`; // Forçamos webp/jpeg no path
 
-    const extension = contentType.split('/')[1];
-    const finalFilename = `${rawSafeName}-${Date.now()}.${extension}`;
+    // 4. Converter Base64 para Uint8Array (Padrão Web, mais seguro que Buffer na Vercel)
+    const base64Data = base64Image.split(',')[1] || base64Image;
+    const binaryStr = atob(base64Data);
+    const bytes = new Uint8Array(binaryStr.length);
+    for (let i = 0; i < binaryStr.length; i++) {
+        bytes[i] = binaryStr.charCodeAt(i);
+    }
 
-    console.log(`[Supabase Storage] Iniciando upload: ${finalFilename} (${buffer.length} bytes)`);
+    console.log(`[Invoking Storage] ${finalPath} (${bytes.length} bytes)`);
 
-    // 3. Upload with timeout/error check
+    // 5. Upload Direto
     const { data, error } = await supabase.storage
       .from('products')
-      .upload(finalFilename, buffer, {
-        contentType,
+      .upload(finalPath, bytes, {
+        contentType: base64Image.includes('png') ? 'image/png' : 'image/jpeg',
         upsert: true
       });
 
     if (error) {
-       console.error('[Supabase Storage API Error]', error);
-       // Erros comuns: bucket não existe, sem permissão RLS
+       console.error('[Supabase Storage Error]', error);
        return res.status(500).json({ 
-         error: `Erro no Supabase: ${error.message}`,
-         details: error
+         error: `Falha no Supabase Storage: ${error.message}`,
+         details: error 
        });
     }
 
-    if (!data) {
-       throw new Error('Upload concluído mas o Supabase não retornou os dados do arquivo.');
-    }
-
+    // 6. Gerar URL Pública
     const { data: { publicUrl } } = supabase.storage
       .from('products')
       .getPublicUrl(data.path);
 
-    console.log('[Supabase Storage] Sucesso:', publicUrl);
+    console.log('[Success] File uploaded:', publicUrl);
     return res.status(200).json({ url: publicUrl });
 
   } catch (err: any) {
-    console.error('[CRITICAL CRASH]', err);
+    console.error('[GLOBAL CATCH]', err);
     return res.status(500).json({ 
-      error: 'Erro Crítico no Servidor',
+      error: 'Erro Crítico no Servidor de Upload',
       message: err.message,
-      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+      type: err.name
     });
   }
 }
