@@ -441,9 +441,11 @@ fileInput.addEventListener('change', () => {
     }
 });
 
-// --- Vercel Blob Helper ---
-const uploadToBlob = async (base64: string, name: string) => {
-    if (!base64.startsWith('data:image')) return base64; // Already a URL
+// ─── Supabase Storage Helper ─────────────────────────────
+const uploadImageToSupabase = async (base64: string, name: string) => {
+    if (!base64.startsWith('data:image')) return base64; // Já é uma URL
+    
+    console.log(`[Admin] Iniciando upload de imagem: ${name}`);
     
     const response = await fetch('/api/upload', {
         method: 'POST',
@@ -451,12 +453,28 @@ const uploadToBlob = async (base64: string, name: string) => {
         body: JSON.stringify({ base64Image: base64, filename: `${name}-${Date.now()}` })
     });
     
+    const contentType = response.headers.get('content-type');
+    let errorMsg = 'Falha no upload para o Supabase Storage';
+    
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Falha no upload para o Supabase Storage');
+        if (contentType && contentType.includes('application/json')) {
+            const errorData = await response.json();
+            errorMsg = errorData.error || errorMsg;
+        } else {
+            // Se não for JSON, pegamos o texto puro (ex: "A server error occurred")
+            const textError = await response.text();
+            errorMsg = `Erro do Servidor: ${textError.substring(0, 100)}`;
+        }
+        throw new Error(errorMsg);
     }
-    const data = await response.json();
-    return data.url;
+
+    try {
+        const data = await response.json();
+        return data.url;
+    } catch (e) {
+        console.error('Erro ao processar JSON de upload:', e);
+        throw new Error('O servidor retornou uma resposta inválida (não-JSON).');
+    }
 };
 
 // Submit
@@ -491,15 +509,15 @@ document.getElementById('save-product-form')?.addEventListener('submit', async (
         console.log('Preço original do input:', priceVal);
 
         // 1. Upload Main Image if needed
-        statusEl.innerText = 'Fazendo upload da imagem principal...';
-        const finalMainImage = await uploadToBlob(currentImageUrl || '/src/assets/bike-1.png', nameVal.replace(/\s+/g, '-').toLowerCase());
+        statusEl.innerText = 'Fazendo upload da imagem principal para o Supabase...';
+        const finalMainImage = await uploadImageToSupabase(currentImageUrl || '/src/assets/bike-1.png', nameVal.replace(/\s+/g, '-').toLowerCase());
 
         // 2. Upload Variant Images if needed
         statusEl.innerText = 'Fazendo upload das variações de cores...';
         const finalVariants = await Promise.all(colorVariants.map(async (v) => ({
             name: v.name,
             hex: v.hex,
-            image: await uploadToBlob(v.image, `variant-${v.name.replace(/\s+/g, '-').toLowerCase()}`)
+            image: await uploadImageToSupabase(v.image, `variant-${v.name.replace(/\s+/g, '-').toLowerCase()}`)
         })));
 
         const productData: any = {
