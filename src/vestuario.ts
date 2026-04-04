@@ -11,17 +11,23 @@ const renderApparel = async (subcategory?: string) => {
 
     // Filter products by category 'Vestuário' and optional subcategory
     const allProducts = await getProducts();
-    let filtered = allProducts.filter((p: Product) => p.category === 'Vestuário');
+    let filtered = allProducts.filter((p: Product) => p.categories?.includes('Vestuário') || p.category === 'Vestuário');
     
     if (subcategory) {
+        // When a subcategory tab is selected, show ALL products of that subcategory
         filtered = filtered.filter((p: Product) => p.subcategory === subcategory);
         title.innerHTML = `VESTUÁRIO <span class="highlight">${subcategory.toUpperCase()}</span>`;
     } else {
-        title.innerHTML = `NOSSO <span class="highlight">VESTUÁRIO</span>`;
+        // Default view: show only vestuário items that are on sale (promoção)
+        filtered = filtered.filter((p: Product) => p.onSale);
+        title.innerHTML = `PROMOÇÕES <span class="highlight">VESTUÁRIO</span>`;
     }
 
     if (filtered.length === 0) {
-        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 50px;">Nenhum item encontrado nesta categoria.</p>';
+        const message = subcategory 
+            ? 'Nenhum item encontrado nesta categoria.'
+            : 'Nenhuma promoção de vestuário disponível no momento.';
+        grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 50px;">${message}</p>`;
         return;
     }
 
