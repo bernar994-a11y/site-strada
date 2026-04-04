@@ -900,7 +900,7 @@ body.page-enter {
 
 .contact-card {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 0.9fr 1.1fr;
   background-color: var(--bg-darker);
   border-radius: var(--border-radius);
   overflow: hidden;
@@ -931,6 +931,7 @@ body.page-enter {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: right center;
 }
 
 /* Footer */
