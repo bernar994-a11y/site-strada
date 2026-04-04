@@ -1127,21 +1127,29 @@ body.page-enter {
   }
   
   .close-modal {
-    top: 15px;
-    right: 15px;
-    width: 48px; /* Melhor área de toque */
-    height: 48px;
-    font-size: 28px;
+    top: 10px;
+    right: 10px;
+    width: 44px; /* Área de toque generosa */
+    height: 44px;
+    font-size: 24px;
+    background: rgba(0, 0, 0, 0.5); /* Melhor contraste no mobile */
+    backdrop-filter: blur(4px);
   }
 
   .seguro-seal {
-    padding: 6px 12px;
-    top: 15px;
-    right: 15px;
+    padding: 4px 10px;
+    top: 10px;
+    right: 10px;
+    gap: 5px;
   }
   
   .seal-text {
-    font-size: 0.55rem;
+    font-size: 0.5rem;
+    letter-spacing: 0.5px;
+  }
+
+  .seal-icon {
+    font-size: 0.9rem;
   }
 
   /* Typography */
