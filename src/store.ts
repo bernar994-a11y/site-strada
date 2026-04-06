@@ -19,14 +19,15 @@ export interface Product {
 export const getProducts = async (): Promise<Product[]> => {
   try {
     const res = await fetch('/api/products');
-    if (!res.ok) {
-       const text = await res.text();
-       console.error('Fetch products error:', text);
-       throw new Error(`API Error: ${res.status}`);
-    }
-    const data = await res.json();
     
-    if (!data || !Array.isArray(data)) return [];
+    // Check if the response is valid JSON. If not (e.g. returns source code), throw to trigger fallback
+    const contentType = res.headers.get('content-type');
+    if (!res.ok || !contentType || !contentType.includes('application/json')) {
+       throw new Error('API results unavailable or invalid');
+    }
+
+    const data = await res.json();
+    if (!data || !Array.isArray(data)) throw new Error('Dados inválidos');
 
     return data.map((d: any) => ({
       ...d,
@@ -35,8 +36,55 @@ export const getProducts = async (): Promise<Product[]> => {
       seguro: d.seguro || false
     }));
   } catch (error) {
-    console.warn('Banco de dados vazio ou erro na conexão.', error);
-    return [];
+    console.warn('Usando dados simulados (Fallback Dev). Servidor API indisponível.', error);
+    
+    // Dev Mock Data Fallback
+    return [
+      {
+        id: 1,
+        name: "Oggi Velloce Disc 2024",
+        category: "Speed",
+        categories: ["Speed", "Performance"],
+        image: "https://images.tcdn.com.br/img/editor/up/1118182/oggi_velloce_disc_2024_azul.png",
+        description: "A Velloce Disc é a bike ideal para quem quer começar no ciclismo de estrada com performance e segurança.",
+        price: 5490.00,
+        originalPrice: 6200.00,
+        onSale: true,
+        seguro: true,
+        studioBackground: true,
+        colors: [
+            { name: "Azul/Preto", hex: "#0047AB", image: "https://images.tcdn.com.br/img/editor/up/1118182/oggi_velloce_disc_2024_azul.png" },
+            { name: "Cinza", hex: "#808080", image: "https://images.tcdn.com.br/img/editor/up/1118182/oggi_velloce_disc_2024_cinza.png" }
+        ]
+      },
+      {
+        id: 2,
+        name: "Oggi Big Wheel 7.2",
+        category: "Mountain Bike",
+        categories: ["Mountain Bike", "Trilha"],
+        image: "https://images.tcdn.com.br/img/editor/up/1118182/oggi_big_wheel_7_2_preta.png",
+        description: "A Big Wheel 7.2 é equipada com grupo Shimano Deore 11v, ideal para trilhas técnicas e subidas desafiadoras.",
+        price: 4850.00,
+        onSale: false,
+        seguro: true,
+        studioBackground: true,
+        colors: []
+      },
+      {
+        id: 3,
+        name: "Oggi Float 5.0 HDS",
+        category: "Mountain Bike",
+        categories: ["Mountain Bike", "Feminina"],
+        image: "https://images.tcdn.com.br/img/editor/up/1118182/oggi_float_5_0_hds_azul.png",
+        description: "Conforto e performance para o público feminino, com geometria adaptada e componentes de alta durabilidade.",
+        price: 3290.00,
+        originalPrice: 3800.00,
+        onSale: true,
+        seguro: true,
+        studioBackground: true,
+        colors: []
+      }
+    ];
   }
 };
 

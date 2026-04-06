@@ -103,6 +103,50 @@
         </section>
     </main>
 
+    <!-- Product Modal -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content product-modal-content">
+            <span class="close-product-modal close-modal">&times;</span>
+            <div class="product-modal-grid">
+                <div class="product-modal-image" style="cursor: zoom-in;">
+                    <div style="width: 100%; height: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center; border-radius: var(--border-radius);">
+                        <img id="modal-product-image" src="" alt="Produto" style="transition: transform 0.1s ease-out;">
+                    </div>
+                    <div id="modal-product-badge" class="product-badge" style="top: 20px; left: 20px;"></div>
+                    <div id="modal-seguro-seal" class="seguro-seal" style="display: none;">
+                        <span class="seal-icon">🛡️</span>
+                        <span class="seal-text">14 MESES<br>SEGURO GRÁTIS</span>
+                    </div>
+                </div>
+                <div class="product-modal-info">
+                    <h2 id="modal-product-title">Nome do Produto</h2>
+                    <span id="modal-product-category" style="color: var(--primary); font-size: 0.9rem; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">Categoria</span>
+                    <div class="modal-divider" style="margin: 15px 0; width: 50px;"></div>
+                    <p id="modal-product-desc" style="margin-bottom: 25px; color: var(--text-muted); line-height: 1.6;">Descrição completa do produto.</p>
+                    
+                    <div class="product-colors" style="margin-bottom: 25px;">
+                        <h4 style="margin-bottom: 12px; font-size: 0.9rem; color: #fff;">Cores Disponíveis:</h4>
+                        <div style="display: flex; gap: 12px;" id="modal-color-options">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <div id="modal-product-price-container" class="product-price" style="margin-bottom: 5px; align-items: flex-end;">
+                        <!-- Price injected by JS -->
+                    </div>
+                    <div id="modal-installments" style="color: #2ecc71; font-size: 0.95rem; margin-bottom: 30px; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 1.2rem;">💳</span> Em até 12x sem juros no cartão
+                    </div>
+                    
+                    <a id="modal-whatsapp-btn" href="#" target="_blank" class="btn btn-primary" style="width: 100%; text-align: center; padding: 15px; font-size: 1.1rem;">
+                        Adquirir Agora
+                        <span class="btn-icon">🛍️</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="footer">
         <!-- Same as index.html -->
         <div class="container">

@@ -25,7 +25,7 @@ const renderProducts = async () => {
 
   grid.innerHTML = products.map(product => `
     <div class="product-card reveal active">
-      ${(product as any).seguro ? '<div class="seguro-seal"><span class="seal-icon">🔒</span><span class="seal-text">14 MESES<br>SEGURO GRÁTIS</span></div>' : ''}
+      ${(product as any).seguro ? '<div class="seguro-seal"><span class="seal-icon">🛡️</span><span class="seal-text">14 MESES<br>SEGURO GRÁTIS</span></div>' : ''}
       <div class="product-image ${(product as any).studioBackground ? 'studio-mode' : ''}">
         <img src="${product.image}" alt="${product.name}">
         <div style="position: absolute; top: 10px; left: 10px; display: flex; flex-direction: column; gap: 5px; z-index: 10; pointer-events: none;">
