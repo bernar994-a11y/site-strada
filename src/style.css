@@ -1157,96 +1157,83 @@ body.page-enter {
     max-width: 85% !important;
   }
 
-  /* CARDS & GRID COMPACT (2 COLUNAS) */
+  /* CARDS & GRID (REVERTED TO LARGE) */
   .product-grid {
     display: grid !important;
+    grid-template-columns: 1fr !important; /* Voltar para 1 coluna (grande) */
+    gap: 20px !important;
+    padding: 0 10px !important;
+  }
+
+  /* CATEGORY CARDS (CORREÇÃO DE EMPILHAMENTO) */
+  .category-cards {
+    display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px !important;
-    padding: 0 5px !important;
+    gap: 15px !important;
+    padding: 10px 0 !important;
   }
 
-  .product-card {
-    border-radius: 12px !important;
-    padding: 8px !important;
-    background: rgba(255, 255, 255, 0.02) !important;
-    backdrop-filter: blur(5px) !important;
-  }
-
-  .product-image {
+  .category-card {
+    width: 100% !important;
     height: 140px !important;
-    border-radius: 8px !important;
+    padding: 15px !important;
   }
 
-  .product-image img {
-    padding: 5px !important;
+  .category-card h4 {
+    font-size: 1.1rem !important;
   }
 
-  .product-info {
-    padding: 10px 5px !important;
+  .category-card span {
+    font-size: 0.65rem !important;
   }
 
-  .product-info h3 {
-    font-size: 0.85rem !important;
-    line-height: 1.2 !important;
-    height: 2.4rem !important;
-    overflow: hidden !important;
-    display: -webkit-box !important;
-    line-clamp: 2;
-    -webkit-line-clamp: 2 !important;
-    -webkit-box-orient: vertical !important;
-    margin-bottom: 8px !important;
-  }
-
-  .product-price {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 2px !important;
-    margin-top: 5px !important;
-  }
-
-  .current-price {
-    font-size: 1rem !important;
-  }
-
-  .original-price {
-    font-size: 0.7rem !important;
-  }
-
-  .btn-detail, .btn-whatsapp {
-    padding: 8px 10px !important;
-    font-size: 0.7rem !important;
-    border-radius: 6px !important;
-    margin-top: 8px !important;
-  }
-
-  .btn-icon {
-    font-size: 0.9rem !important;
-  }
-
-  /* MODAIS: ULTRA COMPACTO */
-  .modal {
-    padding: 8px !important;
-  }
-
+  /* MODAIS (RESTAURADO E POLIDO) */
   .modal-content {
-    width: 96% !important;
-    padding: 20px 15px !important;
+    width: 94% !important;
+    padding: 40px 20px 25px !important;
     border-radius: 20px !important;
-    max-height: 92vh !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    border: 1px solid var(--primary) !important;
   }
 
   .product-modal-grid {
-    gap: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 25px !important;
   }
 
   .product-modal-image {
-    height: 180px !important;
-    margin-bottom: 5px !important;
+    width: 100% !important;
+    height: 250px !important; 
+    padding: 10px !important;
+    background: radial-gradient(circle at center, #2a2a2a 0%, var(--bg-dark) 100%) !important;
+    border-radius: 15px !important;
+  }
+
+  .product-modal-image img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+  }
+
+  /* Ajuste de selos dentro do modal */
+  .product-modal-image .seguro-seal {
+    scale: 0.7 !important;
+    top: -5px !important;
+    right: -10px !important;
+    opacity: 1 !important;
+  }
+
+  .product-modal-image .product-badge {
+    scale: 0.9 !important;
+    top: 10px !important;
+    left: 10px !important;
   }
 
   .product-modal-info h2 {
-    font-size: 1.3rem !important;
-    margin-bottom: 2px !important;
+    font-size: 1.6rem !important;
+    line-height: 1.2 !important;
   }
 
   /* WORKSHOP MODAL ESPECÍFICO */
