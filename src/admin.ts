@@ -176,6 +176,8 @@ const studioCheckbox = document.getElementById('p-studio') as HTMLInputElement;
 const videoInput = document.getElementById('p-video') as HTMLInputElement;
 const videoFileInput = document.getElementById('p-video-file') as HTMLInputElement;
 const videoStatus = document.getElementById('video-upload-status')!;
+const videoProgressContainer = document.getElementById('video-compress-progress-container')!;
+const videoProgressBar = document.getElementById('video-compress-bar')!;
 
 const renderColorVariants = () => {
     const container = document.getElementById('color-variants-container')!;
@@ -445,34 +447,97 @@ fileInput.addEventListener('change', () => {
     }
 });
 
+// ─── Video Compression ──────────────────────────────────
+const compressVideo = async (file: File): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+        const video = document.createElement('video');
+        video.src = URL.createObjectURL(file);
+        video.muted = true;
+        video.playsInline = true;
+
+        video.onloadedmetadata = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d')!;
+            
+            // Redimensionar para 480p de largura mantendo aspecto
+            const maxWidth = 640;
+            const scale = Math.min(1, maxWidth / video.videoWidth);
+            canvas.width = video.videoWidth * scale;
+            canvas.height = video.videoHeight * scale;
+
+            const stream = canvas.captureStream(30);
+            const recorder = new MediaRecorder(stream, {
+                mimeType: 'video/webm;codecs=vp8',
+                videoBitsPerSecond: 1000000 // 1Mbps - Ótimo para mobile previews
+            });
+
+            const chunks: Blob[] = [];
+            recorder.ondataavailable = (e) => chunks.push(e.data);
+            recorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'video/webm' });
+                resolve(blob);
+            };
+
+            video.play();
+            recorder.start();
+
+            const draw = () => {
+                if (video.paused || video.ended) {
+                    recorder.stop();
+                    return;
+                }
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                // Progresso aproximado
+                const progText = Math.floor((video.currentTime / video.duration) * 100);
+                videoProgressBar.style.width = `${progText}%`;
+                videoStatus.innerText = `Otimizando vídeo: ${progText}%...`;
+                
+                requestAnimationFrame(draw);
+            };
+            draw();
+        };
+
+        video.onerror = () => reject('Erro ao carregar vídeo para compressão.');
+    });
+};
+
 // Video Upload Logic
 videoFileInput.addEventListener('change', async () => {
     if (videoFileInput.files && videoFileInput.files[0]) {
-        const file = videoFileInput.files[0];
-        if (file.size > 20 * 1024 * 1024) { // 20MB limit (Vercel/Supabase suggested)
-            alert('O vídeo é muito grande. Por favor escolha um arquivo menor que 20MB.');
-            return;
-        }
+        let file = videoFileInput.files[0];
+        const isHeavy = file.size > 2 * 1024 * 1024; // > 2MB é pesado para vitrine
 
         videoStatus.style.display = 'block';
         videoStatus.style.color = 'var(--primary)';
-        videoStatus.innerText = 'Enviando vídeo...';
-
+        
         try {
+            if (isHeavy) {
+                videoProgressContainer.style.display = 'block';
+                videoProgressBar.style.width = '0%';
+                const compressedBlob = await compressVideo(file);
+                file = new File([compressedBlob], file.name.replace(/\.[^/.]+$/, "") + ".webm", { type: "video/webm" });
+                videoProgressContainer.style.display = 'none';
+            }
+
+            videoStatus.innerText = 'Enviando para o servidor...';
+            
             const base64 = await new Promise<string>((resolve) => {
                 const reader = new FileReader();
                 reader.onload = (e) => resolve(e.target?.result as string);
                 reader.readAsDataURL(file);
             });
 
+            // Reutilizamos a lógica de upload (que agora aceita qualquer base64)
             const uploadedUrl = await uploadImageToSupabase(base64, `product-video-${Date.now()}`);
             videoInput.value = uploadedUrl;
             videoStatus.style.color = '#2ecc71';
-            videoStatus.innerText = '✅ Vídeo enviado com sucesso!';
+            videoStatus.innerText = '✅ Vídeo otimizado e enviado!';
         } catch (err) {
-            console.error('Video upload error:', err);
+            console.error('Video upload/compress error:', err);
             videoStatus.style.color = '#e74c3c';
-            videoStatus.innerText = '❌ Erco ao enviar vídeo.';
+            videoStatus.innerText = '❌ Erro ao processar vídeo.';
+            videoProgressContainer.style.display = 'none';
         }
     }
 });
@@ -496,8 +561,9 @@ const formatVideoLink = (url: string) => {
 
 // ─── Supabase Storage Helper ─────────────────────────────
 const uploadImageToSupabase = async (base64: string, name: string) => {
-    if (!base64.startsWith('data:image')) return base64; // Já é uma URL
-    
+    if (!base64.startsWith('data:image') && !base64.startsWith('data:video')) return base64; // Já é uma URL ou tipo não suportado
+
+    try {
     console.log(`[Admin] Iniciando upload de imagem: ${name}`);
     
     const response = await fetch('/api/upload', {
@@ -527,6 +593,10 @@ const uploadImageToSupabase = async (base64: string, name: string) => {
     } catch (e) {
         console.error('Erro ao processar JSON de upload:', e);
         throw new Error('O servidor retornou uma resposta inválida (não-JSON).');
+    }
+    } catch (err: any) {
+        console.error('[Supabase Upload Erro]', err);
+        throw err;
     }
 };
 
