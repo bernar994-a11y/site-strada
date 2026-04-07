@@ -173,6 +173,7 @@ const categoryCheckboxes = document.querySelectorAll('.cat-checkbox') as NodeLis
 const subcategoryGroup = document.getElementById('subcategory-group')!;
 const seguroCheckbox = document.getElementById('p-seguro') as HTMLInputElement;
 const studioCheckbox = document.getElementById('p-studio') as HTMLInputElement;
+const videoInput = document.getElementById('p-video') as HTMLInputElement;
 
 const renderColorVariants = () => {
     const container = document.getElementById('color-variants-container')!;
@@ -286,6 +287,7 @@ const openForm = (product?: Product) => {
         originalPriceInput.style.display = product.onSale ? 'block' : 'none';
         seguroCheckbox.checked = !!product.seguro;
         studioCheckbox.checked = !!product.studioBackground;
+        videoInput.value = product.video || '';
 
         colorVariants = product.colors ? product.colors.map(c => ({ id: Math.random(), ...c })) : [];
     } else {
@@ -532,6 +534,7 @@ document.getElementById('save-product-form')?.addEventListener('submit', async (
             subcategory: selectedCats.includes('Vestuário') ? (document.getElementById('p-subcategory') as HTMLSelectElement).value : undefined,
             seguro: seguroCheckbox.checked,
             studioBackground: studioCheckbox.checked,
+            video: videoInput.value || undefined,
             colors: finalVariants.length > 0 ? finalVariants : undefined
         };
 

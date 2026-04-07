@@ -14,6 +14,7 @@ export interface Product {
   studioBackground?: boolean;
   colors?: { name: string; hex: string; image: string }[];
   categories?: string[];
+  video?: string;
 }
 
 export const getProducts = async (): Promise<Product[]> => {
@@ -55,7 +56,8 @@ export const getProducts = async (): Promise<Product[]> => {
         colors: [
             { name: "Azul/Preto", hex: "#0047AB", image: "https://images.tcdn.com.br/img/editor/up/1118182/oggi_velloce_disc_2024_azul.png" },
             { name: "Cinza", hex: "#808080", image: "https://images.tcdn.com.br/img/editor/up/1118182/oggi_velloce_disc_2024_cinza.png" }
-        ]
+        ],
+        video: "./src/assets/hero-video.mp4"
       },
       {
         id: 2,
