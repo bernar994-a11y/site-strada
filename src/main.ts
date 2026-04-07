@@ -180,12 +180,17 @@ const setupProductModalEvents = () => {
         }
     });
 
-    // --- Lupa / Magnifier Logic ---
+    // --- Lupa / Magnifier Logic (Enhanced for Premium Feel) ---
     const modalImageContainer = document.querySelector('.product-modal-image') as HTMLElement;
     const modalImage = document.getElementById('modal-product-image') as HTMLImageElement;
     
-    if (modalImageContainer && modalImage) {
-        modalImageContainer.addEventListener('mousemove', (e) => {
+    // Check if device supports touch to avoid cursor-based logic on mobile
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+    if (modalImageContainer && modalImage && !isTouchDevice) {
+        modalImageContainer.style.cursor = 'zoom-in';
+
+        modalImageContainer.addEventListener('mousemove', (e: MouseEvent) => {
             const rect = modalImageContainer.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
@@ -193,14 +198,22 @@ const setupProductModalEvents = () => {
             const xPercent = (x / rect.width) * 100;
             const yPercent = (y / rect.height) * 100;
             
+            modalImage.style.transition = 'transform 0.1s ease-out'; // Tighter response
             modalImage.style.transformOrigin = `${xPercent}% ${yPercent}%`;
-            modalImage.style.transform = 'scale(2.5)';
+            modalImage.style.transform = 'scale(2.2)';
         });
         
         modalImageContainer.addEventListener('mouseleave', () => {
+            modalImage.style.transition = 'transform 0.4s ease'; // Smooth exit
             modalImage.style.transformOrigin = 'center center';
             modalImage.style.transform = 'scale(1)';
         });
+    } else if (modalImageContainer) {
+        // Simple touch reset for mobile
+        modalImageContainer.style.cursor = 'default';
+        modalImageContainer.addEventListener('touchstart', () => {
+             // Optional: click-to-zoom on mobile or just leave it clean
+        }, { passive: true });
     }
 };
 
