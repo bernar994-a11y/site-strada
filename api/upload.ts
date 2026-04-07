@@ -14,22 +14,34 @@ export default async function handler(req: any, res: any) {
     }
 
     const { base64Image, filename } = req.body;
-    if (!base64Image) return res.status(400).json({ error: 'Imagem não enviada' });
+    if (!base64Image) return res.status(400).json({ error: 'Arquivo não enviado' });
 
-    // 2. Criar Cliente Supabase (dentro do handler para evitar crashes de cache/import)
+    // 2. Criar Cliente Supabase
     const supabase = createClient(S_URL, S_KEY);
 
-    // 3. Processar Nome do Arquivo (Sanitização Extrema)
+    // 3. Processar Tipo de Conteúdo e Extensão
+    let contentType = 'application/octet-stream';
+    let fileExt = 'bin';
+
+    if (base64Image.includes('data:')) {
+      const match = base64Image.match(/data:([^;]+);base64/);
+      if (match) {
+        contentType = match[1];
+        fileExt = contentType.split('/')[1] || 'bin';
+      }
+    }
+
+    // 4. Processar Nome do Arquivo
     const safeName = (filename || 'upload')
       .toLowerCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove acentos
-      .replace(/[^a-z0-9]/g, '-')                      // Remove símbolos
-      .replace(/-+/g, '-')                             // Remove hífens extras
-      .substring(0, 50);                               // Limita tamanho
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]/g, '-')
+      .replace(/-+/g, '-')
+      .substring(0, 50);
 
-    const finalPath = `${safeName}-${Date.now()}.webp`; // Forçamos webp/jpeg no path
+    const finalPath = `${safeName}-${Date.now()}.${fileExt}`;
 
-    // 4. Converter Base64 para Uint8Array (Padrão Web, mais seguro que Buffer na Vercel)
+    // 5. Converter Base64 para Uint8Array
     const base64Data = base64Image.split(',')[1] || base64Image;
     const binaryStr = atob(base64Data);
     const bytes = new Uint8Array(binaryStr.length);
@@ -37,30 +49,26 @@ export default async function handler(req: any, res: any) {
         bytes[i] = binaryStr.charCodeAt(i);
     }
 
-    console.log(`[Invoking Storage] ${finalPath} (${bytes.length} bytes)`);
+    console.log(`[Invoking Storage] ${finalPath} (${contentType}) - ${bytes.length} bytes`);
 
-    // 5. Upload Direto
+    // 6. Upload Direto
     const { data, error } = await supabase.storage
       .from('products')
       .upload(finalPath, bytes, {
-        contentType: base64Image.includes('png') ? 'image/png' : 'image/jpeg',
+        contentType: contentType,
         upsert: true
       });
 
     if (error) {
        console.error('[Supabase Storage Error]', error);
-       return res.status(500).json({ 
-         error: `Falha no Supabase Storage: ${error.message}`,
-         details: error 
-       });
+       return res.status(500).json({ error: `Falha no Supabase Storage: ${error.message}` });
     }
 
-    // 6. Gerar URL Pública
+    // 7. Gerar URL Pública
     const { data: { publicUrl } } = supabase.storage
       .from('products')
       .getPublicUrl(data.path);
 
-    console.log('[Success] File uploaded:', publicUrl);
     return res.status(200).json({ url: publicUrl });
 
   } catch (err: any) {

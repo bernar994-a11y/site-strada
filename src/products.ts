@@ -28,7 +28,11 @@ const renderProducts = async () => {
       ${(product as any).seguro ? '<div class="seguro-seal"><span class="seal-icon">🛡️</span><span class="seal-text">14 MESES<br>SEGURO GRÁTIS</span></div>' : ''}
       <div class="product-image ${(product as any).studioBackground ? 'studio-mode' : ''}">
         <img src="${product.image}" alt="${product.name}">
-        ${product.video ? `<video class="product-card-video" src="${product.video}" muted loop playsinline preload="none"></video>` : ''}
+        ${product.video ? (
+          product.video.includes('youtube.com/embed') 
+          ? `<div class="product-card-video-wrapper"><iframe class="product-card-video youtube-frame" src="" data-src="${product.video}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`
+          : `<video class="product-card-video" src="${product.video}" muted loop playsinline preload="none"></video>`
+        ) : ''}
         <div style="position: absolute; top: 10px; left: 10px; display: flex; flex-direction: column; gap: 5px; z-index: 10; pointer-events: none;">
           ${(product.categories || [product.category]).map((c: string) => `<div class="product-badge" style="position: relative; top: 0; left: 0;">${c}</div>`).join('')}
           ${product.onSale ? '<div class="promo-badge" style="position: relative; top: 0; left: 0; margin-top: 0;">PROMOÇÃO</div>' : ''}
@@ -75,12 +79,24 @@ const renderProducts = async () => {
   // Video Hover Logic
   grid.querySelectorAll('.product-card').forEach(card => {
     const video = card.querySelector('video');
+    const iframe = card.querySelector('iframe');
+    
     if (video) {
-      card.addEventListener('mouseenter', () => (video as any).play());
-      card.addEventListener('mouseleave', () => {
-        (video as any).pause();
-        (video as any).currentTime = 0;
-      });
+        card.addEventListener('mouseenter', () => (video as any).play());
+        card.addEventListener('mouseleave', () => {
+            (video as any).pause();
+            (video as any).currentTime = 0;
+        });
+    }
+
+    if (iframe) {
+        card.addEventListener('mouseenter', () => {
+            const src = (iframe as HTMLElement).dataset.src;
+            if (src) iframe.src = src;
+        });
+        card.addEventListener('mouseleave', () => {
+            iframe.src = '';
+        });
     }
   });
 };

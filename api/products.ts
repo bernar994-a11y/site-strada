@@ -43,6 +43,7 @@ export default async function handler(req: any, res: any) {
           subcategory: p.subcategory || null,
           seguro: p.seguro || false,
           studioBackground: p.studioBackground || false,
+          video: p.video || null,
           colors: p.colors || []
         }])
         .select();
@@ -68,6 +69,7 @@ export default async function handler(req: any, res: any) {
           subcategory: p.subcategory || null,
           seguro: p.seguro || false,
           studioBackground: p.studioBackground || false,
+          video: p.video || null,
           colors: p.colors || []
         })
         .eq('id', p.id)

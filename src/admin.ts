@@ -174,6 +174,8 @@ const subcategoryGroup = document.getElementById('subcategory-group')!;
 const seguroCheckbox = document.getElementById('p-seguro') as HTMLInputElement;
 const studioCheckbox = document.getElementById('p-studio') as HTMLInputElement;
 const videoInput = document.getElementById('p-video') as HTMLInputElement;
+const videoFileInput = document.getElementById('p-video-file') as HTMLInputElement;
+const videoStatus = document.getElementById('video-upload-status')!;
 
 const renderColorVariants = () => {
     const container = document.getElementById('color-variants-container')!;
@@ -443,6 +445,55 @@ fileInput.addEventListener('change', () => {
     }
 });
 
+// Video Upload Logic
+videoFileInput.addEventListener('change', async () => {
+    if (videoFileInput.files && videoFileInput.files[0]) {
+        const file = videoFileInput.files[0];
+        if (file.size > 20 * 1024 * 1024) { // 20MB limit (Vercel/Supabase suggested)
+            alert('O vídeo é muito grande. Por favor escolha um arquivo menor que 20MB.');
+            return;
+        }
+
+        videoStatus.style.display = 'block';
+        videoStatus.style.color = 'var(--primary)';
+        videoStatus.innerText = 'Enviando vídeo...';
+
+        try {
+            const base64 = await new Promise<string>((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target?.result as string);
+                reader.readAsDataURL(file);
+            });
+
+            const uploadedUrl = await uploadImageToSupabase(base64, `product-video-${Date.now()}`);
+            videoInput.value = uploadedUrl;
+            videoStatus.style.color = '#2ecc71';
+            videoStatus.innerText = '✅ Vídeo enviado com sucesso!';
+        } catch (err) {
+            console.error('Video upload error:', err);
+            videoStatus.style.color = '#e74c3c';
+            videoStatus.innerText = '❌ Erco ao enviar vídeo.';
+        }
+    }
+});
+
+// YouTube Helper
+const formatVideoLink = (url: string) => {
+    if (!url) return '';
+    
+    // YouTube
+    if (url.includes('youtube.com/watch?v=') || url.includes('youtu.be/')) {
+        const videoId = url.includes('youtube.com') 
+            ? new URLSearchParams(new URL(url).search).get('v')
+            : url.split('/').pop()?.split('?')[0];
+            
+        if (videoId) {
+            return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&rel=0&modestbranding=1&iv_load_policy=3`;
+        }
+    }
+    return url;
+};
+
 // ─── Supabase Storage Helper ─────────────────────────────
 const uploadImageToSupabase = async (base64: string, name: string) => {
     if (!base64.startsWith('data:image')) return base64; // Já é uma URL
@@ -534,7 +585,7 @@ document.getElementById('save-product-form')?.addEventListener('submit', async (
             subcategory: selectedCats.includes('Vestuário') ? (document.getElementById('p-subcategory') as HTMLSelectElement).value : undefined,
             seguro: seguroCheckbox.checked,
             studioBackground: studioCheckbox.checked,
-            video: videoInput.value || undefined,
+            video: formatVideoLink(videoInput.value),
             colors: finalVariants.length > 0 ? finalVariants : undefined
         };
 

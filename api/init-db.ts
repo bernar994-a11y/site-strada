@@ -14,9 +14,10 @@ export default async function handler(req: any, res: any) {
         "onSale" BOOLEAN DEFAULT false,
         "originalPrice" NUMERIC,
         subcategory VARCHAR(100),
-        seguro BOOLEAN DEFAULT false,
-        "studioBackground" BOOLEAN DEFAULT false,
-        colors JSONB,
+        seguro BOOLEAN DEFAULT FALSE,
+        studio_background BOOLEAN DEFAULT FALSE,
+        video TEXT,
+        colors JSONB DEFAULT '[]'::jsonb,
         created_at TIMESTAMPTZ DEFAULT NOW()
       );
     `;
