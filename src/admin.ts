@@ -557,10 +557,10 @@ videoFileInput.addEventListener('change', async () => {
             videoInput.value = uploadedUrl;
             videoStatus.style.color = '#2ecc71';
             videoStatus.innerText = '✅ Vídeo otimizado e enviado!';
-        } catch (err) {
+        } catch (err: any) {
             console.error('Video upload/compress error:', err);
             videoStatus.style.color = '#e74c3c';
-            videoStatus.innerText = '❌ Erro ao processar vídeo.';
+            videoStatus.innerText = '❌ Erro: ' + (err.message || 'Falha ao processar vídeo');
             videoProgressContainer.style.display = 'none';
         }
     }
@@ -587,39 +587,64 @@ const formatVideoLink = (url: string) => {
 const uploadImageToSupabase = async (base64: string, name: string) => {
     if (!base64.startsWith('data:image') && !base64.startsWith('data:video')) return base64; // Já é uma URL ou tipo não suportado
 
-    try {
-    console.log(`[Admin] Iniciando upload de imagem: ${name}`);
-    
-    const response = await fetch('/api/upload', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ base64Image: base64, filename: `${name}-${Date.now()}` })
-    });
-    
-    const contentType = response.headers.get('content-type');
-    let errorMsg = 'Falha no upload para o Supabase Storage';
-    
-    if (!response.ok) {
-        if (contentType && contentType.includes('application/json')) {
-            const errorData = await response.json();
-            errorMsg = errorData.error || errorMsg;
-        } else {
-            // Se não for JSON, pegamos o texto puro (ex: "A server error occurred")
-            const textError = await response.text();
-            errorMsg = `Erro do Servidor: ${textError.substring(0, 100)}`;
+    const S_URL = (import.meta as any).env?.VITE_SUPABASE_URL;
+    const S_KEY = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY;
+
+    // Tentar Upload Direto (Bypassa limite de 4.5MB da Vercel)
+    if (S_URL && S_KEY) {
+        try {
+            console.log(`[Admin] Iniciando upload DIRETO para Supabase: ${name}`);
+            const contentType = base64.split(';')[0].split(':')[1];
+            const fileExt = contentType.split('/')[1];
+            const finalPath = `${name.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${Date.now()}.${fileExt}`;
+            
+            // Converter base64 para Blob real
+            const blob = await (await fetch(base64)).blob();
+
+            const uploadUrl = `${S_URL}/storage/v1/object/products/${finalPath}`;
+            
+            const response = await fetch(uploadUrl, {
+                method: 'POST',
+                headers: {
+                    'apikey': S_KEY,
+                    'Authorization': `Bearer ${S_KEY}`,
+                    'Content-Type': contentType
+                },
+                body: blob
+            });
+
+            if (response.ok) {
+                const publicUrl = `${S_URL}/storage/v1/object/public/products/${finalPath}`;
+                console.log('[Admin] Upload DIRETO concluído:', publicUrl);
+                return publicUrl;
+            } else {
+                const err = await response.json();
+                console.warn('[Admin] Falha no upload direto, tentando via API...', err);
+            }
+        } catch (err) {
+            console.warn('[Admin] Erro no upload direto, tentando via API...', err);
         }
-        throw new Error(errorMsg);
     }
 
+    // Fallback: Upload via Vercel API (Sujeito a limite de 4.5MB)
     try {
+        console.log(`[Admin] Iniciando upload via API (Fallback): ${name}`);
+        const response = await fetch('/api/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ base64Image: base64, filename: name })
+        });
+        
+        if (!response.ok) {
+            if (response.status === 413) throw new Error('O vídeo é muito pesado para o servidor (Limite 4.5MB). Tente um vídeo mais curto.');
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Falha no upload via API');
+        }
+
         const data = await response.json();
         return data.url;
-    } catch (e) {
-        console.error('Erro ao processar JSON de upload:', e);
-        throw new Error('O servidor retornou uma resposta inválida (não-JSON).');
-    }
     } catch (err: any) {
-        console.error('[Supabase Upload Erro]', err);
+        console.error('[Admin] Erro crítico no upload:', err);
         throw err;
     }
 };
