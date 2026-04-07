@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin | STRADA Bike Shop</title>
     <link rel="stylesheet" href="./src/style.css">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#F5A623">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="/logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
     <style>
         * { box-sizing: border-box; }
@@ -139,6 +144,7 @@
                         <img src="./src/assets/bike-cafe-logo.png" alt="Bike Café" class="cafe-logo-nav">
                     </a>
                 </div>
+                <button class="back-btn-header" onclick="window.history.back()">Voltar</button>
                 <ul class="nav-links">
                     <li><a href="/" style="color: var(--text-muted);">← Voltar ao Site</a></li>
                     <li><a href="#" id="logout-btn" style="color: #e74c3c;">Sair</a></li>

@@ -101,6 +101,10 @@ img {
   background: linear-gradient(135deg, #ffb84d 0%, var(--primary) 100%);
 }
 
+.back-btn-header {
+  display: none;
+}
+
 .btn-outline {
   background: transparent;
   color: var(--text-light);
@@ -1153,6 +1157,32 @@ body.page-enter {
     transition: 0.3s;
   }
 
+  .back-btn-header {
+    display: inline-flex !important;
+    align-items: center;
+    background: transparent;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    border-radius: 6px;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: 15px;
+    order: 2;
+  }
+
+  .menu-toggle {
+    order: 3;
+  }
+
+  .logo {
+    order: 1;
+  }
+
   .logo-group {
     max-width: 85% !important;
   }
@@ -1236,15 +1266,59 @@ body.page-enter {
     line-height: 1.2 !important;
   }
 
-  /* WORKSHOP MODAL ESPECÍFICO */
-  .revisions-grid {
+  /* FALE CONOSCO (MELHOR ADAPTAÇÃO) */
+  .contact-card {
     grid-template-columns: 1fr !important;
+    gap: 0 !important;
+  }
+
+  .contact-info {
+    padding: 30px 20px !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    text-align: center !important;
+  }
+
+  .contact-details {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
     gap: 15px !important;
+    text-align: left !important;
+    margin: 20px 0 !important;
+  }
+
+  .detail-item {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  .detail-item p {
+    font-size: 0.75rem !important;
+  }
+
+  /* WORKSHOP MODAL / REVISÕES (NÃO EMPILHADO) */
+  .revisions-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .revision-item {
+    padding: 15px !important;
+  }
+
+  .revision-item h3 {
+    font-size: 0.9rem !important;
+  }
+
+  .revision-item ul li {
+    font-size: 0.7rem !important;
+    margin-bottom: 5px !important;
   }
 
   .revision-item.featured {
+    grid-column: 1 / -1 !important; /* Destaque ocupa a largura toda no final ou início */
     transform: none !important;
-    border-width: 2px !important;
   }
 
   /* HERO & TYPOGRAPHY */
