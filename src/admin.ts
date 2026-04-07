@@ -466,36 +466,51 @@ const compressVideo = async (file: File): Promise<Blob> => {
             canvas.height = video.videoHeight * scale;
 
             const stream = canvas.captureStream(30);
-            const recorder = new MediaRecorder(stream, {
-                mimeType: 'video/webm;codecs=vp8',
-                videoBitsPerSecond: 1000000 // 1Mbps - Ótimo para mobile previews
-            });
 
-            const chunks: Blob[] = [];
-            recorder.ondataavailable = (e) => chunks.push(e.data);
-            recorder.onstop = () => {
-                const blob = new Blob(chunks, { type: 'video/webm' });
-                resolve(blob);
-            };
+            // Detectar melhor formato suportado
+            let mimeType = 'video/webm;codecs=vp8';
+            if (!MediaRecorder.isTypeSupported(mimeType)) {
+                mimeType = 'video/mp4;codecs=avc1';
+            }
+            if (!MediaRecorder.isTypeSupported(mimeType)) {
+                mimeType = ''; // Deixar em branco para o browser escolher o padrão
+            }
 
-            video.play();
-            recorder.start();
+            try {
+                const recorder = new MediaRecorder(stream, {
+                    mimeType: mimeType || undefined,
+                    videoBitsPerSecond: 1000000 // 1Mbps - Ótimo para mobile previews
+                });
 
-            const draw = () => {
-                if (video.paused || video.ended) {
-                    recorder.stop();
-                    return;
-                }
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                
-                // Progresso aproximado
-                const progText = Math.floor((video.currentTime / video.duration) * 100);
-                videoProgressBar.style.width = `${progText}%`;
-                videoStatus.innerText = `Otimizando vídeo: ${progText}%...`;
-                
-                requestAnimationFrame(draw);
-            };
-            draw();
+                const chunks: Blob[] = [];
+                recorder.ondataavailable = (e) => chunks.push(e.data);
+                recorder.onstop = () => {
+                    const blob = new Blob(chunks, { type: mimeType || 'video/mp4' });
+                    resolve(blob);
+                };
+
+                video.play();
+                recorder.start();
+
+                const draw = () => {
+                    if (video.paused || video.ended) {
+                        recorder.stop();
+                        return;
+                    }
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    
+                    // Progresso aproximado
+                    const progText = Math.floor((video.currentTime / video.duration) * 100);
+                    videoProgressBar.style.width = `${progText}%`;
+                    videoStatus.innerText = `Otimizando vídeo: ${progText}% (Formato: ${mimeType || 'Padrão'})...`;
+                    
+                    requestAnimationFrame(draw);
+                };
+                draw();
+            } catch (err) {
+                console.error('MediaRecorder fall back:', err);
+                reject('Incompatibilidade de codec no seu navegador.');
+            }
         };
 
         video.onerror = () => reject('Erro ao carregar vídeo para compressão.');
@@ -513,11 +528,20 @@ videoFileInput.addEventListener('change', async () => {
         
         try {
             if (isHeavy) {
-                videoProgressContainer.style.display = 'block';
-                videoProgressBar.style.width = '0%';
-                const compressedBlob = await compressVideo(file);
-                file = new File([compressedBlob], file.name.replace(/\.[^/.]+$/, "") + ".webm", { type: "video/webm" });
-                videoProgressContainer.style.display = 'none';
+                try {
+                    videoProgressContainer.style.display = 'block';
+                    videoProgressBar.style.width = '0%';
+                    const compressedBlob = await compressVideo(file);
+                    file = new File([compressedBlob], file.name.replace(/\.[^/.]+$/, "") + (MediaRecorder.isTypeSupported('video/webm') ? ".webm" : ".mp4"), { type: compressedBlob.type });
+                    videoProgressContainer.style.display = 'none';
+                } catch (compressErr) {
+                    console.warn('Compressão falhou, tentando upload direto:', compressErr);
+                    if (file.size > 6 * 1024 * 1024) {
+                        throw new Error('O vídeo é muito pesado e seu navegador não suporta compressão automática.');
+                    }
+                    videoStatus.innerText = 'Compressão não suportada. Enviando original...';
+                    videoProgressContainer.style.display = 'none';
+                }
             }
 
             videoStatus.innerText = 'Enviando para o servidor...';
