@@ -1278,7 +1278,9 @@ body.page-enter {
 @media (max-width: 480px) {
   .product-info h3 { font-size: 0.8rem !important; }
   .current-price { font-size: 0.9rem !important; }
-  .seguro-seal { scale: 0.6; transform-origin: right top; }
+  .seguro-seal { scale: 0.45 !important; transform-origin: top right !important; top: 10px !important; right: 10px !important; }
+  .promo-badge { font-size: 0.5rem !important; padding: 2px 5px !important; top: 8px !important; left: 8px !important; }
+  .product-badge { font-size: 0.5rem !important; padding: 2px 5px !important; top: 30px !important; left: 8px !important; }
   .hero h1 { font-size: 1.7rem !important; }
   .product-badge { font-size: 0.55rem !important; padding: 2px 6px !important; }
 }
