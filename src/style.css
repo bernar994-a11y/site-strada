@@ -352,17 +352,17 @@ body.page-enter {
 /* Seguro Seal Badge — Premium Modern Version */
 .seguro-seal {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  padding: 10px 20px;
+  top: 15px;
+  right: 15px;
+  padding: 6px 14px;
   background: linear-gradient(135deg, rgba(46, 204, 113, 0.2) 0%, rgba(39, 174, 96, 0.4) 100%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(46, 204, 113, 0.6);
-  border-radius: 16px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   z-index: 30;
   pointer-events: none;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(46, 204, 113, 0.3);
@@ -394,13 +394,13 @@ body.page-enter {
 }
 
 .seal-icon {
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   color: #2ecc71;
   filter: drop-shadow(0 0 8px rgba(46, 204, 113, 0.8));
 }
 
 .seal-text {
-  font-size: 0.7rem;
+  font-size: 0.62rem;
   font-weight: 800;
   color: #fff;
   text-transform: uppercase;
