@@ -177,6 +177,8 @@ const categoryCheckboxes = document.querySelectorAll('.cat-checkbox') as NodeLis
 const subcategoryGroup = document.getElementById('subcategory-group')!;
 const seguroCheckbox = document.getElementById('p-seguro') as HTMLInputElement;
 const isNewCheckbox = document.getElementById('p-isnew') as HTMLInputElement;
+const brandSelect = document.getElementById('p-brand') as HTMLSelectElement;
+const qualitySelect = document.getElementById('p-quality') as HTMLSelectElement;
 const studioCheckbox = document.getElementById('p-studio') as HTMLInputElement;
 const videoInput = document.getElementById('p-video') as HTMLInputElement;
 const videoFileInput = document.getElementById('p-video-file') as HTMLInputElement;
@@ -301,6 +303,8 @@ const openForm = (product?: Product) => {
         originalPriceInput.style.display = product.onSale ? 'block' : 'none';
         seguroCheckbox.checked = !!product.seguro;
         isNewCheckbox.checked = !!product.isNew;
+        brandSelect.value = product.brand || '';
+        qualitySelect.value = product.quality || 'Intermediária';
         studioCheckbox.checked = !!product.studioBackground;
         videoInput.value = product.video || '';
 
@@ -312,6 +316,8 @@ const openForm = (product?: Product) => {
         originalPriceInput.style.display = 'none';
         seguroCheckbox.checked = false;
         isNewCheckbox.checked = false;
+        brandSelect.value = '';
+        qualitySelect.value = 'Intermediária';
         studioCheckbox.checked = false;
         colorVariants = [];
     }
@@ -719,7 +725,9 @@ document.getElementById('save-product-form')?.addEventListener('submit', async (
             video: formatVideoLink(videoInput.value),
             colors: finalVariants.length > 0 ? finalVariants : undefined,
             isNew: isNewCheckbox.checked,
-            newDate: isNewCheckbox.checked ? new Date().toISOString() : undefined
+            newDate: isNewCheckbox.checked ? new Date().toISOString() : undefined,
+            brand: brandSelect.value || undefined,
+            quality: qualitySelect.value || 'Intermediária'
         };
 
         if (isNaN(productData.price)) {

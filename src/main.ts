@@ -12,7 +12,18 @@ if ('serviceWorker' in navigator) {
   });
 }
 import { getProducts, getNewProducts } from './store'
+import type { Product } from './store'
 import { initNav } from './nav'
+
+// Filter State
+let activeFilters = {
+  brand: 'all',
+  quality: 'all',
+  price: 'all',
+  category: ''
+};
+
+let allProducts: Product[] = [];
 
 // Load Products
 const renderProducts = async (categoryFilter?: string) => {
@@ -21,20 +32,69 @@ const renderProducts = async (categoryFilter?: string) => {
 
   grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">Configurando conexão com Supabase...</div>';
 
-  let products = await getProducts();
+  if (allProducts.length === 0) {
+    allProducts = await getProducts();
+  }
   
-  if (categoryFilter) {
-    // Match any category inside the categories array or fallback to primary category
-    products = products.filter(p => p.categories?.includes(categoryFilter) || p.category === categoryFilter);
+  activeFilters.category = categoryFilter || '';
+  
+  applyFiltersAndRender();
+};
+
+const applyFiltersAndRender = () => {
+  const grid = document.getElementById('bikes-grid');
+  if (!grid) return;
+
+  let filtered = [...allProducts];
+
+  // 1. Category Filter (Primary)
+  if (activeFilters.category) {
+    filtered = filtered.filter(p => p.categories?.includes(activeFilters.category) || p.category === activeFilters.category);
   } else {
-    // By default (home view), show only promotions as requested
-    products = products.filter(p => p.onSale);
+    // Default home view matches logic: only promotions
+    filtered = filtered.filter(p => p.onSale);
   }
 
-  grid.innerHTML = products.map(product => `
+  // 2. Brand Filter
+  if (activeFilters.brand !== 'all') {
+    filtered = filtered.filter(p => p.brand === activeFilters.brand);
+  }
+
+  // 3. Quality Filter
+  if (activeFilters.quality !== 'all') {
+    filtered = filtered.filter(p => p.quality === activeFilters.quality);
+  }
+
+  // 4. Price Filter
+  if (activeFilters.price !== 'all') {
+    filtered = filtered.filter(p => {
+      const price = p.price || 0;
+      if (activeFilters.price === '0-2000') return price <= 2000;
+      if (activeFilters.price === '2000-5000') return price > 2000 && price <= 5000;
+      if (activeFilters.price === '5000-10000') return price > 5000 && price <= 10000;
+      if (activeFilters.price === '10000-plus') return price > 10000;
+      return true;
+    });
+  }
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div class="no-results">
+        <span>🔍</span>
+        <h4>Nenhuma bike encontrada</h4>
+        <p>Tente ajustar ou limpar seus filtros para encontrar o que procura.</p>
+        <button class="btn btn-outline" style="margin-top: 20px;" id="btn-reset-filters">Limpar Filtros</button>
+      </div>
+    `;
+    document.getElementById('btn-reset-filters')?.addEventListener('click', resetAllFilters);
+    return;
+  }
+
+  grid.innerHTML = filtered.map(product => `
     <div class="product-card reveal">
       ${(product as any).seguro ? '<div class="seguro-seal"><span class="seal-icon">🛡️</span><span class="seal-text">14 MESES<br>SEGURO GRÁTIS</span></div>' : ''}
       <div class="product-image ${(product as any).studioBackground ? 'studio-mode' : ''}">
+        ${product.brand ? `<div class="brand-badge" style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 800; border: 1px solid rgba(255,255,255,0.1); z-index: 5;">${product.brand.toUpperCase()}</div>` : ''}
         <img src="${product.image}" alt="${product.name}">
         ${product.video ? (
           product.video.includes('youtube.com/embed') 
@@ -73,7 +133,15 @@ const renderProducts = async (categoryFilter?: string) => {
     </div>
   `).join('');
   
-  // Add product modal trigger
+  // Re-attach events
+  attachProductCardEvents(filtered);
+  setTimeout(handleReveal, 100);
+};
+
+const attachProductCardEvents = (products: Product[]) => {
+  const grid = document.getElementById('bikes-grid');
+  if (!grid) return;
+
   grid.querySelectorAll('.open-product-modal').forEach(btn => {
     btn.addEventListener('click', (e) => {
         const card = (e.target as HTMLElement).closest('.product-card');
@@ -84,38 +152,77 @@ const renderProducts = async (categoryFilter?: string) => {
     });
   });
 
-  // Video Hover Logic
   grid.querySelectorAll('.product-card').forEach(card => {
     const video = card.querySelector('video');
     const iframe = card.querySelector('iframe');
-    
     if (video) {
       card.addEventListener('mouseenter', () => (video as any).play());
-      card.addEventListener('mouseleave', () => {
-        (video as any).pause();
-        (video as any).currentTime = 0;
-      });
+      card.addEventListener('mouseleave', () => { (video as any).pause(); (video as any).currentTime = 0; });
     }
-
     if (iframe) {
-      card.addEventListener('mouseenter', () => {
-        const src = (iframe as HTMLElement).dataset.src;
-        if (src) iframe.src = src;
-      });
-      card.addEventListener('mouseleave', () => {
-        iframe.src = '';
-      });
+      card.addEventListener('mouseenter', () => { const src = (iframe as HTMLElement).dataset.src; if (src) iframe.src = src; });
+      card.addEventListener('mouseleave', () => { iframe.src = ''; });
     }
   });
+};
 
-  // Re-trigger reveal for new elements
-  setTimeout(handleReveal, 100);
+const setupFilterEvents = () => {
+  const brandBtns = document.querySelectorAll('#filter-brand .filter-btn');
+  const qualityBtns = document.querySelectorAll('#filter-quality .filter-btn');
+  const priceBtns = document.querySelectorAll('#filter-price .filter-btn');
+  const clearBtn = document.getElementById('clear-filters');
+
+  brandBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      brandBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilters.brand = btn.getAttribute('data-brand') || 'all';
+      applyFiltersAndRender();
+    });
+  });
+
+  qualityBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      qualityBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilters.quality = btn.getAttribute('data-quality') || 'all';
+      applyFiltersAndRender();
+    });
+  });
+
+  priceBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      priceBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilters.price = btn.getAttribute('data-price') || 'all';
+      applyFiltersAndRender();
+    });
+  });
+
+  clearBtn?.addEventListener('click', resetAllFilters);
+};
+
+const resetAllFilters = () => {
+  activeFilters.brand = 'all';
+  activeFilters.quality = 'all';
+  activeFilters.price = 'all';
+  
+  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.filter-btn[data-brand="all"], .filter-btn[data-quality="all"], .filter-btn[data-price="all"]').forEach(btn => btn.classList.add('active'));
+  
+  applyFiltersAndRender();
 };
 
 // Category Filtering Setup (Home Page Only)
 const openProductModal = (product: any) => {
     const modal = document.getElementById('product-modal');
     if (!modal) return;
+    
+    // Check if the modal content element exists (it should, as we're using the visible modal system now)
+    const modalContent = modal.querySelector('.modal-content');
+    if (modalContent) {
+        // We can add additional entry animations here if needed via JS
+    }
 
     const img = document.getElementById('modal-product-image') as HTMLImageElement;
     const title = document.getElementById('modal-product-title');
@@ -271,6 +378,8 @@ const setupProductModalEvents = () => {
 };
 
 const setupFilters = () => {
+  setupFilterEvents();
+  
   // Only target cards within the hero/bicicletas section to avoid conflict with vestuario page
   const homeCategoryCards = document.querySelectorAll('#bicicletas .category-card');
   

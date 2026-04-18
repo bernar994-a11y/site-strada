@@ -290,12 +290,40 @@
                             <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; color: white; width: auto; margin: 0;"><input type="checkbox" value="Acessórios" class="cat-checkbox"> 🎒 Acessórios</label>
                         </div>
                     </div>
-                    <div class="form-group" id="subcategory-group" style="display:none;">
+                    <div class="form-group">
+                        <label>Marca</label>
+                        <select id="p-brand">
+                            <option value="">Selecione a Marca</option>
+                            <option value="Sense">Sense</option>
+                            <option value="Oggi">Oggi</option>
+                            <option value="Soul">Soul</option>
+                            <option value="Scott">Scott</option>
+                            <option value="Cannondale">Cannondale</option>
+                            <option value="Specialized">Specialized</option>
+                            <option value="Trek">Trek</option>
+                            <option value="GT">GT</option>
+                            <option value="Caloi">Caloi</option>
+                            <option value="Outra">Outra</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="subcategory-group" style="display: none;">
                         <label>Subcategoria (Vestuário)</label>
                         <select id="p-subcategory">
-                            <option value="Crossfit">Crossfit</option>
-                            <option value="Mountain Bike">Mountain Bike</option>
-                            <option value="Corrida">Corrida</option>
+                            <option value="Camisas">Camisas</option>
+                            <option value="Bretelles">Bretelles</option>
+                            <option value="Bermudas">Bermudas</option>
+                            <option value="Capacetes">Capacetes</option>
+                            <option value="Sapatilhas">Sapatilhas</option>
+                            <option value="Meias">Meias</option>
+                            <option value="Acessórios">Acessórios</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Qualidade / Nível</label>
+                        <select id="p-quality">
+                            <option value="Básica">Básica (Entrada)</option>
+                            <option value="Intermediária" selected>Intermediária (Performance)</option>
+                            <option value="Premium">Premium (Elite)</option>
                         </select>
                     </div>
                     <div class="form-group">

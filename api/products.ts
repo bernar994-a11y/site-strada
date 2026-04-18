@@ -45,6 +45,8 @@ export default async function handler(req: any, res: any) {
           studioBackground: p.studioBackground || false,
           video: p.video || null,
           colors: p.colors || [],
+          brand: p.brand || null,
+          quality: p.quality || 'Intermediária',
           isNew: p.isNew || false,
           newDate: p.isNew ? (p.newDate || new Date().toISOString()) : null
         }])
@@ -73,6 +75,8 @@ export default async function handler(req: any, res: any) {
           studioBackground: p.studioBackground || false,
           video: p.video || null,
           colors: p.colors || [],
+          brand: p.brand || null,
+          quality: p.quality || 'Intermediária',
           isNew: p.isNew || false,
           newDate: p.isNew ? (p.newDate || new Date().toISOString()) : null
         })

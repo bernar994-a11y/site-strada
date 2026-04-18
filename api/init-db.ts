@@ -18,6 +18,8 @@ export default async function handler(req: any, res: any) {
         studio_background BOOLEAN DEFAULT FALSE,
         video TEXT,
         colors JSONB DEFAULT '[]'::jsonb,
+        brand TEXT,
+        quality TEXT DEFAULT 'Intermediária',
         "isNew" BOOLEAN DEFAULT FALSE,
         "newDate" TIMESTAMPTZ DEFAULT NOW(),
         created_at TIMESTAMPTZ DEFAULT NOW()
@@ -26,6 +28,8 @@ export default async function handler(req: any, res: any) {
 
     const alterSql = `
       -- Execute isso para adicionar os campos à tabela existente:
+      ALTER TABLE stradabike_products ADD COLUMN IF NOT EXISTS "brand" TEXT;
+      ALTER TABLE stradabike_products ADD COLUMN IF NOT EXISTS "quality" TEXT DEFAULT 'Intermediária';
       ALTER TABLE stradabike_products ADD COLUMN IF NOT EXISTS "isNew" BOOLEAN DEFAULT FALSE;
       ALTER TABLE stradabike_products ADD COLUMN IF NOT EXISTS "newDate" TIMESTAMPTZ DEFAULT NOW();
     `;
