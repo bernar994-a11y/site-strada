@@ -200,6 +200,22 @@ const openProductModal = (product: any) => {
     document.body.style.overflow = 'hidden';
 };
 
+// ─── Smooth Modal Close Helper ──────────────────────────
+const smoothCloseModal = (modal: HTMLElement) => {
+  modal.classList.add('closing');
+  modal.classList.remove('active');
+  document.body.style.overflow = 'auto';
+  
+  const onEnd = () => {
+    modal.classList.remove('closing');
+    modal.removeEventListener('transitionend', onEnd);
+  };
+  modal.addEventListener('transitionend', onEnd, { once: true });
+  
+  // Fallback: force cleanup after 350ms in case transitionend doesn't fire
+  setTimeout(() => modal.classList.remove('closing'), 350);
+};
+
 const setupProductModalEvents = () => {
     const modal = document.getElementById('product-modal');
     const closeBtns = document.querySelectorAll('.close-product-modal');
@@ -207,17 +223,13 @@ const setupProductModalEvents = () => {
     closeBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (modal) {
-                modal.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
+            if (modal) smoothCloseModal(modal);
         });
     });
 
     window.addEventListener('click', (e) => {
         if (e.target === modal && modal) {
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
+            smoothCloseModal(modal);
         }
     });
 
@@ -333,14 +345,12 @@ const setupWorkshopModal = () => {
 
     closeBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
-        modal.classList.remove('active');
-        document.body.style.overflow = 'auto';
+        smoothCloseModal(modal);
     });
 
     window.addEventListener('click', (e) => {
         if (e.target === modal) {
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
+            smoothCloseModal(modal);
             return;
         }
 
@@ -356,8 +366,7 @@ const setupWorkshopModal = () => {
     // Close on ESC
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && modal.classList.contains('active')) {
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
+            smoothCloseModal(modal);
         }
     });
 };

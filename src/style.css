@@ -1134,28 +1134,55 @@ body.page-enter {
   letter-spacing: 1px;
 }
 
-/* --- Workshop Modal Styles (Consolidated) --- */
+/* --- Modal System — Premium Animated (Consolidated) --- */
 .modal {
-  display: none;
   position: fixed;
   z-index: 10000;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background-color: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
   padding: 40px 20px;
-  opacity: 0;
-  transition: opacity 0.4s ease;
   overflow-y: auto;
+  display: grid;
+  place-items: center;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    backdrop-filter 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    -webkit-backdrop-filter 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 0.35s;
+  will-change: background-color, backdrop-filter;
 }
 
 .modal.active {
-  display: grid;
-  place-items: center;
-  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    backdrop-filter 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    -webkit-backdrop-filter 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 0s;
+}
+
+/* Closing state — faster exit */
+.modal.closing {
+  background-color: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  pointer-events: none;
+  transition:
+    background-color 0.25s cubic-bezier(0.4, 0, 1, 1),
+    backdrop-filter 0.25s cubic-bezier(0.4, 0, 1, 1),
+    -webkit-backdrop-filter 0.25s cubic-bezier(0.4, 0, 1, 1),
+    visibility 0s linear 0.25s;
 }
 
 .modal-content {
@@ -1173,14 +1200,23 @@ body.page-enter {
     0 40px 100px rgba(0, 0, 0, 0.8), 
     0 0 60px rgba(245, 166, 35, 0.1),
     inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-  transform: scale(0.9) translateY(40px);
+  transform: scale(0.95) translateY(15px);
   opacity: 0;
-  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity;
 }
 
 .modal.active .modal-content {
   transform: scale(1) translateY(0);
   opacity: 1;
+}
+
+.modal.closing .modal-content {
+  transform: scale(0.95) translateY(15px);
+  opacity: 0;
+  transition: transform 0.22s cubic-bezier(0.4, 0, 1, 1),
+              opacity 0.22s cubic-bezier(0.4, 0, 1, 1);
 }
 
 

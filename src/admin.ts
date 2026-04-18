@@ -254,7 +254,12 @@ document.getElementById('add-color-variant-btn')?.addEventListener('click', () =
 });
 
 const openModal = () => { formModal.classList.add('active'); document.body.style.overflow = 'hidden'; };
-const closeModal = () => { formModal.classList.remove('active'); document.body.style.overflow = 'auto'; };
+const closeModal = () => {
+  formModal.classList.add('closing');
+  formModal.classList.remove('active');
+  document.body.style.overflow = 'auto';
+  setTimeout(() => formModal.classList.remove('closing'), 300);
+};
 
 const openForm = (product?: Product) => {
     currentImageUrl = '';
