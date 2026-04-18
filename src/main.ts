@@ -11,7 +11,7 @@ if ('serviceWorker' in navigator) {
     });
   });
 }
-import { getProducts } from './store'
+import { getProducts, getNewProducts } from './store'
 import { initNav } from './nav'
 
 // Load Products
@@ -362,10 +362,84 @@ const setupWorkshopModal = () => {
     });
 };
 
+// ─── NOVIDADES Section ──────────────────────────────────
+const renderNovidades = async () => {
+  const section = document.getElementById('novidades');
+  const grid = document.getElementById('novidades-grid');
+  if (!section || !grid) return;
+
+  const newProducts = await getNewProducts(8);
+
+  // Se não houver novidades, ocultar a seção
+  if (newProducts.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = 'block';
+
+  grid.innerHTML = newProducts.map(product => `
+    <div class="novidade-card" data-product-name="${product.name}">
+      <div class="novidade-card-image ${(product as any).studioBackground ? 'studio-mode' : ''}">
+        <img src="${product.image}" alt="${product.name}" loading="lazy">
+        <div class="novo-badge">NOVO</div>
+        <div class="novidade-card-badges">
+          ${(product.categories || [product.category]).map((c: string) => 
+            `<div class="product-badge">${c}</div>`
+          ).join('')}
+        </div>
+      </div>
+      <div class="novidade-card-info">
+        <h3>${product.name}</h3>
+        <span class="novidade-card-brand">${(product.categories || [product.category])[0]}</span>
+        <div class="novidade-card-price">
+          ${product.onSale ? `
+            <span class="original-price">R$ ${product.originalPrice}</span>
+            <span class="current-price">R$ ${product.price}</span>
+          ` : `
+            <span class="current-price">R$ ${product.price || 'Sob consulta'}</span>
+          `}
+        </div>
+        <div class="novidade-card-cta">
+          <span class="novidade-view-btn">
+            Ver detalhes <span class="arrow-icon">→</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Click to open product modal
+  grid.querySelectorAll('.novidade-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const name = (card as HTMLElement).dataset.productName;
+      const product = newProducts.find(p => p.name === name);
+      if (product) openProductModal(product);
+    });
+  });
+
+  // Carousel Navigation
+  const prevBtn = document.getElementById('novidades-prev');
+  const nextBtn = document.getElementById('novidades-next');
+  const scrollAmount = 330; // card width + gap
+
+  prevBtn?.addEventListener('click', () => {
+    grid.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+  });
+
+  nextBtn?.addEventListener('click', () => {
+    grid.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  });
+
+  // Re-trigger reveal for new elements
+  setTimeout(handleReveal, 100);
+};
+
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('DOM Loaded - Initializing site...');
   initNav();
+  await renderNovidades();
   await renderProducts();
   setupMobileMenu();
   setupHeader();
@@ -378,4 +452,3 @@ document.addEventListener('DOMContentLoaded', async () => {
   window.addEventListener('scroll', handleReveal);
   console.log('All components initialized.');
 });
-

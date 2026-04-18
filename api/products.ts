@@ -44,7 +44,9 @@ export default async function handler(req: any, res: any) {
           seguro: p.seguro || false,
           studioBackground: p.studioBackground || false,
           video: p.video || null,
-          colors: p.colors || []
+          colors: p.colors || [],
+          isNew: p.isNew || false,
+          newDate: p.isNew ? (p.newDate || new Date().toISOString()) : null
         }])
         .select();
 
@@ -70,7 +72,9 @@ export default async function handler(req: any, res: any) {
           seguro: p.seguro || false,
           studioBackground: p.studioBackground || false,
           video: p.video || null,
-          colors: p.colors || []
+          colors: p.colors || [],
+          isNew: p.isNew || false,
+          newDate: p.isNew ? (p.newDate || new Date().toISOString()) : null
         })
         .eq('id', p.id)
         .select();

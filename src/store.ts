@@ -15,6 +15,8 @@ export interface Product {
   colors?: { name: string; hex: string; image: string }[];
   categories?: string[];
   video?: string;
+  isNew?: boolean;
+  newDate?: string;
 }
 
 export const getProducts = async (): Promise<Product[]> => {
@@ -34,7 +36,9 @@ export const getProducts = async (): Promise<Product[]> => {
       ...d,
       onSale: d.onSale || false,
       studioBackground: d.studioBackground || false,
-      seguro: d.seguro || false
+      seguro: d.seguro || false,
+      isNew: d.isNew || false,
+      newDate: d.newDate || null
     }));
   } catch (error) {
     console.warn('Usando dados simulados (Fallback Dev). Servidor API indisponível.', error);
@@ -88,6 +92,18 @@ export const getProducts = async (): Promise<Product[]> => {
       }
     ];
   }
+};
+
+export const getNewProducts = async (limit = 8): Promise<Product[]> => {
+  const products = await getProducts();
+  return products
+    .filter(p => p.isNew)
+    .sort((a, b) => {
+      const dateA = a.newDate ? new Date(a.newDate).getTime() : 0;
+      const dateB = b.newDate ? new Date(b.newDate).getTime() : 0;
+      return dateB - dateA; // Mais recentes primeiro
+    })
+    .slice(0, limit);
 };
 
 const handleResponse = async (res: Response, defaultError: string) => {

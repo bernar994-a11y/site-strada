@@ -41,11 +41,13 @@ const updateKPIs = (products: Product[]) => {
     const bikes = products.filter(p => p.categories?.some(c => BIKE_CATS.includes(c)) || BIKE_CATS.includes(p.category));
     const apparel = products.filter(p => p.categories?.includes('Vestuário') || p.category === 'Vestuário');
     const onSale = products.filter(p => p.onSale);
+    const newItems = products.filter(p => p.isNew);
 
     (document.getElementById('kpi-total') as HTMLElement).textContent = String(products.length);
     (document.getElementById('kpi-bikes') as HTMLElement).textContent = String(bikes.length);
     (document.getElementById('kpi-apparel') as HTMLElement).textContent = String(apparel.length);
     (document.getElementById('kpi-sale') as HTMLElement).textContent = String(onSale.length);
+    (document.getElementById('kpi-new') as HTMLElement).textContent = String(newItems.length);
 };
 
 // ─── Filter + Search ─────────────────────────────────────
@@ -58,6 +60,8 @@ const getFilteredProducts = async (): Promise<Product[]> => {
         products = products.filter(p => p.categories?.includes('Vestuário') || p.category === 'Vestuário');
     } else if (activeFilter === 'accessories') {
         products = products.filter(p => p.categories?.includes('Acessórios') || p.category === 'Acessórios');
+    } else if (activeFilter === 'novidades') {
+        products = products.filter(p => p.isNew);
     }
 
     if (searchTerm) {
@@ -110,7 +114,7 @@ const renderAdminProducts = async () => {
                 ${p.onSale && p.originalPrice ? `<span style="color:var(--text-muted);text-decoration:line-through;font-size:0.8rem;">R$ ${p.originalPrice}</span><br>` : ''}
                 <strong>R$ ${p.price || 'Sob consulta'}</strong>
             </td>
-            <td>${p.onSale ? '<span class="badge badge-sale">🔥 Promoção</span>' : '<span class="badge badge-normal">Normal</span>'}</td>
+            <td>${p.onSale ? '<span class="badge badge-sale">🔥 Promoção</span>' : '<span class="badge badge-normal">Normal</span>'}${p.isNew ? ' <span class="badge" style="background: rgba(155,89,182,0.15); color: #9b59b6;">⭐ Novo</span>' : ''}</td>
             <td>
                 <div class="actions">
                     <button class="btn-icon-only btn-edit edit-btn" data-id="${p.id}">✏️ Editar</button>
@@ -172,6 +176,7 @@ const previewImg = document.getElementById('p-preview') as HTMLImageElement;
 const categoryCheckboxes = document.querySelectorAll('.cat-checkbox') as NodeListOf<HTMLInputElement>;
 const subcategoryGroup = document.getElementById('subcategory-group')!;
 const seguroCheckbox = document.getElementById('p-seguro') as HTMLInputElement;
+const isNewCheckbox = document.getElementById('p-isnew') as HTMLInputElement;
 const studioCheckbox = document.getElementById('p-studio') as HTMLInputElement;
 const videoInput = document.getElementById('p-video') as HTMLInputElement;
 const videoFileInput = document.getElementById('p-video-file') as HTMLInputElement;
@@ -290,6 +295,7 @@ const openForm = (product?: Product) => {
         originalPriceInput.value = (product.originalPrice || '').toString();
         originalPriceInput.style.display = product.onSale ? 'block' : 'none';
         seguroCheckbox.checked = !!product.seguro;
+        isNewCheckbox.checked = !!product.isNew;
         studioCheckbox.checked = !!product.studioBackground;
         videoInput.value = product.video || '';
 
@@ -300,6 +306,7 @@ const openForm = (product?: Product) => {
         (document.getElementById('product-id') as HTMLInputElement).value = '';
         originalPriceInput.style.display = 'none';
         seguroCheckbox.checked = false;
+        isNewCheckbox.checked = false;
         studioCheckbox.checked = false;
         colorVariants = [];
     }
@@ -705,7 +712,9 @@ document.getElementById('save-product-form')?.addEventListener('submit', async (
             seguro: seguroCheckbox.checked,
             studioBackground: studioCheckbox.checked,
             video: formatVideoLink(videoInput.value),
-            colors: finalVariants.length > 0 ? finalVariants : undefined
+            colors: finalVariants.length > 0 ? finalVariants : undefined,
+            isNew: isNewCheckbox.checked,
+            newDate: isNewCheckbox.checked ? new Date().toISOString() : undefined
         };
 
         if (isNaN(productData.price)) {
