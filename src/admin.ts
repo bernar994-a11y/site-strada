@@ -320,6 +320,8 @@ const openForm = (product?: Product) => {
         qualitySelect.value = 'Intermediária';
         studioCheckbox.checked = false;
         colorVariants = [];
+        importUrlInput.value = '';
+        importStatus.style.display = 'none';
     }
     
     renderColorVariants();
@@ -330,6 +332,56 @@ addBtn.addEventListener('click', () => openForm());
 cancelBtn.addEventListener('click', closeModal);
 closeBtn.addEventListener('click', closeModal);
 formModal.addEventListener('click', (e) => { if (e.target === formModal) closeModal(); });
+
+// ─── Magic Import ──────────────────────────────────────────
+const importUrlInput = document.getElementById('p-import-url') as HTMLInputElement;
+const autoFillBtn = document.getElementById('btn-auto-fill') as HTMLButtonElement;
+const importStatus = document.getElementById('import-status')!;
+
+autoFillBtn?.addEventListener('click', async () => {
+    const url = importUrlInput.value.trim();
+    if (!url) {
+        alert('Por favor, cole um link válido.');
+        return;
+    }
+
+    autoFillBtn.disabled = true;
+    autoFillBtn.innerText = '⌛...';
+    importStatus.style.display = 'block';
+    importStatus.innerHTML = '✨ Extraindo dados mágicos...';
+    importStatus.style.color = 'var(--primary)';
+
+    try {
+        const response = await fetch(`/api/scrape?url=${encodeURIComponent(url)}`);
+        const data = await response.json();
+
+        if (!response.ok || data.error) throw new Error(data.error || 'Falha na conexão');
+
+        if (data.title) (document.getElementById('p-name') as HTMLInputElement).value = data.title;
+        if (data.description) (document.getElementById('p-desc') as HTMLTextAreaElement).value = data.description;
+        if (data.price) (document.getElementById('p-price') as HTMLInputElement).value = data.price.toString();
+        
+        // Se houver imagem, atualiza o preview e a URL atual
+        if (data.image) {
+            previewImg.src = data.image;
+            previewImg.style.display = 'block';
+            currentImageUrl = data.image;
+            importStatus.innerHTML = `✅ Dados importados de <b>${data.source}</b>!`;
+        } else {
+            importStatus.innerHTML = `✅ Texto importado de <b>${data.source}</b>, mas imagem não encontrada.`;
+        }
+        
+        importStatus.style.color = '#2ecc71';
+        
+    } catch (err: any) {
+        console.error('Erro na importação mágica:', err);
+        importStatus.innerHTML = `❌ Erro: ${err.message}`;
+        importStatus.style.color = '#e74c3c';
+    } finally {
+        autoFillBtn.disabled = false;
+        autoFillBtn.innerText = '✨ Importar';
+    }
+});
 
 onsaleCheckbox.addEventListener('change', () => {
     originalPriceInput.style.display = onsaleCheckbox.checked ? 'block' : 'none';

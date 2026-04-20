@@ -307,6 +307,17 @@
             <form id="save-product-form">
                 <input type="hidden" id="product-id">
                 <div class="form-grid">
+                    <div class="form-group full" style="background: rgba(245, 166, 35, 0.05); padding: 15px; border-radius: 12px; border: 1px dashed var(--primary); margin-bottom: 10px;">
+                        <label style="color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                            <span>✨ Importação Mágica</span>
+                            <span style="font-size: 0.7rem; text-transform: none; font-weight: normal; color: var(--text-muted); opacity: 0.8;">(Preencha automaticamente via link)</span>
+                        </label>
+                        <div style="display: flex; gap: 10px; margin-top: 8px;">
+                            <input type="text" id="p-import-url" placeholder="Cole aqui o link do produto (ex: Oggi, Specialized...)" style="flex: 1;">
+                            <button type="button" id="btn-auto-fill" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.8rem; white-space: nowrap;">✨ Importar</button>
+                        </div>
+                        <div id="import-status" style="font-size: 0.7rem; margin-top: 6px; display: none;"></div>
+                    </div>
                     <div class="form-group">
                         <label>Nome do Produto</label>
                         <input type="text" id="p-name" required placeholder="Ex: Strada Carbon X">
