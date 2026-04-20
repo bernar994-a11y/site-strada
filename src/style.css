@@ -1016,6 +1016,17 @@ body.page-enter {
   display: none;
 }
 
+/* Specific state for when there's only one item */
+.novidades-carousel-wrapper.no-nav .novidades-nav-btn {
+  display: none;
+}
+
+.novidades-carousel-wrapper.no-nav .novidades-carousel {
+  mask-image: none;
+  -webkit-mask-image: none;
+  justify-content: center;
+}
+
 /* Navigation Buttons */
 .novidades-nav-btn {
   position: absolute;

@@ -496,6 +496,21 @@ const renderNovidades = async () => {
 
   section.style.display = 'block';
 
+  // Centralizar se houver apenas 1 item
+  if (newProducts.length === 1) {
+    grid.style.justifyContent = 'center';
+    const carouselWrapper = section.querySelector('.novidades-carousel-wrapper') as HTMLElement;
+    if (carouselWrapper) {
+      carouselWrapper.classList.add('no-nav');
+    }
+  } else {
+    grid.style.justifyContent = 'flex-start';
+    const carouselWrapper = section.querySelector('.novidades-carousel-wrapper') as HTMLElement;
+    if (carouselWrapper) {
+      carouselWrapper.classList.remove('no-nav');
+    }
+  }
+
   grid.innerHTML = newProducts.map(product => `
     <div class="novidade-card" data-product-name="${product.name}">
       <div class="novidade-card-image ${(product as any).studioBackground ? 'studio-mode' : ''}">
