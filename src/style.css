@@ -1006,6 +1006,10 @@ body.page-enter {
   padding: 20px 10px 30px;
   -ms-overflow-style: none;
   scrollbar-width: none;
+
+  /* Lateral Fade Effect */
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent 100%);
 }
 
 .novidades-carousel::-webkit-scrollbar {
@@ -1059,10 +1063,6 @@ body.page-enter {
   opacity: 0;
   transform: translateY(30px);
   animation: novidade-card-enter 0.6s ease forwards;
-  
-  /* Premium Fade Effect */
-  -webkit-mask-image: linear-gradient(to bottom, black 82%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 82%, transparent 100%);
 }
 
 .novidade-card:nth-child(1) { animation-delay: 0.05s; }
@@ -1085,9 +1085,6 @@ body.page-enter {
   transform: translateY(-12px);
   border-color: var(--primary);
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 10px 40px rgba(245, 166, 35, 0.15);
-  /* Slightly reduce mask on hover to show more content if needed, but keeping it smooth */
-  -webkit-mask-image: linear-gradient(to bottom, black 88%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 88%, transparent 100%);
 }
 
 /* Card Image Area */

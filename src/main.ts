@@ -51,8 +51,8 @@ const applyFiltersAndRender = () => {
   if (activeFilters.category) {
     filtered = filtered.filter(p => p.categories?.includes(activeFilters.category) || p.category === activeFilters.category);
   } else {
-    // Default home view matches logic: only promotions
-    filtered = filtered.filter(p => p.onSale);
+    // Show all products by default on home
+    // (Filtering logic can be added here if we want to limit to a specific home subset)
   }
 
   // 2. Brand Filter
