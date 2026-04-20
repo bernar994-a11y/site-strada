@@ -149,3 +149,32 @@ export const deleteProduct = async (id: number): Promise<void> => {
     throw new Error(`Erro ao deletar no Supabase: ${text.substring(0, 100)}`);
   }
 };
+
+// ─── Loader Helper ───────────────────────────────────────
+export const getLoaderHTML = (message: string = 'Carregando sua próxima pedalada...') => {
+  return `
+    <div class="bike-loader">
+      <div class="bike-animation">
+        <svg class="bike-svg" viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Frame -->
+          <path d="M20 45 L35 45 L45 25 L65 25 L75 45 L90 45" />
+          <path d="M45 25 L42 12 L52 12" /> <!-- Handlebar -->
+          <path d="M35 45 L40 30 L30 30" /> <!-- Seat -->
+          
+          <!-- Wheels -->
+          <g class="wheel">
+            <circle cx="28" cy="45" r="12" />
+            <path d="M28 33 L28 57 M16 45 L40 45" stroke-width="1.5" />
+          </g>
+          <g class="wheel">
+            <circle cx="72" cy="45" r="12" />
+            <path d="M72 33 L72 57 M60 45 L84 45" stroke-width="1.5" />
+          </g>
+        </svg>
+      </div>
+      <div class="loader-text">${message}</div>
+      <div class="loader-subtext">Ajustando a rota...</div>
+    </div>
+  `;
+};
+

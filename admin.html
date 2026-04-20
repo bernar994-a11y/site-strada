@@ -117,6 +117,39 @@
     </style>
 </head>
 <body>
+    <!-- Preloader Overlay -->
+    <div id="preloader" class="preloader-overlay">
+      <div class="bike-loader">
+        <div class="bike-animation">
+          <svg class="bike-svg" viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 45 L35 45 L45 25 L65 25 L75 45 L90 45" />
+            <path d="M45 25 L42 12 L52 12" />
+            <path d="M35 45 L40 30 L30 30" />
+            <g class="wheel">
+              <circle cx="28" cy="45" r="12" />
+              <path d="M28 33 L28 57 M16 45 L40 45" stroke-width="1.5" />
+            </g>
+            <g class="wheel">
+              <circle cx="72" cy="45" r="12" />
+              <path d="M72 33 L72 57 M60 45 L84 45" stroke-width="1.5" />
+            </g>
+          </svg>
+        </div>
+        <div class="loader-text">STRADA BIKESHOP</div>
+        <div class="loader-subtext">Sincronizando sistema...</div>
+      </div>
+    </div>
+
+    <script>
+      window.addEventListener('load', () => {
+        const preloader = document.getElementById('preloader');
+        if (preloader) {
+          setTimeout(() => {
+            preloader.classList.add('hidden');
+          }, 500);
+        }
+      });
+    </script>
 
     <!-- Login -->
     <div id="login-screen" class="login-overlay">
@@ -179,8 +212,8 @@
                 </div>
             </aside>
 
-            <!-- Main -->
             <main class="admin-main">
+
 
                 <!-- Page Header -->
                 <div class="page-header">

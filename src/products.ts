@@ -28,7 +28,7 @@ const renderProducts = async () => {
     activeFilters.category = categoryFilter;
   }
 
-  grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">Configurando conexão com Supabase...</div>';
+  grid.innerHTML = `<div class="section-loader">${getLoaderHTML('Preparando as melhores máquinas...')}</div>`;
 
   if (allProducts.length === 0) {
     allProducts = await getProducts();

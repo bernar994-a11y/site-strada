@@ -11,7 +11,7 @@ if ('serviceWorker' in navigator) {
     });
   });
 }
-import { getProducts, getNewProducts } from './store'
+import { getProducts, getNewProducts, getLoaderHTML } from './store'
 import type { Product } from './store'
 import { initNav } from './nav'
 
@@ -30,7 +30,7 @@ const renderProducts = async (categoryFilter?: string) => {
   const grid = document.getElementById('bikes-grid');
   if (!grid) return;
 
-  grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">Configurando conexão com Supabase...</div>';
+  grid.innerHTML = `<div class="section-loader">${getLoaderHTML('Preparando sua próxima pedalada...')}</div>`;
 
   if (allProducts.length === 0) {
     allProducts = await getProducts();

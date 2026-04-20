@@ -41,6 +41,92 @@ body {
   overflow-x: hidden;
 }
 
+/* ─── Preloader & Loader Styles ────────────────────────── */
+.preloader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-darker);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.preloader-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.bike-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  text-align: center;
+}
+
+.bike-animation {
+  width: 100px;
+  height: 60px;
+  color: var(--primary);
+  animation: bikeBounce 0.5s ease-in-out infinite alternate;
+}
+
+.bike-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.wheel {
+  transform-origin: center;
+  animation: wheelRotate 1s linear infinite;
+}
+
+.loader-text {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--text-light);
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 10px;
+}
+
+.loader-subtext {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+@keyframes wheelRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bikeBounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-5px); }
+}
+
+/* Section Loader (for grids) */
+.section-loader {
+  grid-column: 1 / -1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  min-height: 300px;
+}
+
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   text-transform: uppercase;
@@ -968,11 +1054,15 @@ body.page-enter {
   overflow: hidden;
   border: 1px solid rgba(255,255,255,0.06);
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   position: relative;
   opacity: 0;
   transform: translateY(30px);
   animation: novidade-card-enter 0.6s ease forwards;
+  
+  /* Premium Fade Effect */
+  -webkit-mask-image: linear-gradient(to bottom, black 82%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 82%, transparent 100%);
 }
 
 .novidade-card:nth-child(1) { animation-delay: 0.05s; }
@@ -992,9 +1082,12 @@ body.page-enter {
 }
 
 .novidade-card:hover {
-  transform: translateY(-10px);
+  transform: translateY(-12px);
   border-color: var(--primary);
-  box-shadow: 0 20px 50px rgba(245, 166, 35, 0.2), 0 0 30px rgba(245, 166, 35, 0.08);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 10px 40px rgba(245, 166, 35, 0.15);
+  /* Slightly reduce mask on hover to show more content if needed, but keeping it smooth */
+  -webkit-mask-image: linear-gradient(to bottom, black 88%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 88%, transparent 100%);
 }
 
 /* Card Image Area */
