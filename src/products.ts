@@ -1,5 +1,5 @@
 import './style.css'
-import { getProducts } from './store'
+import { getProducts, getLoaderHTML } from './store'
 import type { Product } from './store'
 import { initNav } from './nav'
 

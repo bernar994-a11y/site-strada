@@ -1,4 +1,4 @@
-import { getProducts } from './store';
+import { getProducts, getLoaderHTML } from './store';
 import type { Product } from './store';
 import { initNav } from './nav';
 
@@ -7,7 +7,7 @@ const renderApparel = async (subcategory?: string) => {
     const title = document.getElementById('category-title');
     if (!grid || !title) return;
 
-    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">Sincronizando produtos de vestuário...</div>';
+    grid.innerHTML = `<div style="grid-column: 1/-1; display: flex; justify-content: center; padding: 60px;">${getLoaderHTML('Sincronizando tendências...')}</div>`;
 
     // Filter products by category 'Vestuário' and optional subcategory
     const allProducts = await getProducts();
