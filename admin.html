@@ -128,6 +128,29 @@
             color: var(--primary);
             font-weight: 700;
         }
+        
+        .sub-card {
+            padding: 10px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+        .sub-card:hover {
+            background: rgba(155, 89, 182, 0.1);
+            border-color: #9b59b6;
+        }
+        .sub-card.active {
+            background: rgba(155, 89, 182, 0.2);
+            border-color: #9b59b6;
+            color: #9b59b6;
+            font-weight: 700;
+            box-shadow: 0 0 15px rgba(155, 89, 182, 0.2);
+        }
         .cat-checkbox {
             width: 18px !important;
             height: 18px !important;
@@ -380,17 +403,18 @@
                             <option value="Outra">Outra</option>
                         </select>
                     </div>
-                    <div class="form-group" id="subcategory-group" style="display: none;">
-                        <label>Subcategoria (Vestuário)</label>
-                        <select id="p-subcategory">
-                            <option value="Camisas">Camisas</option>
-                            <option value="Bretelles">Bretelles</option>
-                            <option value="Bermudas">Bermudas</option>
-                            <option value="Capacetes">Capacetes</option>
-                            <option value="Sapatilhas">Sapatilhas</option>
-                            <option value="Meias">Meias</option>
-                            <option value="Acessórios">Acessórios</option>
-                        </select>
+                    <div class="form-group full" id="subcategory-group" style="display: none; background: rgba(155, 89, 182, 0.05); padding: 20px; border-radius: 12px; border: 1px dashed rgba(155, 89, 182, 0.3); margin-top: 10px;">
+                        <label style="color: #9b59b6; font-size: 0.9rem; margin-bottom: 15px; display: block;">👕 Tipo de Vestuário</label>
+                        <input type="hidden" id="p-subcategory" value="">
+                        <div id="subcategory-cards" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px;">
+                            <div class="sub-card" data-value="Camisas">👕 Camisas</div>
+                            <div class="sub-card" data-value="Bretelles">🩳 Bretelles</div>
+                            <div class="sub-card" data-value="Bermudas">🩳 Bermudas</div>
+                            <div class="sub-card" data-value="Capacetes">🪖 Capacetes</div>
+                            <div class="sub-card" data-value="Sapatilhas">👟 Sapatilhas</div>
+                            <div class="sub-card" data-value="Meias">🧦 Meias</div>
+                            <div class="sub-card" data-value="Acessórios">🎒 Acessórios</div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Qualidade / Nível</label>

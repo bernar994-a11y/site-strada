@@ -291,19 +291,21 @@ const openForm = (product?: Product) => {
         (document.getElementById('p-desc') as HTMLTextAreaElement).value = product.description;
         (document.getElementById('p-price') as HTMLInputElement).value = (product.price || '').toString();
 
-        const hasVestuario = product.categories?.includes('Vestuário') || product.category === 'Vestuário';
-        if (hasVestuario) {
-            subcategoryGroup.style.display = 'block';
-            if (product.subcategory) {
-                (document.getElementById('p-subcategory') as HTMLSelectElement).value = product.subcategory;
-            }
-        }
-
         currentImageUrl = product.image;
         if (currentImageUrl) {
             previewImg.src = currentImageUrl;
             previewImg.style.display = 'block';
         }
+
+        // Sync subcategory cards
+        (document.getElementById('p-subcategory') as HTMLInputElement).value = product.subcategory || '';
+        subCards.forEach(card => {
+            if ((card as HTMLElement).dataset.value === product.subcategory) {
+                card.classList.add('active');
+            } else {
+                card.classList.remove('active');
+            }
+        });
 
         onsaleCheckbox.checked = !!product.onSale;
         originalPriceInput.value = (product.originalPrice || '').toString();
@@ -330,11 +332,22 @@ const openForm = (product?: Product) => {
         importUrlInput.value = '';
         importStatus.style.display = 'none';
 
-        // Clear visual states
+        // Sync visual states
         categoryCheckboxes.forEach(cb => {
             const label = cb.closest('.cat-label');
             if (label) label.classList.remove('checked');
         });
+
+        // Clear subcategory cards
+        (document.getElementById('p-subcategory') as HTMLInputElement).value = '';
+        subCards.forEach(c => c.classList.remove('active'));
+    }
+
+    const hasVestuario = product?.categories?.includes('Vestuário') || product?.category === 'Vestuário';
+    if (hasVestuario) {
+        subcategoryGroup.style.display = 'block';
+    } else {
+        subcategoryGroup.style.display = 'none';
     }
     
     renderColorVariants();
@@ -411,6 +424,18 @@ categoryCheckboxes.forEach(cb => {
             if (cb.checked) label.classList.add('checked');
             else label.classList.remove('checked');
         }
+    });
+});
+
+// ─── Subcategory Cards ────────────────────────────────────
+const subCards = document.querySelectorAll('.sub-card');
+const subInput = document.getElementById('p-subcategory') as HTMLInputElement;
+
+subCards.forEach(card => {
+    card.addEventListener('click', () => {
+        subCards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        subInput.value = (card as HTMLElement).dataset.value || '';
     });
 });
 
