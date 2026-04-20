@@ -37,7 +37,7 @@ export const getProducts = async (): Promise<Product[]> => {
     return data.map((d: any) => ({
       ...d,
       onSale: d.onSale || false,
-      studioBackground: d.studioBackground || false,
+      studioBackground: d.studio_background || d.studioBackground || false,
       seguro: d.seguro || false,
       isNew: d.isNew || false,
       newDate: d.newDate || null,
