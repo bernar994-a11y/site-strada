@@ -279,6 +279,13 @@ const openForm = (product?: Product) => {
             } else {
                 cb.checked = cb.value === product.category;
             }
+
+            // Sync visual state
+            const label = cb.closest('.cat-label');
+            if (label) {
+                if (cb.checked) label.classList.add('checked');
+                else label.classList.remove('checked');
+            }
         });
 
         (document.getElementById('p-desc') as HTMLTextAreaElement).value = product.description;
@@ -322,6 +329,12 @@ const openForm = (product?: Product) => {
         colorVariants = [];
         importUrlInput.value = '';
         importStatus.style.display = 'none';
+
+        // Clear visual states
+        categoryCheckboxes.forEach(cb => {
+            const label = cb.closest('.cat-label');
+            if (label) label.classList.remove('checked');
+        });
     }
     
     renderColorVariants();
@@ -391,6 +404,13 @@ categoryCheckboxes.forEach(cb => {
     cb.addEventListener('change', () => {
         const hasVestuario = Array.from(categoryCheckboxes).some(chk => chk.checked && chk.value === 'Vestuário');
         subcategoryGroup.style.display = hasVestuario ? 'block' : 'none';
+        
+        // Toggle active class on parent label for better visual feedback
+        const label = cb.closest('.cat-label');
+        if (label) {
+            if (cb.checked) label.classList.add('checked');
+            else label.classList.remove('checked');
+        }
     });
 });
 
