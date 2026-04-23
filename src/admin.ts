@@ -185,6 +185,8 @@ const videoFileInput = document.getElementById('p-video-file') as HTMLInputEleme
 const videoStatus = document.getElementById('video-upload-status')!;
 const videoProgressContainer = document.getElementById('video-compress-progress-container')!;
 const videoProgressBar = document.getElementById('video-compress-bar')!;
+const previewContainer = document.getElementById('p-preview-container')!;
+const previewHint = document.getElementById('p-preview-hint')!;
 
 const renderColorVariants = () => {
     const container = document.getElementById('color-variants-container')!;
@@ -202,7 +204,10 @@ const renderColorVariants = () => {
                 <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 5px;">Foto Específica</label>
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <input type="file" class="var-img-input" data-id="${v.id}" accept="image/*" style="flex: 1; padding: 5px; font-size: 0.8rem; background: var(--bg-dark);">
-                    <img class="var-preview" data-id="${v.id}" src="${v.image}" style="width: 35px; height: 35px; object-fit: cover; border-radius: 4px; display: ${v.image ? 'block' : 'none'}; border: 1px solid var(--gray-medium);">
+                        <div class="preview-container var-preview-container" data-id="${v.id}" style="width: 45px; height: 45px; margin-top: 0; display: ${v.image ? 'block' : 'none'};">
+                            <img class="var-preview" data-id="${v.id}" src="${v.image}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px; border: 1px solid var(--primary);">
+                            <span class="edit-badge" style="font-size: 0.4rem; padding: 1px 3px;">ED</span>
+                        </div>
                 </div>
             </div>
             <button type="button" class="btn-del btn-icon-only remove-variant-btn" data-id="${v.id}" style="margin-top: 15px; font-weight: bold; background: rgba(231, 76, 60, 0.1);">X</button>
@@ -241,6 +246,16 @@ const renderColorVariants = () => {
         });
     });
 
+    container.querySelectorAll('.var-preview-container').forEach(container => {
+        container.addEventListener('click', () => {
+            const id = parseFloat((container as HTMLElement).dataset.id!);
+            const variant = colorVariants.find(v => v.id === id);
+            if (variant && variant.image) {
+                openCropper(variant.image, id);
+            }
+        });
+    });
+
     container.querySelectorAll('.remove-variant-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const id = parseFloat((e.target as HTMLElement).dataset.id!);
@@ -266,6 +281,8 @@ const closeModal = () => {
 const openForm = (product?: Product) => {
     currentImageUrl = '';
     previewImg.style.display = 'none';
+    previewContainer.style.display = 'none';
+    previewHint.style.display = 'none';
     subcategoryGroup.style.display = 'none';
 
     if (product) {
@@ -295,6 +312,8 @@ const openForm = (product?: Product) => {
         if (currentImageUrl) {
             previewImg.src = currentImageUrl;
             previewImg.style.display = 'block';
+            previewContainer.style.display = 'block';
+            previewHint.style.display = 'block';
         }
 
         // Sync subcategory cards
@@ -391,6 +410,8 @@ autoFillBtn?.addEventListener('click', async () => {
         if (data.image) {
             previewImg.src = data.image;
             previewImg.style.display = 'block';
+            previewContainer.style.display = 'block';
+            previewHint.style.display = 'block';
             currentImageUrl = data.image;
             importStatus.innerHTML = `✅ Dados importados de <b>${data.source}</b>!`;
         } else {
@@ -445,6 +466,8 @@ const openCropper = (imageSrc: string, target: 'main' | number) => {
     const cropperModal = document.getElementById('cropper-modal')!;
     const cropperImage = document.getElementById('cropper-image') as HTMLImageElement;
     
+    // Use crossOrigin to allow editing remote images from Supabase/URLs
+    cropperImage.crossOrigin = 'anonymous';
     cropperImage.src = imageSrc;
     cropperModal.classList.add('active');
     
@@ -453,12 +476,23 @@ const openCropper = (imageSrc: string, target: 'main' | number) => {
     }
     
     cropper = new (window as any).Cropper(cropperImage, {
-        viewMode: 2,
-        autoCropArea: 1,
+        viewMode: 1,
+        autoCropArea: 0.9,
         responsive: true,
-        background: false
+        background: false,
+        checkOrientation: true
     });
 };
+
+// Cropper Controls
+document.getElementById('cropper-rotate-l')?.addEventListener('click', () => cropper?.rotate(-90));
+document.getElementById('cropper-rotate-r')?.addEventListener('click', () => cropper?.rotate(90));
+document.getElementById('cropper-zoom-in')?.addEventListener('click', () => cropper?.zoom(0.1));
+document.getElementById('cropper-zoom-out')?.addEventListener('click', () => cropper?.zoom(-0.1));
+document.getElementById('cropper-flip-h')?.addEventListener('click', () => {
+    const scale = cropper.getData().scaleX === 1 ? -1 : 1;
+    cropper.scaleX(scale);
+});
 
 document.getElementById('cropper-cancel-btn')?.addEventListener('click', () => {
     document.getElementById('cropper-modal')?.classList.remove('active');
@@ -470,6 +504,8 @@ const applyImageToTarget = (base64: string) => {
     if (currentCropTarget === 'main') {
         previewImg.src = base64;
         previewImg.style.display = 'block';
+        previewContainer.style.display = 'block';
+        previewHint.style.display = 'block';
         currentImageUrl = base64;
     } else if (typeof currentCropTarget === 'number') {
         const variant = colorVariants.find(v => v.id === currentCropTarget);
@@ -479,7 +515,8 @@ const applyImageToTarget = (base64: string) => {
             const preview = container.querySelector(`.var-preview[data-id="${currentCropTarget}"]`) as HTMLImageElement;
             if (preview) {
                 preview.src = base64;
-                preview.style.display = 'block';
+                const pContainer = preview.closest('.var-preview-container') as HTMLElement;
+                if (pContainer) pContainer.style.display = 'block';
             }
         }
     }
@@ -496,12 +533,12 @@ document.getElementById('cropper-save-btn')?.addEventListener('click', () => {
     if (!cropper) return;
     
     const canvas = cropper.getCroppedCanvas({
-        maxWidth: 800,
-        maxHeight: 800,
+        maxWidth: 1200,
+        maxHeight: 1200,
         fillColor: '#fff', 
     });
     
-    const base64 = canvas.toDataURL('image/jpeg', 0.6);
+    const base64 = canvas.toDataURL('image/jpeg', 0.85);
     applyImageToTarget(base64);
 });
 
@@ -559,6 +596,13 @@ fileInput.addEventListener('change', () => {
         };
         reader.readAsDataURL(fileInput.files[0]);
         fileInput.value = '';
+    }
+});
+
+// Click to edit main image
+previewContainer.addEventListener('click', () => {
+    if (currentImageUrl) {
+        openCropper(currentImageUrl, 'main');
     }
 });
 
