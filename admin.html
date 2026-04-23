@@ -259,6 +259,9 @@
                     <button class="sidebar-link active" id="nav-products">
                         <span class="icon">📦</span> Produtos
                     </button>
+                    <button class="sidebar-link" id="nav-feedback">
+                        <span class="icon">⭐</span> Avaliações
+                    </button>
                     <span class="sidebar-title">Acesso Rápido</span>
                     <a href="/" class="sidebar-link">
                         <span class="icon">🏠</span> Ver Site
@@ -275,6 +278,8 @@
             </aside>
 
             <main class="admin-main">
+                <!-- Products Section -->
+                <section id="products-section">
 
 
                 <!-- Page Header -->
@@ -357,6 +362,73 @@
                     </table>
                 </div>
 
+                </section>
+
+                <!-- Feedback Section -->
+                <section id="feedback-section" style="display: none;">
+                    <div class="page-header">
+                        <div>
+                            <h1>Avaliações dos <span class="highlight">Clientes</span></h1>
+                            <p>Veja o que os clientes estão dizendo sobre a Strada Bike Shop.</p>
+                        </div>
+                    </div>
+
+                    <!-- Feedback Indicators (KPIs) -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card highlight-card">
+                            <span class="kpi-icon">⭐</span>
+                            <div>
+                                <div class="kpi-label">Nota Média</div>
+                                <div class="kpi-value" id="kpi-feedback-avg">0.0</div>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <span class="kpi-icon">💬</span>
+                            <div>
+                                <div class="kpi-label">Total Feedbacks</div>
+                                <div class="kpi-value" id="kpi-feedback-total">0</div>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <span class="kpi-icon">✅</span>
+                            <div>
+                                <div class="kpi-label">Elogios</div>
+                                <div class="kpi-value" style="color: #2ecc71;" id="kpi-feedback-elogios">0</div>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <span class="kpi-icon">💡</span>
+                            <div>
+                                <div class="kpi-label">Sugestões</div>
+                                <div class="kpi-value" style="color: #3498db;" id="kpi-feedback-sugestoes">0</div>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <span class="kpi-icon">⚠️</span>
+                            <div>
+                                <div class="kpi-label">Reclamações</div>
+                                <div class="kpi-value" style="color: #e74c3c;" id="kpi-feedback-reclamacoes">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Criação</th>
+                                    <th>Cliente</th>
+                                    <th>Nota</th>
+                                    <th>Tipo</th>
+                                    <th>Comentário</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-feedback-list">
+                                <!-- Feedbacks will be injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
             </main>
         </div>
     </div>

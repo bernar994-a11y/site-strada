@@ -115,7 +115,7 @@ export const initFeedback = () => {
             console.error('Feedback Error:', err);
             if (statusEl) {
                 statusEl.className = 'status-error';
-                statusEl.innerText = '❌ Erro ao enviar. Tente novamente mais tarde.';
+                statusEl.innerText = '❌ Erro ao enviar. Verifique se a tabela de feedbacks foi criada no Supabase.';
             }
             submitBtn.disabled = false;
             submitBtn.innerText = originalBtnText;

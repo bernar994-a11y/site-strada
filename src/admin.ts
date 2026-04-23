@@ -17,6 +17,7 @@ const checkAuth = async () => {
     if (sessionStorage.getItem('strada_admin_logged') === 'true') {
         document.getElementById('login-screen')!.style.display = 'none';
         document.getElementById('admin-dashboard')!.style.display = 'block';
+        setupNav();
         await renderAll();
     }
 };
@@ -914,6 +915,78 @@ const doLogout = () => {
 };
 document.getElementById('logout-btn')?.addEventListener('click', doLogout);
 document.getElementById('logout-btn-side')?.addEventListener('click', doLogout);
+
+// ─── Feedback Management ─────────────────────────────────
+const renderFeedbacks = async () => {
+    const list = document.getElementById('admin-feedback-list');
+    if (!list) return;
+
+    list.innerHTML = `<tr><td colspan="5"><div class="section-loader" style="min-height: 200px;">${getLoaderHTML('Sincronizando avaliações...')}</div></td></tr>`;
+
+    try {
+        const response = await fetch('/api/feedback');
+        if (!response.ok) throw new Error('Falha ao conectar com a API');
+        const feedbacks = await response.json();
+
+        if (!Array.isArray(feedbacks)) throw new Error('Formato de dados inválido');
+
+        // Update KPIs
+        const total = feedbacks.length;
+        const avg = total > 0 ? (feedbacks.reduce((sum: number, f: any) => sum + f.rating, 0) / total).toFixed(1) : '0.0';
+        const elogios = feedbacks.filter((f: any) => f.type === 'elogio').length;
+        const sugestoes = feedbacks.filter((f: any) => f.type === 'sugestao').length;
+        const reclamacoes = feedbacks.filter((f: any) => f.type === 'reclamacao').length;
+
+        (document.getElementById('kpi-feedback-avg') as HTMLElement).textContent = avg;
+        (document.getElementById('kpi-feedback-total') as HTMLElement).textContent = String(total);
+        (document.getElementById('kpi-feedback-elogios') as HTMLElement).textContent = String(elogios);
+        (document.getElementById('kpi-feedback-sugestoes') as HTMLElement).textContent = String(sugestoes);
+        (document.getElementById('kpi-feedback-reclamacoes') as HTMLElement).textContent = String(reclamacoes);
+
+        if (total === 0) {
+            list.innerHTML = `<tr><td colspan="5"><div class="empty-state"><span class="emoji">📝</span>Nenhuma avaliação recebida ainda.</div></td></tr>`;
+            return;
+        }
+
+        list.innerHTML = feedbacks.map((f: any) => `
+            <tr>
+                <td style="font-size: 0.75rem; color: var(--text-muted);">${new Date(f.created_at).toLocaleDateString('pt-BR')}</td>
+                <td><strong>${f.name || 'Anônimo'}</strong></td>
+                <td><span style="color: var(--primary); letter-spacing: 2px;">${'★'.repeat(f.rating)}${'☆'.repeat(5-f.rating)}</span></td>
+                <td><span class="badge ${f.type === 'elogio' ? 'badge-sale' : (f.type === 'reclamacao' ? 'badge-del' : 'badge-cat')}" style="${f.type === 'reclamacao' ? 'background: rgba(231, 76, 60, 0.15); color: #e74c3c;' : ''}">${f.type.toUpperCase()}</span></td>
+                <td style="max-width: 400px; white-space: normal; line-height: 1.4; color: var(--text-muted);">${f.comment}</td>
+            </tr>
+        `).join('');
+
+    } catch (err) {
+        console.error('Feedback Admin Error:', err);
+        list.innerHTML = `<tr><td colspan="5"><div class="empty-state" style="color: #e74c3c;"><span class="emoji">❌</span>Erro ao carregar feedbacks. Verifique se a tabela existe no banco de dados.</div></td></tr>`;
+    }
+};
+
+// ─── Section Navigation ──────────────────────────────────
+const setupNav = () => {
+    const navProducts = document.getElementById('nav-products');
+    const navFeedback = document.getElementById('nav-feedback');
+    const prodSection = document.getElementById('products-section');
+    const feedSection = document.getElementById('feedback-section');
+
+    navProducts?.addEventListener('click', () => {
+        navProducts.classList.add('active');
+        navFeedback?.classList.remove('active');
+        prodSection!.style.display = 'block';
+        feedSection!.style.display = 'none';
+        renderAdminProducts();
+    });
+
+    navFeedback?.addEventListener('click', () => {
+        navFeedback.classList.add('active');
+        navProducts?.classList.remove('active');
+        prodSection!.style.display = 'none';
+        feedSection!.style.display = 'block';
+        renderFeedbacks();
+    });
+};
 
 // ─── Init ─────────────────────────────────────────────────
 checkAuth();
