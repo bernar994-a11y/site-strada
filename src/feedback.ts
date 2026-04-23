@@ -92,10 +92,19 @@ export const initFeedback = () => {
                 body: JSON.stringify(data)
             });
 
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.error || 'Falha ao enviar feedback');
+            // Check if response is JSON
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result.error || 'Falha ao enviar feedback');
+                }
+            } else {
+                if (!response.ok) {
+                    const text = await response.text();
+                    console.error('Server Error Text:', text);
+                    throw new Error('O servidor retornou um erro não esperado (HTML). Verifique os logs da Vercel.');
+                }
             }
 
             if (statusEl) {

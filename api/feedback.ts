@@ -4,6 +4,10 @@ export default async function handler(req: any, res: any) {
   const table = 'stradabike_feedback';
   
   try {
+    // Check config
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+      return res.status(500).json({ error: 'Configuração do Supabase ausente no servidor (Variáveis de Ambiente).' });
+    }
     if (req.method === 'POST') {
       const { name, rating, type, comment } = req.body;
 
