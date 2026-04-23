@@ -86,6 +86,7 @@ body {
 
 .wheel {
   transform-origin: center;
+  transform-box: fill-box;
   animation: wheelRotate 0.8s linear infinite;
 }
 
