@@ -14,6 +14,7 @@ if ('serviceWorker' in navigator) {
 import { getProducts, getNewProducts, getLoaderHTML } from './store'
 import type { Product } from './store'
 import { initNav } from './nav'
+import { initFeedback } from './feedback'
 
 // Filter State
 let activeFilters = {
@@ -308,7 +309,7 @@ const openProductModal = (product: any) => {
 };
 
 // ─── Smooth Modal Close Helper ──────────────────────────
-const smoothCloseModal = (modal: HTMLElement) => {
+export const smoothCloseModal = (modal: HTMLElement) => {
   modal.classList.add('closing');
   modal.classList.remove('active');
   document.body.style.overflow = 'auto';
@@ -579,6 +580,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupFilters();
   setupWorkshopModal();
   setupProductModalEvents();
+  initFeedback();
   
   // Initial check for reveals
   handleReveal();

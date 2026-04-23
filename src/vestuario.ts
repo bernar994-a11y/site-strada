@@ -1,6 +1,7 @@
 import { getProducts, getLoaderHTML } from './store';
 import type { Product } from './store';
 import { initNav } from './nav';
+import { initFeedback } from './feedback';
 
 const renderApparel = async (subcategory?: string) => {
     const grid = document.getElementById('vestuario-grid');
@@ -239,4 +240,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupApparelFilters();
     setupProductModalEvents();
     initNav();
+    initFeedback();
 });

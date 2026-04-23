@@ -379,6 +379,7 @@
                         <li><a href="#bicicletas">Bicicletas</a></li>
                         <li><a href="#acessorios">Acessórios</a></li>
                         <li><a href="#contato">Contato</a></li>
+                        <li><a href="#" class="open-feedback" style="color: var(--primary); font-weight: 700;">Nos Avalie</a></li>
                     </ul>
                 </div>
                 <div class="footer-social">
@@ -397,6 +398,64 @@
             </div>
         </div>
     </footer>
+
+    <!-- Feedback Modal -->
+    <div id="feedback-modal" class="modal feedback-modal">
+        <div class="modal-content">
+            <span class="close-modal close-feedback">&times;</span>
+            <h2 class="reveal">NOS <span class="highlight">AVALIE</span></h2>
+            <div class="divider"></div>
+            <p style="text-align: center; color: var(--text-muted); margin-top: 15px; font-size: 0.9rem;">Sua opinião é fundamental para nossa evolução. Conte-nos como foi sua experiência!</p>
+            
+            <form id="feedback-form" class="feedback-form-content">
+                <div class="feedback-input-group">
+                    <label>Como você nos avalia?</label>
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="rating" value="5"><label for="star5" title="Excelente">★</label>
+                        <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="Muito Bom">★</label>
+                        <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="Bom">★</label>
+                        <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="Regular">★</label>
+                        <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="Ruim">★</label>
+                    </div>
+                </div>
+
+                <div class="feedback-input-group">
+                    <label>Tipo de Feedback</label>
+                    <div class="feedback-type-group">
+                        <label class="type-btn">
+                            <input type="radio" name="type" value="elogio" checked>
+                            <span class="type-label">Elogio</span>
+                        </label>
+                        <label class="type-btn">
+                            <input type="radio" name="type" value="sugestao">
+                            <span class="type-label">Sugestão</span>
+                        </label>
+                        <label class="type-btn">
+                            <input type="radio" name="type" value="reclamacao">
+                            <span class="type-label">Reclamação</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="feedback-input-group">
+                    <label>Seu Nome (Opcional)</label>
+                    <input type="text" name="name" placeholder="Ex: João Silva">
+                </div>
+
+                <div class="feedback-input-group">
+                    <label>Sua Mensagem</label>
+                    <textarea name="comment" rows="4" placeholder="Deixe aqui seu comentário, dica ou reclamação..." required></textarea>
+                </div>
+
+                <div id="feedback-status" style="display: none;"></div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                    Enviar Avaliação
+                    <span class="btn-icon">✈️</span>
+                </button>
+            </form>
+        </div>
+    </div>
 
     <script type="module" src="./src/main.ts"></script>
   </body>

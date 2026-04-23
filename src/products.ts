@@ -1,7 +1,7 @@
-import './style.css'
 import { getProducts, getLoaderHTML } from './store'
 import type { Product } from './store'
 import { initNav } from './nav'
+import { initFeedback } from './feedback'
 
 // Filter State
 let activeFilters = {
@@ -381,4 +381,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupProductModalEvents();
   setupFilterEvents();
   initNav();
+  initFeedback();
 });
