@@ -2,14 +2,11 @@
  * Feedback System for STRADA Bike Shop
  */
 
-import { smoothCloseModal } from './main';
-
 export const initFeedback = () => {
     const feedbackModal = document.getElementById('feedback-modal');
     const openFeedbackBtns = document.querySelectorAll('.open-feedback');
     const closeFeedbackBtns = document.querySelectorAll('.close-feedback');
     const feedbackForm = document.getElementById('feedback-form') as HTMLFormElement;
-    const starRating = document.querySelector('.star-rating');
     const stars = document.querySelectorAll('.star-rating label');
     const statusEl = document.getElementById('feedback-status');
 
