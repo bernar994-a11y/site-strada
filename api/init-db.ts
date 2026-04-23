@@ -24,6 +24,15 @@ export default async function handler(req: any, res: any) {
         "newDate" TIMESTAMPTZ DEFAULT NOW(),
         created_at TIMESTAMPTZ DEFAULT NOW()
       );
+      
+      CREATE TABLE IF NOT EXISTS stradabike_feedback (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255),
+        rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+        type VARCHAR(50), -- 'elogio', 'sugestao', 'reclamacao'
+        comment TEXT,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
     `;
 
     const alterSql = `
