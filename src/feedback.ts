@@ -85,7 +85,6 @@ export const initFeedback = () => {
             statusEl.className = 'status-info';
             statusEl.innerText = 'Enviando sua avaliação...';
         }
-
         try {
             const response = await fetch('/api/feedback', {
                 method: 'POST',
@@ -93,7 +92,11 @@ export const initFeedback = () => {
                 body: JSON.stringify(data)
             });
 
-            if (!response.ok) throw new Error('Falha ao enviar feedback');
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Falha ao enviar feedback');
+            }
 
             if (statusEl) {
                 statusEl.className = 'status-success';
@@ -113,9 +116,15 @@ export const initFeedback = () => {
 
         } catch (err: any) {
             console.error('Feedback Error:', err);
+            let msg = 'Erro ao enviar. Verifique se a tabela de feedbacks foi criada no Supabase.';
+            
+            if (err.message && err.message !== 'Falha ao enviar feedback') {
+                msg = `❌ Erro: ${err.message}`;
+            }
+
             if (statusEl) {
                 statusEl.className = 'status-error';
-                statusEl.innerText = '❌ Erro ao enviar. Verifique se a tabela de feedbacks foi criada no Supabase.';
+                statusEl.innerText = msg;
             }
             submitBtn.disabled = false;
             submitBtn.innerText = originalBtnText;
