@@ -52,11 +52,18 @@ export const initFeedback = () => {
     stars.forEach((star, index) => {
         star.addEventListener('click', () => {
             resetStars();
-            for (let i = 0; i <= index; i++) {
+            // Since flex-direction is row-reverse and DOM order is 5-4-3-2-1:
+            // index 0 -> Star 5 (all 5 lights up)
+            // index 1 -> Star 4 (stars 4,3,2,1 light up)
+            // ...
+            // index 4 -> Star 1 (only star 1 lights up)
+            // We light up stars from the clicked index to the end of the DOM list (index 4)
+            for (let i = index; i < stars.length; i++) {
                 stars[i].classList.add('active');
             }
         });
     });
+
 
     // Form Submission
     feedbackForm?.addEventListener('submit', async (e) => {
@@ -97,15 +104,18 @@ export const initFeedback = () => {
             if (contentType && contentType.includes('application/json')) {
                 const result = await response.json();
                 if (!response.ok) {
-                    throw new Error(result.error || 'Falha ao enviar feedback');
+                    const error: any = new Error(result.error || 'Falha ao enviar feedback');
+                    error.hint = result.hint;
+                    throw error;
                 }
             } else {
                 if (!response.ok) {
                     const text = await response.text();
                     console.error('Server Error Text:', text);
-                    throw new Error('O servidor retornou um erro não esperado (HTML). Verifique os logs da Vercel.');
+                    throw new Error('O servidor retornou um erro não esperado (HTML). Verifique se você está usando "vercel dev" para testar APIs localmente.');
                 }
             }
+
 
             if (statusEl) {
                 statusEl.className = 'status-success';
@@ -131,12 +141,18 @@ export const initFeedback = () => {
                 msg = `❌ Erro: ${err.message}`;
             }
 
+            // Exibir dica específica se retornar (ex: RLS)
+            if (err.hint) {
+                msg += `<br><small style="display:block;margin-top:5px;opacity:0.8;">💡 Dica: ${err.hint}</small>`;
+            }
+
             if (statusEl) {
                 statusEl.className = 'status-error';
-                statusEl.innerText = msg;
+                statusEl.innerHTML = msg; // Usar innerHTML para o <small>
             }
             submitBtn.disabled = false;
             submitBtn.innerText = originalBtnText;
         }
     });
 };
+

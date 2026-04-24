@@ -33,7 +33,13 @@ export default async function handler(req: any, res: any) {
         comment TEXT,
         created_at TIMESTAMPTZ DEFAULT NOW()
       );
+
+      -- Políticas de Segurança (Execute se o erro for 403 Forbidden)
+      ALTER TABLE stradabike_feedback ENABLE ROW LEVEL SECURITY;
+      CREATE POLICY "Allow public insert" ON stradabike_feedback FOR INSERT WITH CHECK (true);
+      CREATE POLICY "Allow public select" ON stradabike_feedback FOR SELECT USING (true);
     `;
+
 
     const alterSql = `
       -- Execute isso para adicionar os campos à tabela existente:

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'strada-cache-v1';
+const CACHE_NAME = 'strada-cache-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -23,3 +23,19 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
+// Cleanup old caches
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.filter((cacheName) => {
+          return cacheName !== CACHE_NAME;
+        }).map((cacheName) => {
+          return caches.delete(cacheName);
+        })
+      );
+    })
+  );
+});
+
