@@ -400,6 +400,13 @@ body.page-enter {
   display: block;
 }
 
+.hero-btns {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
 .product-info p {
   font-size: 0.9rem;
   color: var(--text-muted);
