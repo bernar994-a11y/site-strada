@@ -33,6 +33,30 @@ const renderProducts = async () => {
   if (allProducts.length === 0) {
     allProducts = await getProducts();
   }
+
+  // --- Dynamic Brand Filter Generation ---
+  const brandContainer = document.getElementById('filter-brand');
+  if (brandContainer) {
+      let productsForBrands = allProducts;
+      if (activeFilters.category) {
+          productsForBrands = allProducts.filter(p => p.categories?.includes(activeFilters.category) || p.category === activeFilters.category);
+      } else {
+          productsForBrands = allProducts.filter(p => p.category !== 'Vestuário');
+      }
+      
+      const uniqueBrands = Array.from(new Set(productsForBrands.map(p => p.brand).filter(b => !!b && b.trim() !== ''))).sort();
+      
+      if (uniqueBrands.length > 0) {
+          brandContainer.innerHTML = `
+            <button class="filter-btn active" data-brand="all">Todas</button>
+            ${uniqueBrands.map(brand => `<button class="filter-btn" data-brand="${brand}">${brand}</button>`).join('')}
+          `;
+      } else {
+          // If no brands are defined for these products, hide the brand filter group entirely
+          const group = brandContainer.closest('.filter-group') as HTMLElement;
+          if (group) group.style.display = 'none';
+      }
+  }
   
   applyFiltersAndRender();
 };
