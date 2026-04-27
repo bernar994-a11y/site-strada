@@ -268,6 +268,21 @@ const openProductModal = (product: any) => {
     }
     if (category) category.textContent = (product.categories || [product.category]).join(', ');
     if (desc) desc.textContent = product.description;
+
+    const sizesContainer = document.getElementById('modal-sizes-container');
+    const sizeOptions = document.getElementById('modal-size-options');
+    if (sizesContainer && sizeOptions) {
+        if (product.sizes && product.sizes.length > 0) {
+            sizesContainer.style.display = 'block';
+            sizeOptions.innerHTML = product.sizes.map((size: string) => `
+                <div class="size-badge" style="padding: 6px 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--gray-medium); border-radius: 6px; font-size: 0.85rem; color: #fff; text-align: center; min-width: 40px; font-weight: 600;">
+                    ${size}
+                </div>
+            `).join('');
+        } else {
+            sizesContainer.style.display = 'none';
+        }
+    }
     
     const colorOptionsContainer = document.getElementById('modal-color-options');
     if (colorOptionsContainer) {
