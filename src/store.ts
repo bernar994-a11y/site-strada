@@ -19,6 +19,7 @@ export interface Product {
   newDate?: string;
   brand?: string;
   quality?: string;
+  sizes?: string[];
 }
 
 export const getProducts = async (): Promise<Product[]> => {
@@ -42,7 +43,8 @@ export const getProducts = async (): Promise<Product[]> => {
       isNew: d.isNew || false,
       newDate: d.newDate || null,
       brand: d.brand || '',
-      quality: d.quality || 'Intermediária'
+      quality: d.quality || 'Intermediária',
+      sizes: d.sizes || []
     }));
   } catch (error) {
     console.warn('Usando dados simulados (Fallback Dev). Servidor API indisponível.', error);

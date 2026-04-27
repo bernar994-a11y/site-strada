@@ -308,6 +308,7 @@ const openForm = (product?: Product) => {
 
         (document.getElementById('p-desc') as HTMLTextAreaElement).value = product.description;
         (document.getElementById('p-price') as HTMLInputElement).value = (product.price || '').toString();
+        (document.getElementById('p-sizes') as HTMLInputElement).value = product.sizes ? product.sizes.join(', ') : '';
 
         currentImageUrl = product.image;
         if (currentImageUrl) {
@@ -834,6 +835,8 @@ document.getElementById('save-product-form')?.addEventListener('submit', async (
         const mainCat = selectedCats[0];
         const nameVal = (document.getElementById('p-name') as HTMLInputElement).value;
         const priceVal = (document.getElementById('p-price') as HTMLInputElement).value;
+        const sizesVal = (document.getElementById('p-sizes') as HTMLInputElement).value;
+        const sizesArray = sizesVal ? sizesVal.split(',').map(s => s.trim()).filter(Boolean) : [];
         
         console.log('ID:', id || 'Novo Produto');
         console.log('Nome:', nameVal);
@@ -858,6 +861,7 @@ document.getElementById('save-product-form')?.addEventListener('submit', async (
             categories: selectedCats,
             description: (document.getElementById('p-desc') as HTMLTextAreaElement).value,
             price: parseFloat(priceVal),
+            sizes: sizesArray,
             image: finalMainImage,
             onSale: onsaleCheckbox.checked,
             originalPrice: onsaleCheckbox.checked ? parseFloat(originalPriceInput.value) : undefined,

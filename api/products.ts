@@ -48,7 +48,8 @@ export default async function handler(req: any, res: any) {
           brand: p.brand || null,
           quality: p.quality || 'Intermediária',
           isNew: p.isNew || false,
-          newDate: p.isNew ? (p.newDate || new Date().toISOString()) : null
+          newDate: p.isNew ? (p.newDate || new Date().toISOString()) : null,
+          sizes: p.sizes || []
         }])
         .select();
 
@@ -78,7 +79,8 @@ export default async function handler(req: any, res: any) {
           brand: p.brand || null,
           quality: p.quality || 'Intermediária',
           isNew: p.isNew || false,
-          newDate: p.isNew ? (p.newDate || new Date().toISOString()) : null
+          newDate: p.isNew ? (p.newDate || new Date().toISOString()) : null,
+          sizes: p.sizes || []
         })
         .eq('id', p.id)
         .select();
