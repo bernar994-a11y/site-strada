@@ -47,6 +47,7 @@ export default async function handler(req: any, res: any) {
       ALTER TABLE stradabike_products ADD COLUMN IF NOT EXISTS "quality" TEXT DEFAULT 'Intermediária';
       ALTER TABLE stradabike_products ADD COLUMN IF NOT EXISTS "isNew" BOOLEAN DEFAULT FALSE;
       ALTER TABLE stradabike_products ADD COLUMN IF NOT EXISTS "newDate" TIMESTAMPTZ DEFAULT NOW();
+      ALTER TABLE stradabike_products ADD COLUMN IF NOT EXISTS "sizes" JSONB DEFAULT '[]'::jsonb;
     `;
 
     // Note: Supabase client doesn't support direct DDL like CREATE TABLE via API for security.
