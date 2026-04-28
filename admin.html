@@ -486,16 +486,25 @@
                         </select>
                     </div>
                     <div class="form-group full" id="subcategory-group" style="display: none; background: rgba(155, 89, 182, 0.05); padding: 20px; border-radius: 12px; border: 1px dashed rgba(155, 89, 182, 0.3); margin-top: 10px;">
-                        <label style="color: #9b59b6; font-size: 0.9rem; margin-bottom: 15px; display: block;">🎯 Tipo / Categoria de Vestuário</label>
                         <input type="hidden" id="p-subcategory" value="">
-                        <div id="subcategory-cards" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px;">
-                            <div class="sub-card" data-value="Camisa">👕 Camisa</div>
-                            <div class="sub-card" data-value="Bretelle">🩳 Bretelle</div>
-                            <div class="sub-card" data-value="Shorts">🏃 Shorts</div>
-                            <div class="sub-card" data-value="Meia">🧦 Meia</div>
-                            <div class="sub-card" data-value="Acessórios">🧢 Acessórios</div>
+                        
+                        <label style="color: #9b59b6; font-size: 0.9rem; margin-bottom: 10px; display: block;">🏆 Modalidade do Vestuário</label>
+                        <div id="modality-cards" class="sub-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-bottom: 20px;">
+                            <div class="sub-card modality-card" data-value="Crossfit">🏋️ Crossfit</div>
+                            <div class="sub-card modality-card" data-value="Mountain Bike">🏔️ Mountain Bike</div>
+                            <div class="sub-card modality-card" data-value="Corrida">🏃 Corrida</div>
                         </div>
-                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 12px;">Selecione o esporte para que o produto apareça no filtro correto da página de Vestuário.</p>
+
+                        <label style="color: #9b59b6; font-size: 0.9rem; margin-bottom: 10px; display: block;">👕 Tipo de Produto</label>
+                        <div id="type-cards" class="sub-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px;">
+                            <div class="sub-card type-card" data-value="Camisa">👕 Camisa</div>
+                            <div class="sub-card type-card" data-value="Bretelle">🩳 Bretelle</div>
+                            <div class="sub-card type-card" data-value="Shorts">🩲 Shorts</div>
+                            <div class="sub-card type-card" data-value="Meia">🧦 Meia</div>
+                            <div class="sub-card type-card" data-value="Acessórios">🧢 Acessórios</div>
+                        </div>
+                        
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 12px;">Selecione a modalidade e o tipo para que o produto apareça nos filtros corretos.</p>
                     </div>
                     <div class="form-group">
                         <label>Qualidade / Nível</label>

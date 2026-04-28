@@ -3,24 +3,34 @@ import type { Product } from './store';
 import { initNav } from './nav';
 import { initFeedback } from './feedback';
 
-const renderApparel = async (subcategory?: string) => {
+const renderApparel = async (modality?: string, type?: string) => {
     const grid = document.getElementById('vestuario-grid');
     const title = document.getElementById('category-title');
     if (!grid || !title) return;
 
     grid.innerHTML = `<div style="grid-column: 1/-1; display: flex; justify-content: center; padding: 60px;">${getLoaderHTML('Sincronizando tendências...')}</div>`;
 
-    // Filter products by category 'Vestuário' and optional subcategory
+    // Filter products by category 'Vestuário'
     const allProducts = await getProducts();
     let filtered = allProducts.filter((p: Product) => p.categories?.includes('Vestuário') || p.category === 'Vestuário');
     
-    if (subcategory && subcategory !== 'all') {
-        // Show ALL products of that subcategory
-        filtered = filtered.filter((p: Product) => p.subcategory === subcategory);
-        title.innerHTML = `VESTUÁRIO <span class="highlight">${subcategory.toUpperCase()}S</span>`;
-    } else {
-        // Default view: show all apparel if no subcategory selected, or show all if 'all' selected
+    // Primary Filter: Modality (from Cards)
+    if (modality && modality !== 'all') {
+        filtered = filtered.filter((p: Product) => p.subcategory?.includes(modality));
+    }
+
+    // Secondary Filter: Type (from Buttons)
+    if (type && type !== 'all') {
+        filtered = filtered.filter((p: Product) => p.subcategory?.includes(type));
+    }
+
+    // Update Title
+    if ((!modality || modality === 'all') && (!type || type === 'all')) {
         title.innerHTML = `TODO O <span class="highlight">VESTUÁRIO</span>`;
+    } else {
+        const modText = modality && modality !== 'all' ? modality.toUpperCase() : '';
+        const typeText = type && type !== 'all' ? `${type.toUpperCase()}S` : '';
+        title.innerHTML = `VESTUÁRIO <span class="highlight">${modText} ${typeText}</span>`.trim();
     }
 
     if (filtered.length === 0) {
@@ -231,26 +241,11 @@ const setupApparelFilters = () => {
     const cards = document.querySelectorAll('.category-card');
     const filterBtns = document.querySelectorAll('#filter-subcategory .filter-btn');
 
-    const updateActiveState = (sub: string | null) => {
-        // Update cards
-        cards.forEach(card => {
-            const cardSub = card.getAttribute('data-category');
-            if (cardSub === sub) {
-                card.classList.add('active');
-            } else {
-                card.classList.remove('active');
-            }
-        });
+    let currentModality: string | null = null;
+    let currentType: string | null = null;
 
-        // Update buttons
-        filterBtns.forEach(btn => {
-            const btnSub = btn.getAttribute('data-sub');
-            if (btnSub === (sub || 'all')) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
-        });
+    const applyFilters = () => {
+        renderApparel(currentModality || undefined, currentType || undefined);
     };
 
     cards.forEach(card => {
@@ -258,27 +253,33 @@ const setupApparelFilters = () => {
             const sub = card.getAttribute('data-category');
             
             if (card.classList.contains('active')) {
-                updateActiveState(null);
-                renderApparel();
+                card.classList.remove('active');
+                currentModality = null;
             } else {
-                updateActiveState(sub);
-                renderApparel(sub || undefined);
+                cards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                currentModality = sub;
                 
                 // Scroll to products
                 document.getElementById('vestuario-section')?.scrollIntoView({ behavior: 'smooth' });
             }
+            applyFilters();
         });
     });
 
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const sub = btn.getAttribute('data-sub');
-            updateActiveState(sub === 'all' ? null : sub);
-            renderApparel(sub === 'all' ? undefined : (sub || undefined));
+            
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            currentType = sub === 'all' ? null : sub;
+            applyFilters();
             
             // Scroll to products grid but a bit above to see the title
             const target = document.getElementById('category-title');
-            if (target) {
+            if (target && sub !== 'all') {
                 const offset = 120;
                 const bodyRect = document.body.getBoundingClientRect().top;
                 const elementRect = target.getBoundingClientRect().top;

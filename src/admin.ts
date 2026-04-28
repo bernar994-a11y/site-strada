@@ -319,9 +319,14 @@ const openForm = (product?: Product) => {
         }
 
         // Sync subcategory cards
-        (document.getElementById('p-subcategory') as HTMLInputElement).value = product.subcategory || '';
+        const subValue = product.subcategory || '';
+        (document.getElementById('p-subcategory') as HTMLInputElement).value = subValue;
+        
+        const [modality, type] = subValue.split(' | ');
+
         subCards.forEach(card => {
-            if ((card as HTMLElement).dataset.value === product.subcategory) {
+            const val = (card as HTMLElement).dataset.value || '';
+            if (val === modality || val === type) {
                 card.classList.add('active');
             } else {
                 card.classList.remove('active');
@@ -456,9 +461,29 @@ const subInput = document.getElementById('p-subcategory') as HTMLInputElement;
 
 subCards.forEach(card => {
     card.addEventListener('click', () => {
-        subCards.forEach(c => c.classList.remove('active'));
+        const isModality = card.classList.contains('modality-card');
+        const isType = card.classList.contains('type-card');
+        
+        if (isModality) {
+            document.querySelectorAll('.modality-card').forEach(c => c.classList.remove('active'));
+        } else if (isType) {
+            document.querySelectorAll('.type-card').forEach(c => c.classList.remove('active'));
+        }
+        
         card.classList.add('active');
-        subInput.value = (card as HTMLElement).dataset.value || '';
+        
+        // Update hidden input
+        const activeModality = document.querySelector('.modality-card.active') as HTMLElement;
+        const activeType = document.querySelector('.type-card.active') as HTMLElement;
+        
+        const modVal = activeModality?.dataset.value || '';
+        const typeVal = activeType?.dataset.value || '';
+        
+        if (modVal && typeVal) {
+            subInput.value = `${modVal} | ${typeVal}`;
+        } else {
+            subInput.value = modVal || typeVal || '';
+        }
     });
 });
 
