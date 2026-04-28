@@ -46,6 +46,11 @@ const renderApparel = async (modality?: string, type?: string) => {
             ${product.seguro ? '<div class="seguro-seal"><span class="seal-icon">🛡️</span><span class="seal-text">14 MESES<br>SEGURO GRÁTIS</span></div>' : ''}
             <div class="product-image ${product.studioBackground ? 'studio-mode' : ''}">
                 <img src="${product.image}" alt="${product.name}">
+                ${product.video ? (
+                    product.video.includes('youtube.com/embed') 
+                    ? `<div class="product-card-video-wrapper"><iframe class="product-card-video youtube-frame" src="" data-src="${product.video}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`
+                    : `<video class="product-card-video" src="${product.video}" muted loop playsinline preload="none"></video>`
+                ) : ''}
                 ${product.onSale ? '<span class="promo-badge">Oferta</span>' : ''}
             </div>
             <div class="product-info">
@@ -86,6 +91,20 @@ const renderApparel = async (modality?: string, type?: string) => {
             const product = filtered.find(p => p.name === nameElement.textContent);
             if (product) openProductModal(product);
         });
+    });
+
+    // Add Hover Preview logic
+    grid.querySelectorAll('.product-card').forEach(card => {
+        const video = card.querySelector('video');
+        const iframe = card.querySelector('iframe');
+        if (video) {
+          card.addEventListener('mouseenter', () => (video as any).play());
+          card.addEventListener('mouseleave', () => { (video as any).pause(); (video as any).currentTime = 0; });
+        }
+        if (iframe) {
+          card.addEventListener('mouseenter', () => { const src = (iframe as HTMLElement).dataset.src; if (src) iframe.src = src; });
+          card.addEventListener('mouseleave', () => { iframe.src = ''; });
+        }
     });
 };
 
