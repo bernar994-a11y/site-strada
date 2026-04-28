@@ -2,12 +2,16 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
-  process.env.VITE_SUPABASE_URL!,
-  process.env.VITE_SUPABASE_ANON_KEY!
+  process.env.SUPABASE_URL || '',
+  process.env.SUPABASE_ANON_KEY || ''
 );
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { method } = req;
+
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+      return res.status(500).json({ error: 'Configuração do Banco de Dados faltando no servidor.' });
+  }
 
   try {
     // 1. GET: Consultar cliente ou saldo
