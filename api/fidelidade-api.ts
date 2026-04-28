@@ -1,7 +1,6 @@
-import { VercelRequest, VercelResponse } from '@vercel/node';
 import { supabase } from './supabase';
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: any, res: any) {
   const { method } = req;
 
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
