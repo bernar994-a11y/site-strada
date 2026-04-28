@@ -996,26 +996,150 @@ const renderFeedbacks = async () => {
 // ─── Section Navigation ──────────────────────────────────
 const setupNav = () => {
     const navProducts = document.getElementById('nav-products');
+    const navLoyalty = document.getElementById('nav-loyalty');
     const navFeedback = document.getElementById('nav-feedback');
     const prodSection = document.getElementById('products-section');
+    const loyaltySection = document.getElementById('loyalty-section');
     const feedSection = document.getElementById('feedback-section');
 
     navProducts?.addEventListener('click', () => {
         navProducts.classList.add('active');
+        navLoyalty?.classList.remove('active');
         navFeedback?.classList.remove('active');
         prodSection!.style.display = 'block';
+        loyaltySection!.style.display = 'none';
         feedSection!.style.display = 'none';
         renderAdminProducts();
+    });
+
+    navLoyalty?.addEventListener('click', () => {
+        navLoyalty.classList.add('active');
+        navProducts?.classList.remove('active');
+        navFeedback?.classList.remove('active');
+        prodSection!.style.display = 'none';
+        loyaltySection!.style.display = 'block';
+        feedSection!.style.display = 'none';
+        renderLoyaltyClients();
     });
 
     navFeedback?.addEventListener('click', () => {
         navFeedback.classList.add('active');
         navProducts?.classList.remove('active');
+        navLoyalty?.classList.remove('active');
         prodSection!.style.display = 'none';
+        loyaltySection!.style.display = 'none';
         feedSection!.style.display = 'block';
         renderFeedbacks();
     });
 };
 
+// ─── Loyalty Management ──────────────────────────────────
+let selectedLoyaltyClientId: string | null = null;
+
+const renderLoyaltyClients = async () => {
+    const list = document.getElementById('admin-loyalty-list');
+    if (!list) return;
+
+    list.innerHTML = `<tr><td colspan="5"><div class="section-loader" style="min-height: 200px;">${getLoaderHTML('Sincronizando clientes...')}</div></td></tr>`;
+
+    try {
+        const response = await fetch('/api/loyalty');
+        const clients = await response.json();
+        
+        // Se a API retornar objeto único em vez de array, embrulhamos
+        const clientsArray = Array.isArray(clients) ? clients : (clients ? [clients] : []);
+
+        const totalPoints = clientsArray.reduce((acc: number, c: any) => acc + (c.points_balance || 0), 0);
+        document.getElementById('kpi-loyalty-total')!.innerText = String(clientsArray.length);
+        document.getElementById('kpi-loyalty-points')!.innerText = String(totalPoints);
+
+        list.innerHTML = clientsArray.map((c: any) => `
+            <tr>
+                <td><strong>${c.loyalty_code}</strong></td>
+                <td>${c.name}</td>
+                <td>${c.phone}</td>
+                <td><span class="badge badge-sale" style="font-size: 1rem; padding: 5px 12px;">${c.points_balance} pts</span></td>
+                <td>
+                    <button class="btn btn-outline btn-select-loyalty" data-id="${c.id}" data-code="${c.loyalty_code}" data-name="${c.name}">Selecionar</button>
+                </td>
+            </tr>
+        `).join('');
+
+        document.querySelectorAll('.btn-select-loyalty').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const target = e.target as HTMLElement;
+                const id = target.dataset.id!;
+                const code = target.dataset.code!;
+                const name = target.dataset.name!;
+                
+                selectedLoyaltyClientId = id;
+                (document.getElementById('l-search-id') as HTMLInputElement).value = code;
+                const resultDiv = document.getElementById('l-fetch-result')!;
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `<span style="color: #2ecc71;">✅ Cliente Selecionado: <strong>${name}</strong> (${code})</span>`;
+            });
+        });
+
+    } catch (err) {
+        list.innerHTML = `<tr><td colspan="5">Erro ao carregar clientes.</td></tr>`;
+    }
+};
+
+// Search client manually
+document.getElementById('btn-l-fetch')?.addEventListener('click', async () => {
+    const id = (document.getElementById('l-search-id') as HTMLInputElement).value;
+    const resultDiv = document.getElementById('l-fetch-result')!;
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = '🔍 Buscando...';
+
+    try {
+        const res = await fetch(`/api/loyalty?code=${id}`);
+        if (!res.ok) throw new Error();
+        const client = await res.json();
+        selectedLoyaltyClientId = client.id;
+        resultDiv.innerHTML = `<span style="color: #2ecc71;">✅ Cliente Encontrado: <strong>${client.name}</strong> (${client.loyalty_code})</span>`;
+    } catch {
+        resultDiv.innerHTML = '<span style="color: #e74c3c;">❌ Cliente não encontrado.</span>';
+        selectedLoyaltyClientId = null;
+    }
+});
+
+// Save points
+document.getElementById('btn-l-save')?.addEventListener('click', async () => {
+    const points = parseInt((document.getElementById('l-points') as HTMLInputElement).value);
+    const desc = (document.getElementById('l-desc') as HTMLInputElement).value;
+
+    if (!selectedLoyaltyClientId || isNaN(points) || !desc) {
+        alert('Selecione um cliente e preencha pontos e descrição.');
+        return;
+    }
+
+    const btn = document.getElementById('btn-l-save') as HTMLButtonElement;
+    btn.disabled = true;
+    btn.innerText = 'Lançando...';
+
+    try {
+        const res = await fetch('/api/loyalty', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'add-points', client_id: selectedLoyaltyClientId, points, description: desc })
+        });
+
+        if (!res.ok) throw new Error();
+        
+        alert('Pontos lançados com sucesso!');
+        (document.getElementById('l-points') as HTMLInputElement).value = '';
+        (document.getElementById('l-desc') as HTMLInputElement).value = '';
+        renderLoyaltyClients();
+    } catch {
+        alert('Erro ao lançar pontos.');
+    } finally {
+        btn.disabled = false;
+        btn.innerText = '🚀 LANÇAR';
+    }
+});
+
 // ─── Init ─────────────────────────────────────────────────
 checkAuth();
+setupNav();
+renderAdminProducts();

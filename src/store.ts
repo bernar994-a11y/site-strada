@@ -22,6 +22,24 @@ export interface Product {
   sizes?: string[];
 }
 
+export interface LoyaltyClient {
+    id: string;
+    name: string;
+    phone: string;
+    loyalty_code: string;
+    points_balance: number;
+    created_at: string;
+    stradabike_loyalty_history?: LoyaltyHistory[];
+}
+
+export interface LoyaltyHistory {
+    id: string;
+    client_id: string;
+    points: number;
+    description: string;
+    created_at: string;
+}
+
 export const getProducts = async (): Promise<Product[]> => {
   try {
     const res = await fetch('/api/products');
@@ -180,5 +198,39 @@ export const getLoaderHTML = (message: string = 'Carregando sua próxima pedalad
       <div class="loader-subtext">Ajustando a rota...</div>
     </div>
   `;
+};
+
+// ─── Loyalty Helpers ─────────────────────────────────────
+export const registerLoyaltyClient = async (name: string, phone: string, code: string) => {
+    const res = await fetch('/api/loyalty', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'register', name, phone, loyalty_code: code })
+    });
+    if (!res.ok) throw new Error('Falha ao cadastrar cliente');
+    return res.json();
+};
+
+export const getLoyaltyClient = async (identifier: string): Promise<LoyaltyClient> => {
+    const param = identifier.includes('-') ? `code=${identifier}` : `phone=${identifier}`;
+    const res = await fetch(`/api/loyalty?${param}`);
+    if (!res.ok) throw new Error('Cliente não encontrado');
+    return res.json();
+};
+
+export const addLoyaltyPoints = async (clientId: string, points: number, description: string) => {
+    const res = await fetch('/api/loyalty', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'add-points', client_id: clientId, points, description })
+    });
+    if (!res.ok) throw new Error('Falha ao atualizar pontos');
+    return res.json();
+};
+
+export const getLoyaltyClients = async (): Promise<LoyaltyClient[]> => {
+    const res = await fetch('/api/loyalty?action=list-all');
+    if (!res.ok) return [];
+    return res.json();
 };
 

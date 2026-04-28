@@ -259,8 +259,11 @@
                     <button class="sidebar-link active" id="nav-products">
                         <span class="icon">📦</span> Produtos
                     </button>
+                    <button class="sidebar-link" id="nav-loyalty">
+                        <span class="icon">💎</span> Fidelidade
+                    </button>
                     <button class="sidebar-link" id="nav-feedback">
-                        <span class="icon">⭐</span> Avaliações
+                        <span class="icon">💬</span> Avaliações
                     </button>
                     <span class="sidebar-title">Acesso Rápido</span>
                     <a href="/" class="sidebar-link">
@@ -364,7 +367,79 @@
 
                 </section>
 
-                <!-- Feedback Section -->
+                <!-- Loyalty Section -->
+            <section id="loyalty-section" style="display: none;">
+                <div class="section-header">
+                    <h2>Gestão de <span class="highlight">Fidelidade</span></h2>
+                    <div class="header-actions">
+                        <div class="search-box">
+                            <input type="text" id="loyalty-search-input" placeholder="Buscar por Nome, Código ou Telefone...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <span class="kpi-label">Total de Clientes</span>
+                        <h3 id="kpi-loyalty-total">0</h3>
+                    </div>
+                    <div class="kpi-card">
+                        <span class="kpi-label">Pontos em Circulação</span>
+                        <h3 id="kpi-loyalty-points">0</h3>
+                    </div>
+                </div>
+
+                <div class="admin-card" style="margin-bottom: 30px;">
+                    <div class="card-header">
+                        <h3><span class="icon">➕</span> Lançar Pontos / Resgate</h3>
+                    </div>
+                    <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; padding: 20px;">
+                        <div class="form-group">
+                            <label>Identificar Cliente (Código ou Tel)</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="l-search-id" placeholder="Ex: STR-1234">
+                                <button class="btn btn-primary" id="btn-l-fetch" style="padding: 10px;">🔍</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Pontos (Positivo ou Negativo)</label>
+                            <input type="number" id="l-points" placeholder="Ex: 50 para ganho, -100 para resgate">
+                        </div>
+                        <div class="form-group">
+                            <label>Descrição da Transação</label>
+                            <input type="text" id="l-desc" placeholder="Ex: Compra de Bike Scott">
+                        </div>
+                        <div class="form-group" style="display: flex; align-items: flex-end;">
+                            <button class="btn btn-primary" id="btn-l-save" style="width: 100%; height: 45px;">🚀 LANÇAR</button>
+                        </div>
+                    </div>
+                    <div id="l-fetch-result" style="padding: 0 20px 20px; font-size: 0.85rem; display: none;"></div>
+                </div>
+
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3>Lista de Clientes</h3>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Cód. Fidelidade</th>
+                                    <th>Nome</th>
+                                    <th>Telefone</th>
+                                    <th>Saldo Atual</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-loyalty-list">
+                                <!-- Loyalty clients injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Feedback Section -->
                 <section id="feedback-section" style="display: none;">
                     <div class="page-header">
                         <div>
