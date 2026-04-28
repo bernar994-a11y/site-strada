@@ -14,14 +14,13 @@ const renderApparel = async (subcategory?: string) => {
     const allProducts = await getProducts();
     let filtered = allProducts.filter((p: Product) => p.categories?.includes('Vestuário') || p.category === 'Vestuário');
     
-    if (subcategory) {
-        // When a subcategory tab is selected, show ALL products of that subcategory
+    if (subcategory && subcategory !== 'all') {
+        // Show ALL products of that subcategory
         filtered = filtered.filter((p: Product) => p.subcategory === subcategory);
-        title.innerHTML = `VESTUÁRIO <span class="highlight">${subcategory.toUpperCase()}</span>`;
+        title.innerHTML = `VESTUÁRIO <span class="highlight">${subcategory.toUpperCase()}S</span>`;
     } else {
-        // Default view: show only vestuário items that are on sale (promoção)
-        filtered = filtered.filter((p: Product) => p.onSale);
-        title.innerHTML = `PROMOÇÕES <span class="highlight">VESTUÁRIO</span>`;
+        // Default view: show all apparel if no subcategory selected, or show all if 'all' selected
+        title.innerHTML = `TODO O <span class="highlight">VESTUÁRIO</span>`;
     }
 
     if (filtered.length === 0) {
@@ -230,20 +229,66 @@ const setupProductModalEvents = () => {
 
 const setupApparelFilters = () => {
     const cards = document.querySelectorAll('.category-card');
+    const filterBtns = document.querySelectorAll('#filter-subcategory .filter-btn');
+
+    const updateActiveState = (sub: string | null) => {
+        // Update cards
+        cards.forEach(card => {
+            const cardSub = card.getAttribute('data-category');
+            if (cardSub === sub) {
+                card.classList.add('active');
+            } else {
+                card.classList.remove('active');
+            }
+        });
+
+        // Update buttons
+        filterBtns.forEach(btn => {
+            const btnSub = btn.getAttribute('data-sub');
+            if (btnSub === (sub || 'all')) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    };
+
     cards.forEach(card => {
         card.addEventListener('click', () => {
             const sub = card.getAttribute('data-category');
             
             if (card.classList.contains('active')) {
-                card.classList.remove('active');
+                updateActiveState(null);
                 renderApparel();
             } else {
-                cards.forEach(c => c.classList.remove('active'));
-                card.classList.add('active');
+                updateActiveState(sub);
                 renderApparel(sub || undefined);
                 
                 // Scroll to products
                 document.getElementById('vestuario-section')?.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const sub = btn.getAttribute('data-sub');
+            updateActiveState(sub === 'all' ? null : sub);
+            renderApparel(sub === 'all' ? undefined : (sub || undefined));
+            
+            // Scroll to products grid but a bit above to see the title
+            const target = document.getElementById('category-title');
+            if (target) {
+                const offset = 120;
+                const bodyRect = document.body.getBoundingClientRect().top;
+                const elementRect = target.getBoundingClientRect().top;
+                const elementPosition = elementRect - bodyRect;
+                const offsetPosition = elementPosition - offset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
             }
         });
     });
