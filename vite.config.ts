@@ -8,7 +8,8 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         products: resolve(__dirname, 'products.html'),
         vestuario: resolve(__dirname, 'vestuario.html'),
-        admin: resolve(__dirname, 'admin.html')
+        admin: resolve(__dirname, 'admin.html'),
+        fidelidade: resolve(__dirname, 'fidelidade.html')
       }
     }
   }
