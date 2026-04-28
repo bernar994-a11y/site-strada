@@ -34,9 +34,9 @@ const renderApparel = async (modality?: string, type?: string) => {
     }
 
     if (filtered.length === 0) {
-        const message = subcategory 
-            ? 'Nenhum item encontrado nesta categoria.'
-            : 'Nenhuma promoção de vestuário disponível no momento.';
+        const message = (modality || type)
+            ? 'Nenhum item encontrado com estes filtros.'
+            : 'Nenhum item de vestuário disponível no momento.';
         grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 50px;">${message}</p>`;
         return;
     }
