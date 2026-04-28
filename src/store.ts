@@ -202,7 +202,7 @@ export const getLoaderHTML = (message: string = 'Carregando sua próxima pedalad
 
 // ─── Loyalty Helpers ─────────────────────────────────────
 export const registerLoyaltyClient = async (name: string, phone: string, code: string) => {
-    const res = await fetch('/api/loyalty', {
+    const res = await fetch('/api/fidelidade-api', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'register', name, phone, loyalty_code: code })
@@ -213,13 +213,13 @@ export const registerLoyaltyClient = async (name: string, phone: string, code: s
 
 export const getLoyaltyClient = async (identifier: string): Promise<LoyaltyClient> => {
     const param = identifier.includes('-') ? `code=${identifier}` : `phone=${identifier}`;
-    const res = await fetch(`/api/loyalty?${param}`);
+    const res = await fetch(`/api/fidelidade-api?${param}`);
     if (!res.ok) throw new Error('Cliente não encontrado');
     return res.json();
 };
 
 export const addLoyaltyPoints = async (clientId: string, points: number, description: string) => {
-    const res = await fetch('/api/loyalty', {
+    const res = await fetch('/api/fidelidade-api', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'add-points', client_id: clientId, points, description })
@@ -229,7 +229,7 @@ export const addLoyaltyPoints = async (clientId: string, points: number, descrip
 };
 
 export const getLoyaltyClients = async (): Promise<LoyaltyClient[]> => {
-    const res = await fetch('/api/loyalty?action=list-all');
+    const res = await fetch('/api/fidelidade-api?action=list-all');
     if (!res.ok) return [];
     return res.json();
 };

@@ -42,7 +42,7 @@ const generateUniqueCode = async (): Promise<string> => {
         code = `STR-${randomPart}`;
         
         // Verify uniqueness in DB
-        const res = await fetch(`/api/loyalty?action=check-code&code=${code}`);
+        const res = await fetch(`/api/fidelidade-api?action=check-code&code=${code}`);
         const data = await res.json();
         if (!data.exists) isUnique = true;
     }

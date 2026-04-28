@@ -1043,7 +1043,7 @@ const renderLoyaltyClients = async () => {
     list.innerHTML = `<tr><td colspan="5"><div class="section-loader" style="min-height: 200px;">${getLoaderHTML('Sincronizando clientes...')}</div></td></tr>`;
 
     try {
-        const response = await fetch('/api/loyalty');
+        const response = await fetch('/api/fidelidade-api');
         const clients = await response.json();
         
         // Se a API retornar objeto único em vez de array, embrulhamos
@@ -1093,7 +1093,7 @@ document.getElementById('btn-l-fetch')?.addEventListener('click', async () => {
     resultDiv.innerHTML = '🔍 Buscando...';
 
     try {
-        const res = await fetch(`/api/loyalty?code=${id}`);
+        const res = await fetch(`/api/fidelidade-api?code=${id}`);
         if (!res.ok) throw new Error();
         const client = await res.json();
         selectedLoyaltyClientId = client.id;
@@ -1119,7 +1119,7 @@ document.getElementById('btn-l-save')?.addEventListener('click', async () => {
     btn.innerText = 'Lançando...';
 
     try {
-        const res = await fetch('/api/loyalty', {
+        const res = await fetch('/api/fidelidade-api', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action: 'add-points', client_id: selectedLoyaltyClientId, points, description: desc })
