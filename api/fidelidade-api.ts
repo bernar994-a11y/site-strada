@@ -48,7 +48,12 @@ export default async function handler(req: any, res: any) {
           .insert([{ name, phone, loyalty_code, points_balance: 0 }])
           .select();
 
-        if (error) throw error;
+        if (error) {
+            if (error.code === '23505') {
+                return res.status(400).json({ error: 'Este número de telefone já está cadastrado.' });
+            }
+            throw error;
+        }
         return res.status(201).json(data[0]);
       }
 
