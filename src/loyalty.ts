@@ -113,14 +113,25 @@ btnCheck?.addEventListener('click', async () => {
         document.getElementById('res-name')!.innerText = `Olá, ${client.name.split(' ')[0]}!`;
         document.getElementById('res-code')!.innerText = `Código: ${client.loyalty_code}`;
         
-        // Next Reward logic (Example)
-        const nextTarget = 500;
-        const diff = nextTarget - client.points_balance;
+        // Next Reward logic - Milestones
+        const milestones = [
+            { pts: 500, label: '10% OFF' },
+            { pts: 1000, label: '15% OFF' },
+            { pts: 2000, label: '20% OFF (Limite Máximo)' }
+        ];
+
+        const nextMilestone = milestones.find(m => client.points_balance < m.pts);
+        const currentMilestone = [...milestones].reverse().find(m => client.points_balance >= m.pts);
+        
         const nextMsg = document.getElementById('next-reward-msg')!;
-        if (diff > 0) {
-            nextMsg.innerHTML = `Faltam <b>${diff} pontos</b> para você ganhar um cupom de R$ 50 OFF!`;
+        
+        if (nextMilestone) {
+            const diff = nextMilestone.pts - client.points_balance;
+            nextMsg.innerHTML = `Faltam <b>${diff} pontos</b> para você ganhar um cupom de ${nextMilestone.label}!`;
+        } else if (currentMilestone) {
+            nextMsg.innerHTML = `🎉 Você atingiu o nível máximo! Já pode resgatar seu cupom de ${currentMilestone.label}. Fale conosco no balcão.`;
         } else {
-            nextMsg.innerHTML = `🎉 Você já pode resgatar seu prêmio de R$ 50 OFF! Fale conosco no balcão.`;
+            nextMsg.innerHTML = `Faltam <b>${milestones[0].pts - client.points_balance} pontos</b> para seu primeiro prêmio (${milestones[0].label})!`;
         }
 
         // History
