@@ -207,7 +207,10 @@ export const registerLoyaltyClient = async (name: string, phone: string, code: s
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'register', name, phone, loyalty_code: code })
     });
-    if (!res.ok) throw new Error('Falha ao cadastrar cliente');
+    if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Falha ao cadastrar cliente');
+    }
     return res.json();
 };
 

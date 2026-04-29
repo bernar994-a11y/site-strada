@@ -34,7 +34,33 @@ export default async function handler(req: any, res: any) {
         created_at TIMESTAMPTZ DEFAULT NOW()
       );
 
-      -- Políticas de Segurança (Execute se o erro for 403 Forbidden)
+      CREATE TABLE IF NOT EXISTS stradabike_loyalty_clients (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        name TEXT NOT NULL,
+        phone TEXT UNIQUE NOT NULL,
+        loyalty_code TEXT UNIQUE NOT NULL,
+        points_balance INTEGER DEFAULT 0,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+
+      CREATE TABLE IF NOT EXISTS stradabike_loyalty_history (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        client_id UUID REFERENCES stradabike_loyalty_clients(id),
+        points INTEGER NOT NULL,
+        description TEXT NOT NULL,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+
+      -- Políticas de Segurança
+      ALTER TABLE stradabike_loyalty_clients ENABLE ROW LEVEL SECURITY;
+      CREATE POLICY "Allow public select loyalty" ON stradabike_loyalty_clients FOR SELECT USING (true);
+      CREATE POLICY "Allow public insert loyalty" ON stradabike_loyalty_clients FOR INSERT WITH CHECK (true);
+      CREATE POLICY "Allow public update loyalty" ON stradabike_loyalty_clients FOR UPDATE USING (true);
+
+      ALTER TABLE stradabike_loyalty_history ENABLE ROW LEVEL SECURITY;
+      CREATE POLICY "Allow public select history" ON stradabike_loyalty_history FOR SELECT USING (true);
+      CREATE POLICY "Allow public insert history" ON stradabike_loyalty_history FOR INSERT WITH CHECK (true);
+
       ALTER TABLE stradabike_feedback ENABLE ROW LEVEL SECURITY;
       CREATE POLICY "Allow public insert" ON stradabike_feedback FOR INSERT WITH CHECK (true);
       CREATE POLICY "Allow public select" ON stradabike_feedback FOR SELECT USING (true);
