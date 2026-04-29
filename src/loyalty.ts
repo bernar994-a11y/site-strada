@@ -1,4 +1,3 @@
-import { getLoyaltyClient, registerLoyaltyClient } from './store';
 import { initNav } from './nav';
 
 // --- Tab Switching ---
@@ -27,7 +26,7 @@ tabRegister?.addEventListener('click', () => switchTab('register'));
 // --- Register Logic ---
 const btnRegister = document.getElementById('btn-register') as HTMLButtonElement;
 const regStatus = document.getElementById('reg-status')!;
-const regSuccess = document.getElementById('reg-success')!;
+// Form elements
 
 const generateUniqueCode = async (): Promise<string> => {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Avoid ambiguous chars
