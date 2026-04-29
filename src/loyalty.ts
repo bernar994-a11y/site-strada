@@ -183,26 +183,7 @@ btnCheck?.addEventListener('click', async () => {
     }
 });
 
-// --- Terms Modal Logic ---
-const termsModal = document.getElementById('terms-modal')!;
-const openTerms = document.getElementById('open-terms');
-const closeTerms = document.getElementById('close-terms');
-const closeTermsBtn = document.getElementById('close-terms-btn');
-
-openTerms?.addEventListener('click', (e) => {
-    e.preventDefault();
-    termsModal.style.display = 'flex';
-});
-
-const closeModal = () => {
-    termsModal.style.display = 'none';
-};
-
-closeTerms?.addEventListener('click', closeModal);
-closeTermsBtn?.addEventListener('click', closeModal);
-termsModal?.addEventListener('click', (e) => {
-    if (e.target === termsModal) closeModal();
-});
+// --- Terms Modal is handled via inline onclick in fidelidade.html ---
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
