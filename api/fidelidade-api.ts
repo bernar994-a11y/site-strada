@@ -1,4 +1,13 @@
-import { supabase } from './supabase';
+import { createClient } from '@supabase/supabase-js';
+
+const S_URL = process.env.SUPABASE_URL || '';
+const S_KEY = process.env.SUPABASE_ANON_KEY || '';
+
+// @ts-ignore - we handle missing credentials inside the handler
+const supabase = createClient(
+  S_URL || 'https://placeholder.supabase.co',
+  S_KEY || 'placeholder'
+);
 
 export default async function handler(req: any, res: any) {
   const { method } = req;
