@@ -52,9 +52,17 @@ const generateUniqueCode = async (): Promise<string> => {
 btnRegister?.addEventListener('click', async () => {
     const name = (document.getElementById('reg-name') as HTMLInputElement).value.trim();
     const phone = (document.getElementById('reg-phone') as HTMLInputElement).value.trim();
+    const cpf = (document.getElementById('reg-cpf') as HTMLInputElement).value.trim();
+    const email = (document.getElementById('reg-email') as HTMLInputElement).value.trim();
+    const pass = (document.getElementById('reg-pass') as HTMLInputElement).value.trim();
 
-    if (!name || !phone) {
-        alert('Por favor, preencha todos os campos.');
+    if (!name || !phone || !cpf || !email || !pass) {
+        alert('Por favor, preencha todos os campos obrigatórios.');
+        return;
+    }
+
+    if (pass.length < 6) {
+        alert('A senha deve ter pelo menos 6 caracteres.');
         return;
     }
 
@@ -66,16 +74,21 @@ btnRegister?.addEventListener('click', async () => {
 
     try {
         const code = await generateUniqueCode();
-        const client = await registerLoyaltyClient(name, phone, code);
-        
-        // Hide form and show success
-        const forms = document.querySelectorAll('.loyalty-form input, .loyalty-form button, .loyalty-form p');
-        forms.forEach(f => (f as HTMLElement).style.display = 'none');
-        (document.querySelector('.loyalty-form label') as HTMLElement).style.display = 'none';
-        
-        regSuccess.style.display = 'block';
-        document.getElementById('success-code')!.innerText = client.loyalty_code;
-        regStatus.style.display = 'none';
+        import('./store').then(async ({ registerLoyaltyClient }) => {
+            const client = await registerLoyaltyClient(name, phone, cpf, email, pass, code);
+            
+            // Hide form and show success
+            formRegister!.innerHTML = `
+                <div id="reg-success" style="text-align: center; padding: 30px; background: rgba(46, 204, 113, 0.1); border-radius: 16px; border: 1px solid #2ecc71;">
+                    <span style="font-size: 3rem; display: block; margin-bottom: 15px;">🎉</span>
+                    <h3 style="color: #2ecc71;">Cadastro Realizado!</h3>
+                    <p style="margin: 10px 0;">Seu código de fidelidade é:</p>
+                    <div style="font-size: 2rem; font-weight: 900; letter-spacing: 5px; color: #fff; margin: 20px 0;">${client.loyalty_code}</div>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">Use seu CPF ou E-mail e sua senha para consultar seus pontos.</p>
+                </div>
+            `;
+            regStatus.style.display = 'none';
+        });
 
     } catch (err: any) {
         regStatus.innerText = '❌ Erro: ' + (err.message || 'Falha ao cadastrar');
@@ -85,28 +98,30 @@ btnRegister?.addEventListener('click', async () => {
     }
 });
 
-// --- Check Points Logic ---
+// --- Check Points Logic (Login) ---
 const btnCheck = document.getElementById('btn-check-points') as HTMLButtonElement;
 const checkStatus = document.getElementById('check-status')!;
 const pointsResult = document.getElementById('points-result')!;
 
 btnCheck?.addEventListener('click', async () => {
     const identifier = (document.getElementById('check-id') as HTMLInputElement).value.trim();
+    const pass = (document.getElementById('check-pass') as HTMLInputElement).value.trim();
 
-    if (!identifier) {
-        alert('Digite seu código ou telefone.');
+    if (!identifier || !pass) {
+        alert('Digite seu CPF/E-mail e sua senha.');
         return;
     }
 
     btnCheck.disabled = true;
-    btnCheck.innerText = 'BUSCANDO...';
+    btnCheck.innerText = 'ENTRANDO...';
     checkStatus.style.display = 'block';
-    checkStatus.innerText = '🔍 Localizando sua conta...';
+    checkStatus.innerText = '🔍 Validando acesso...';
     checkStatus.style.color = 'var(--primary)';
     pointsResult.classList.remove('active');
 
     try {
-        const client = await getLoyaltyClient(identifier);
+        const { loginLoyaltyClient } = await import('./store');
+        const client = await loginLoyaltyClient(identifier, pass);
         
         // Display results
         document.getElementById('res-balance')!.innerText = String(client.points_balance);
@@ -153,13 +168,13 @@ btnCheck?.addEventListener('click', async () => {
         pointsResult.classList.add('active');
         checkStatus.style.display = 'none';
         btnCheck.disabled = false;
-        btnCheck.innerText = 'CONSULTAR SALDO';
+        btnCheck.innerText = 'ACESSAR MEUS PONTOS';
 
     } catch (err: any) {
-        checkStatus.innerText = '❌ ' + (err.message || 'Conta não encontrada');
+        checkStatus.innerText = '❌ ' + (err.message || 'Credenciais inválidas');
         checkStatus.style.color = '#e74c3c';
         btnCheck.disabled = false;
-        btnCheck.innerText = 'CONSULTAR SALDO';
+        btnCheck.innerText = 'ACESSAR MEUS PONTOS';
     }
 });
 

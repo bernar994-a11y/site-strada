@@ -213,13 +213,17 @@
                     <button class="tab-btn" id="tab-register">QUERO ME CADASTRAR</button>
                 </div>
 
-                <!-- Consulta de Pontos -->
+                <!-- Consulta de Pontos (Login) -->
                 <div class="loyalty-form active" id="form-check">
                     <div class="input-group">
-                        <label>Código de Fidelidade ou Telefone</label>
-                        <input type="text" id="check-id" placeholder="Ex: STR-1234 ou 71988888888">
+                        <label>CPF ou E-mail</label>
+                        <input type="text" id="check-id" placeholder="Digite seu CPF ou E-mail">
                     </div>
-                    <button class="btn btn-primary" id="btn-check-points" style="width: 100%; padding: 18px;">CONSULTAR SALDO</button>
+                    <div class="input-group">
+                        <label>Senha</label>
+                        <input type="password" id="check-pass" placeholder="Sua senha secreta">
+                    </div>
+                    <button class="btn btn-primary" id="btn-check-points" style="width: 100%; padding: 18px;">ACESSAR MEUS PONTOS</button>
                     
                     <div id="check-status" style="margin-top: 15px; text-align: center; font-size: 0.85rem; display: none;"></div>
 
@@ -247,15 +251,29 @@
 
                 <!-- Cadastro -->
                 <div class="loyalty-form" id="form-register">
-                    <div class="input-group">
-                        <label>Nome Completo</label>
-                        <input type="text" id="reg-name" placeholder="Como quer ser chamado?">
+                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="input-group">
+                            <label>Nome Completo</label>
+                            <input type="text" id="reg-name" placeholder="Ex: João Silva">
+                        </div>
+                        <div class="input-group">
+                            <label>CPF</label>
+                            <input type="text" id="reg-cpf" placeholder="000.000.000-00">
+                        </div>
+                        <div class="input-group">
+                            <label>Telefone / WhatsApp</label>
+                            <input type="text" id="reg-phone" placeholder="(71) 99999-9999">
+                        </div>
+                        <div class="input-group">
+                            <label>E-mail</label>
+                            <input type="email" id="reg-email" placeholder="seu@email.com">
+                        </div>
+                        <div class="input-group" style="grid-column: span 2;">
+                            <label>Crie uma Senha</label>
+                            <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres">
+                        </div>
                     </div>
-                    <div class="input-group">
-                        <label>Telefone / WhatsApp</label>
-                        <input type="text" id="reg-phone" placeholder="Ex: 71988888888">
-                    </div>
-                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px;">Ao se cadastrar, você receberá um código único de fidelidade.</p>
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin: 10px 0;">Ao se cadastrar, você concorda com os termos do programa Strada Loyalty.</p>
                     <button class="btn btn-primary" id="btn-register" style="width: 100%; padding: 18px;">CRIAR MINHA CONTA</button>
                     
                     <div id="reg-status" style="margin-top: 15px; text-align: center; font-size: 0.85rem; display: none;"></div>

@@ -19,10 +19,9 @@ export default async function handler(req: any, res: any) {
   try {
     // 1. GET: Consultar cliente ou saldo
     if (method === 'GET') {
-      const { phone, code, action } = req.query;
+      const { phone, code, action, email, cpf } = req.query;
 
       if (action === 'check-code') {
-          // Apenas verifica se um código já existe (para geração de novos)
           const { data } = await supabase.from('stradabike_loyalty_clients').select('id').eq('loyalty_code', code).single();
           return res.status(200).json({ exists: !!data });
       }
@@ -31,6 +30,8 @@ export default async function handler(req: any, res: any) {
       
       if (phone) query = query.eq('phone', phone);
       if (code) query = query.eq('loyalty_code', code);
+      if (email) query = query.eq('email', email);
+      if (cpf) query = query.eq('cpf', cpf);
 
       const { data, error } = await query.single();
       if (error) return res.status(404).json({ error: 'Cliente não encontrado' });
@@ -38,23 +39,38 @@ export default async function handler(req: any, res: any) {
       return res.status(200).json(data);
     }
 
-    // 2. POST: Criar novo cliente ou Adicionar pontos
+    // 2. POST: Operações seguras
     if (method === 'POST') {
-      const { action, name, phone, loyalty_code, client_id, points, description } = req.body;
+      const { action, name, phone, cpf, email, password, loyalty_code, client_id, points, description, identifier } = req.body;
 
       if (action === 'register') {
         const { data, error } = await supabase
           .from('stradabike_loyalty_clients')
-          .insert([{ name, phone, loyalty_code, points_balance: 0 }])
+          .insert([{ name, phone, cpf, email, password, loyalty_code, points_balance: 0 }])
           .select();
 
         if (error) {
             if (error.code === '23505') {
-                return res.status(400).json({ error: 'Este número de telefone já está cadastrado.' });
+                return res.status(400).json({ error: 'CPF, E-mail ou Telefone já cadastrado.' });
             }
             throw error;
         }
         return res.status(201).json(data[0]);
+      }
+
+      if (action === 'login') {
+          // Busca por CPF ou E-mail
+          const { data, error } = await supabase
+            .from('stradabike_loyalty_clients')
+            .select('*, stradabike_loyalty_history(*)')
+            .or(`cpf.eq.${identifier},email.eq.${identifier}`)
+            .eq('password', password)
+            .single();
+
+          if (error || !data) {
+              return res.status(401).json({ error: 'Usuário ou senha incorretos.' });
+          }
+          return res.status(200).json(data);
       }
 
       if (action === 'add-points') {

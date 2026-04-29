@@ -26,6 +26,8 @@ export interface LoyaltyClient {
     id: string;
     name: string;
     phone: string;
+    cpf: string;
+    email: string;
     loyalty_code: string;
     points_balance: number;
     created_at: string;
@@ -201,11 +203,11 @@ export const getLoaderHTML = (message: string = 'Carregando sua próxima pedalad
 };
 
 // ─── Loyalty Helpers ─────────────────────────────────────
-export const registerLoyaltyClient = async (name: string, phone: string, code: string) => {
+export const registerLoyaltyClient = async (name: string, phone: string, cpf: string, email: string, pass: string, code: string) => {
     const res = await fetch('/api/fidelidade-api', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'register', name, phone, loyalty_code: code })
+        body: JSON.stringify({ action: 'register', name, phone, cpf, email, password: pass, loyalty_code: code })
     });
     if (!res.ok) {
         const err = await res.json();
@@ -214,8 +216,21 @@ export const registerLoyaltyClient = async (name: string, phone: string, code: s
     return res.json();
 };
 
+export const loginLoyaltyClient = async (identifier: string, pass: string): Promise<LoyaltyClient> => {
+    const res = await fetch('/api/fidelidade-api', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'login', identifier, password: pass })
+    });
+    if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Credenciais inválidas');
+    }
+    return res.json();
+};
+
 export const getLoyaltyClient = async (identifier: string): Promise<LoyaltyClient> => {
-    const param = identifier.includes('-') ? `code=${identifier}` : `phone=${identifier}`;
+    const param = identifier.includes('-') ? `code=${identifier}` : (identifier.includes('@') ? `email=${identifier}` : `cpf=${identifier}`);
     const res = await fetch(`/api/fidelidade-api?${param}`);
     if (!res.ok) throw new Error('Cliente não encontrado');
     return res.json();
