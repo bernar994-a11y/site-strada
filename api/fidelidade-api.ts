@@ -33,8 +33,16 @@ export default async function handler(req: any, res: any) {
       if (email) query = query.eq('email', email);
       if (cpf) query = query.eq('cpf', cpf);
 
-      const { data, error } = await query.single();
-      if (error) return res.status(404).json({ error: 'Cliente não encontrado' });
+      // Se houver filtros específicos, buscamos apenas um
+      if (phone || code || email || cpf) {
+          const { data, error } = await query.single();
+          if (error) return res.status(404).json({ error: 'Cliente não encontrado' });
+          return res.status(200).json(data);
+      }
+
+      // Caso contrário (Admin), listamos todos
+      const { data, error } = await query.order('created_at', { ascending: false });
+      if (error) return res.status(500).json({ error: error.message });
       
       return res.status(200).json(data);
     }
