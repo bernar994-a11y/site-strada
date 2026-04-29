@@ -54,9 +54,15 @@ btnRegister?.addEventListener('click', async () => {
     const cpf = (document.getElementById('reg-cpf') as HTMLInputElement).value.trim();
     const email = (document.getElementById('reg-email') as HTMLInputElement).value.trim();
     const pass = (document.getElementById('reg-pass') as HTMLInputElement).value.trim();
+    const termsChecked = (document.getElementById('reg-terms') as HTMLInputElement).checked;
 
     if (!name || !phone || !cpf || !email || !pass) {
         alert('Por favor, preencha todos os campos obrigatórios.');
+        return;
+    }
+
+    if (!termsChecked) {
+        alert('Você precisa aceitar os Termos de Uso para continuar.');
         return;
     }
 
@@ -175,6 +181,27 @@ btnCheck?.addEventListener('click', async () => {
         btnCheck.disabled = false;
         btnCheck.innerText = 'ACESSAR MEUS PONTOS';
     }
+});
+
+// --- Terms Modal Logic ---
+const termsModal = document.getElementById('terms-modal')!;
+const openTerms = document.getElementById('open-terms');
+const closeTerms = document.getElementById('close-terms');
+const closeTermsBtn = document.getElementById('close-terms-btn');
+
+openTerms?.addEventListener('click', (e) => {
+    e.preventDefault();
+    termsModal.style.display = 'flex';
+});
+
+const closeModal = () => {
+    termsModal.style.display = 'none';
+};
+
+closeTerms?.addEventListener('click', closeModal);
+closeTermsBtn?.addEventListener('click', closeModal);
+termsModal?.addEventListener('click', (e) => {
+    if (e.target === termsModal) closeModal();
 });
 
 // Initialize
