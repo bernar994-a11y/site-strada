@@ -43,9 +43,18 @@ const setupNav = () => {
         sec.style.display = 'block';
     };
 
-    navProducts?.addEventListener('click', () => showSection(navProducts, secProducts));
-    navFeedback?.addEventListener('click', () => showSection(navFeedback, secFeedback));
-    navLoyalty?.addEventListener('click', () => showSection(navLoyalty, secLoyalty));
+    navProducts?.addEventListener('click', () => {
+        showSection(navProducts, secProducts);
+        renderAdminProducts();
+    });
+    navFeedback?.addEventListener('click', () => {
+        showSection(navFeedback, secFeedback);
+        renderFeedbacks();
+    });
+    navLoyalty?.addEventListener('click', () => {
+        showSection(navLoyalty, secLoyalty);
+        renderLoyaltyClients();
+    });
     navVitrine?.addEventListener('click', () => showSection(navVitrine, secVitrine));
 };
 
