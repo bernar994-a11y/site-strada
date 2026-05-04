@@ -597,7 +597,8 @@ const setupTrekShowcase = () => {
     thumb.addEventListener('click', () => {
       thumbnails.forEach(t => t.classList.remove('active'));
       thumb.classList.add('active');
-      const newSrc = thumb.getAttribute('data-src');
+      const imgElem = thumb.querySelector('img');
+      const newSrc = imgElem ? imgElem.src : null;
       if (newSrc) {
         mainImg.style.opacity = '0.5';
         setTimeout(() => {
