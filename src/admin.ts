@@ -595,14 +595,28 @@ const applyImageToTarget = (base64: string) => {
 document.getElementById('cropper-save-btn')?.addEventListener('click', () => {
     if (!cropper) return;
     
+    const isVitrine = currentCropTarget === 'vitrine' as any;
+
     const canvas = cropper.getCroppedCanvas({
-        maxWidth: 1200,
-        maxHeight: 1200,
-        fillColor: '#fff', 
+        maxWidth: isVitrine ? 1600 : 1200,
+        maxHeight: isVitrine ? 1600 : 1200,
+        fillColor: isVitrine ? '#000' : '#fff', 
     });
     
-    const base64 = canvas.toDataURL('image/jpeg', 0.85);
-    applyImageToTarget(base64);
+    const base64 = canvas.toDataURL('image/jpeg', isVitrine ? 0.90 : 0.85);
+    
+    if (isVitrine) {
+        applyVitrineImage(base64);
+    } else {
+        applyImageToTarget(base64);
+    }
+    
+    document.getElementById('cropper-modal')?.classList.remove('active');
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+    currentCropTarget = null;
 });
 
 document.getElementById('cropper-bg-rm-btn')?.addEventListener('click', async (e) => {
@@ -1177,22 +1191,6 @@ const applyVitrineImage = (base64: string) => {
     vitrineStatus.style.display = "none";
 };
 
-document.getElementById("cropper-save-btn")?.addEventListener("click", (e) => {
-    if (currentCropTarget === "vitrine" as any) {
-        e.stopImmediatePropagation();
-        if (!cropper) return;
-        const canvas = cropper.getCroppedCanvas({
-            maxWidth: 1600,
-            maxHeight: 1600,
-            fillColor: "#000",
-        });
-        const base64 = canvas.toDataURL("image/jpeg", 0.90);
-        applyVitrineImage(base64);
-        document.getElementById("cropper-modal")?.classList.remove("active");
-        if (cropper) { cropper.destroy(); cropper = null; }
-        currentCropTarget = null;
-    }
-});
 
 vitrineSaveBtn?.addEventListener("click", async () => {
     if (!vitrineBase64) return;
