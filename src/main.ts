@@ -592,6 +592,20 @@ const setupTrekShowcase = () => {
 
   if (!mainImg || !thumbnails.length || !mainDisplay) return;
 
+  const S_URL = (import.meta as any).env?.VITE_SUPABASE_URL;
+  if (S_URL) {
+      const publicUrl = `${S_URL}/storage/v1/object/public/products/destaque-trek-main.png?t=${Date.now()}`;
+      const img = new Image();
+      img.onload = () => {
+          mainImg.src = publicUrl;
+          if (thumbnails[0]) {
+             const thumbImg = thumbnails[0].querySelector('img');
+             if (thumbImg) thumbImg.src = publicUrl;
+          }
+      };
+      img.src = publicUrl;
+  }
+
   // Thumbnail Click Logic
   thumbnails.forEach(thumb => {
     thumb.addEventListener('click', () => {
