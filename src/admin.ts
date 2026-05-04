@@ -1166,6 +1166,115 @@ document.getElementById('btn-l-save')?.addEventListener('click', async () => {
     }
 });
 
+// ─── Vitrine Management ───────────────────────────────────
+const vitrinePreviewContainer = document.getElementById("vitrine-preview-container") as HTMLElement;
+const vitrineImageInput = document.getElementById("vitrine-image-input") as HTMLInputElement;
+const vitrinePreview = document.getElementById("vitrine-preview") as HTMLImageElement;
+const vitrinePlaceholder = document.getElementById("vitrine-placeholder-text") as HTMLElement;
+const vitrineSaveBtn = document.getElementById("vitrine-save-btn") as HTMLButtonElement;
+const vitrineStatus = document.getElementById("vitrine-status") as HTMLElement;
+let vitrineBase64 = "";
+
+if (vitrinePreviewContainer) {
+    vitrinePreviewContainer.addEventListener("click", () => {
+        if (!vitrineBase64) {
+            vitrineImageInput.click();
+        } else {
+            openCropper(vitrineBase64, "vitrine" as any);
+        }
+    });
+}
+
+if (vitrineImageInput) {
+    vitrineImageInput.addEventListener("change", () => {
+        if (vitrineImageInput.files && vitrineImageInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                openCropper(e.target?.result as string, "vitrine" as any);
+            };
+            reader.readAsDataURL(vitrineImageInput.files[0]);
+            vitrineImageInput.value = "";
+        }
+    });
+}
+
+const applyVitrineImage = (base64: string) => {
+    vitrineBase64 = base64;
+    vitrinePreview.src = base64;
+    vitrinePreview.style.display = "block";
+    vitrinePlaceholder.style.display = "none";
+    vitrineSaveBtn.style.display = "block";
+    vitrineStatus.style.display = "none";
+};
+
+document.getElementById("cropper-save-btn")?.addEventListener("click", (e) => {
+    if (currentCropTarget === "vitrine" as any) {
+        e.stopImmediatePropagation();
+        if (!cropper) return;
+        const canvas = cropper.getCroppedCanvas({
+            maxWidth: 1600,
+            maxHeight: 1600,
+            fillColor: "#000",
+        });
+        const base64 = canvas.toDataURL("image/jpeg", 0.90);
+        applyVitrineImage(base64);
+        document.getElementById("cropper-modal")?.classList.remove("active");
+        if (cropper) { cropper.destroy(); cropper = null; }
+        currentCropTarget = null;
+    }
+});
+
+vitrineSaveBtn?.addEventListener("click", async () => {
+    if (!vitrineBase64) return;
+    vitrineSaveBtn.disabled = true;
+    vitrineSaveBtn.innerText = "Enviando...";
+    vitrineStatus.style.display = "block";
+    vitrineStatus.style.color = "var(--primary)";
+    vitrineStatus.innerText = "Atualizando imagem...";
+
+    const S_URL = (import.meta as any).env?.VITE_SUPABASE_URL;
+    const S_KEY = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY;
+
+    try {
+        if (!S_URL || !S_KEY) throw new Error("Chaves do Supabase não encontradas");
+        
+        const blob = await (await fetch(vitrineBase64)).blob();
+        
+        const finalPath = `destaque-trek-main.png`;
+        const uploadUrl = `${S_URL}/storage/v1/object/products/${finalPath}`;
+        
+        const response = await fetch(uploadUrl, {
+            method: "PUT",
+            headers: {
+                "apikey": S_KEY,
+                "Authorization": `Bearer ${S_KEY}`,
+                "Content-Type": "image/jpeg",
+                "x-upsert": "true"
+            },
+            body: blob
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || "Erro ao sobrescrever a imagem");
+        }
+
+        vitrineStatus.style.color = "#2ecc71";
+        vitrineStatus.innerText = "✅ Imagem atualizada com sucesso! Recarregue a página inicial para ver.";
+        vitrineBase64 = "";
+        setTimeout(() => {
+            vitrineSaveBtn.style.display = "none";
+        }, 5000);
+    } catch (err: any) {
+        console.error(err);
+        vitrineStatus.style.color = "#e74c3c";
+        vitrineStatus.innerText = `❌ Erro: ${err.message}`;
+    } finally {
+        vitrineSaveBtn.disabled = false;
+        vitrineSaveBtn.innerText = "🚀 Salvar Nova Imagem";
+    }
+});
+
 // ─── Init ─────────────────────────────────────────────────
 checkAuth();
 setupNav();
@@ -1195,87 +1304,3 @@ if (vitrineImageInput) {
         if (vitrineImageInput.files && vitrineImageInput.files[0]) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                openCropper(e.target?.result as string, 'vitrine' as any);
-            };
-            reader.readAsDataURL(vitrineImageInput.files[0]);
-            vitrineImageInput.value = '';
-        }
-    });
-}
-
-const applyVitrineImage = (base64: string) => {
-    vitrineBase64 = base64;
-    vitrinePreview.src = base64;
-    vitrinePreview.style.display = 'block';
-    vitrinePlaceholder.style.display = 'none';
-    vitrineSaveBtn.style.display = 'block';
-    vitrineStatus.style.display = 'none';
-};
-
-document.getElementById('cropper-save-btn')?.addEventListener('click', (e) => {
-    if (currentCropTarget === 'vitrine' as any) {
-        e.stopImmediatePropagation();
-        if (!cropper) return;
-        const canvas = cropper.getCroppedCanvas({
-            maxWidth: 1600,
-            maxHeight: 1600,
-            fillColor: '#000', // fundo preto para a vitrine
-        });
-        const base64 = canvas.toDataURL('image/jpeg', 0.90);
-        applyVitrineImage(base64);
-        document.getElementById('cropper-modal')?.classList.remove('active');
-        if (cropper) { cropper.destroy(); cropper = null; }
-        currentCropTarget = null;
-    }
-});
-
-vitrineSaveBtn?.addEventListener('click', async () => {
-    if (!vitrineBase64) return;
-    vitrineSaveBtn.disabled = true;
-    vitrineSaveBtn.innerText = 'Enviando...';
-    vitrineStatus.style.display = 'block';
-    vitrineStatus.style.color = 'var(--primary)';
-    vitrineStatus.innerText = 'Atualizando imagem...';
-
-    const S_URL = (import.meta as any).env?.VITE_SUPABASE_URL;
-    const S_KEY = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY;
-
-    try {
-        if (!S_URL || !S_KEY) throw new Error("Chaves do Supabase n�o encontradas");
-        
-        const blob = await (await fetch(vitrineBase64)).blob();
-        
-        const finalPath = destaque-trek-main.png;
-        const uploadUrl = ${S_URL}/storage/v1/object/products/;
-        
-        const response = await fetch(uploadUrl, {
-            method: 'PUT',
-            headers: {
-                'apikey': S_KEY,
-                'Authorization': Bearer ,
-                'Content-Type': 'image/jpeg',
-                'x-upsert': 'true'
-            },
-            body: blob
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.error || 'Erro ao sobrescrever a imagem');
-        }
-
-        vitrineStatus.style.color = '#2ecc71';
-        vitrineStatus.innerText = '? Imagem atualizada com sucesso! Recarregue a p�gina inicial para ver.';
-        vitrineBase64 = '';
-        setTimeout(() => {
-            vitrineSaveBtn.style.display = 'none';
-        }, 5000);
-    } catch (err: any) {
-        console.error(err);
-        vitrineStatus.style.color = '#e74c3c';
-        vitrineStatus.innerText = \? Erro: \\;
-    } finally {
-        vitrineSaveBtn.disabled = false;
-        vitrineSaveBtn.innerText = '?? Salvar Nova Imagem';
-    }
-});
