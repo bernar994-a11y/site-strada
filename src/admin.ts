@@ -1304,3 +1304,24 @@ if (vitrineImageInput) {
         if (vitrineImageInput.files && vitrineImageInput.files[0]) {
             const reader = new FileReader();
             reader.onload = (e) => {
+                openCropper(e.target?.result as string, "vitrine" as any);
+            };
+            reader.readAsDataURL(vitrineImageInput.files[0]);
+            vitrineImageInput.value = "";
+        }
+    });
+}
+
+const applyVitrineImage = (base64: string) => {
+    vitrineBase64 = base64;
+    vitrinePreview.src = base64;
+    vitrinePreview.style.display = "block";
+    vitrinePlaceholder.style.display = "none";
+    vitrineSaveBtn.style.display = "block";
+    vitrineStatus.style.display = "none";
+};
+
+// --- Init -------------------------------------------------
+checkAuth();
+setupNav();
+renderAdminProducts();
