@@ -584,6 +584,62 @@ const renderNovidades = async () => {
   setTimeout(handleReveal, 100);
 };
 
+// ─── Trek Procaliber Showcase Logic ───────────────────────
+const setupTrekShowcase = () => {
+  const mainImg = document.getElementById('trek-main-img') as HTMLImageElement;
+  const thumbnails = document.querySelectorAll('.trek-thumb');
+  const mainDisplay = document.querySelector('.trek-main-display') as HTMLElement;
+
+  if (!mainImg || !thumbnails.length || !mainDisplay) return;
+
+  // Thumbnail Click Logic
+  thumbnails.forEach(thumb => {
+    thumb.addEventListener('click', () => {
+      thumbnails.forEach(t => t.classList.remove('active'));
+      thumb.classList.add('active');
+      const newSrc = thumb.getAttribute('data-src');
+      if (newSrc) {
+        mainImg.style.opacity = '0.5';
+        setTimeout(() => {
+          mainImg.src = newSrc;
+          mainImg.style.opacity = '1';
+        }, 150);
+      }
+    });
+  });
+
+  // Zoom Logic
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+  if (!isTouchDevice) {
+    mainDisplay.addEventListener('mousemove', (e: MouseEvent) => {
+      if (!mainImg.classList.contains('zoomed')) return;
+      const rect = mainDisplay.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const xPercent = (x / rect.width) * 100;
+      const yPercent = (y / rect.height) * 100;
+      
+      mainImg.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+    });
+
+    mainDisplay.addEventListener('click', () => {
+      mainImg.classList.toggle('zoomed');
+      if (!mainImg.classList.contains('zoomed')) {
+        mainImg.style.transformOrigin = 'center center';
+      }
+    });
+
+    mainDisplay.addEventListener('mouseleave', () => {
+      if (mainImg.classList.contains('zoomed')) {
+        mainImg.classList.remove('zoomed');
+        mainImg.style.transformOrigin = 'center center';
+      }
+    });
+  }
+};
+
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('DOM Loaded - Initializing site...');
@@ -596,9 +652,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupWorkshopModal();
   setupProductModalEvents();
   initFeedback();
+  setupTrekShowcase();
   
   // Initial check for reveals
   handleReveal();
   window.addEventListener('scroll', handleReveal);
   console.log('All components initialized.');
 });
+
