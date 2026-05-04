@@ -1020,45 +1020,6 @@ const renderFeedbacks = async () => {
     }
 };
 
-// ─── Section Navigation ──────────────────────────────────
-const setupNav = () => {
-    const navProducts = document.getElementById('nav-products');
-    const navLoyalty = document.getElementById('nav-loyalty');
-    const navFeedback = document.getElementById('nav-feedback');
-    const prodSection = document.getElementById('products-section');
-    const loyaltySection = document.getElementById('loyalty-section');
-    const feedSection = document.getElementById('feedback-section');
-
-    navProducts?.addEventListener('click', () => {
-        navProducts.classList.add('active');
-        navLoyalty?.classList.remove('active');
-        navFeedback?.classList.remove('active');
-        prodSection!.style.display = 'block';
-        loyaltySection!.style.display = 'none';
-        feedSection!.style.display = 'none';
-        renderAdminProducts();
-    });
-
-    navLoyalty?.addEventListener('click', () => {
-        navLoyalty.classList.add('active');
-        navProducts?.classList.remove('active');
-        navFeedback?.classList.remove('active');
-        prodSection!.style.display = 'none';
-        loyaltySection!.style.display = 'block';
-        feedSection!.style.display = 'none';
-        renderLoyaltyClients();
-    });
-
-    navFeedback?.addEventListener('click', () => {
-        navFeedback.classList.add('active');
-        navProducts?.classList.remove('active');
-        navLoyalty?.classList.remove('active');
-        prodSection!.style.display = 'none';
-        loyaltySection!.style.display = 'none';
-        feedSection!.style.display = 'block';
-        renderFeedbacks();
-    });
-};
 
 // ─── Loyalty Management ──────────────────────────────────
 let selectedLoyaltyClientId: string | null = null;
