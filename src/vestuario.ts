@@ -1,4 +1,4 @@
-import { getProducts, getLoaderHTML } from './store';
+import { getProducts, getLoaderHTML, formatPrice } from './store';
 import type { Product } from './store';
 import { initNav } from './nav';
 import { initFeedback } from './feedback';
@@ -60,10 +60,10 @@ const renderApparel = async (modality?: string, type?: string) => {
                 </div>
                 <div class="product-price">
                     ${product.onSale ? `
-                        <span class="original-price">R$ ${product.originalPrice}</span>
-                        <span class="current-price">R$ ${product.price}</span>
+                        <span class="original-price">${formatPrice(product.originalPrice)}</span>
+                        <span class="current-price">${formatPrice(product.price)}</span>
                     ` : `
-                        <span class="current-price">R$ ${product.price || 'Sob consulta'}</span>
+                        <span class="current-price">${formatPrice(product.price)}</span>
                     `}
                 </div>
                 <button class="btn btn-detail open-product-modal">
@@ -197,9 +197,9 @@ const openProductModal = (product: any) => {
     
     if (priceContainer) {
         priceContainer.innerHTML = product.onSale 
-            ? `<span class="original-price" style="font-size: 1.2rem;">R$ ${product.originalPrice}</span>
-               <span class="current-price" style="font-size: 1.8rem; font-weight: 900;">R$ ${product.price}</span>` 
-            : `<span class="current-price" style="font-size: 1.8rem; font-weight: 900;">R$ ${product.price || 'Sob consulta'}</span>`;
+            ? `<span class="original-price" style="font-size: 1.2rem;">${formatPrice(product.originalPrice)}</span>
+               <span class="current-price" style="font-size: 1.8rem; font-weight: 900;">${formatPrice(product.price)}</span>` 
+            : `<span class="current-price" style="font-size: 1.8rem; font-weight: 900;">${formatPrice(product.price)}</span>`;
     }
 
     if (whatsappBtn) {

@@ -1,4 +1,4 @@
-import { getProducts, deleteProduct, updateProduct, addProduct, getLoaderHTML } from './store';
+import { getProducts, deleteProduct, updateProduct, addProduct, getLoaderHTML, formatPrice, parsePrice } from './store';
 import type { Product } from './store';
 import { removeBackground } from '@imgly/background-removal';
 
@@ -26,15 +26,13 @@ const setupNav = () => {
     const navProducts = document.getElementById('nav-products')!;
     const navFeedback = document.getElementById('nav-feedback')!;
     const navLoyalty = document.getElementById('nav-loyalty')!;
-    const navVitrine = document.getElementById('nav-vitrine')!;
     
     const secProducts = document.getElementById('products-section')!;
     const secFeedback = document.getElementById('feedback-section')!;
     const secLoyalty = document.getElementById('loyalty-section')!;
-    const secVitrine = document.getElementById('vitrine-section')!;
 
-    const sections = [secProducts, secFeedback, secLoyalty, secVitrine];
-    const navs = [navProducts, navFeedback, navLoyalty, navVitrine];
+    const sections = [secProducts, secFeedback, secLoyalty];
+    const navs = [navProducts, navFeedback, navLoyalty];
 
     const showSection = (nav: HTMLElement, sec: HTMLElement) => {
         navs.forEach(n => n.classList.remove('active'));
@@ -55,7 +53,6 @@ const setupNav = () => {
         showSection(navLoyalty, secLoyalty);
         renderLoyaltyClients();
     });
-    navVitrine?.addEventListener('click', () => showSection(navVitrine, secVitrine));
 };
 
 document.getElementById('login-btn')?.addEventListener('click', async () => {
@@ -148,8 +145,8 @@ const renderAdminProducts = async () => {
                 </div>
             </td>
             <td>
-                ${p.onSale && p.originalPrice ? `<span style="color:var(--text-muted);text-decoration:line-through;font-size:0.8rem;">R$ ${p.originalPrice}</span><br>` : ''}
-                <strong>R$ ${p.price || 'Sob consulta'}</strong>
+                ${p.onSale && p.originalPrice ? `<span style="color:var(--text-muted);text-decoration:line-through;font-size:0.8rem;">${formatPrice(p.originalPrice)}</span><br>` : ''}
+                <strong>${formatPrice(p.price)}</strong>
             </td>
             <td>${p.onSale ? '<span class="badge badge-sale">🔥 Promoção</span>' : '<span class="badge badge-normal">Normal</span>'}${p.isNew ? ' <span class="badge" style="background: rgba(155,89,182,0.15); color: #9b59b6;">⭐ Novo</span>' : ''}</td>
             <td>
@@ -343,7 +340,11 @@ const openForm = (product?: Product) => {
         });
 
         (document.getElementById('p-desc') as HTMLTextAreaElement).value = product.description;
-        (document.getElementById('p-price') as HTMLInputElement).value = (product.price || '').toString();
+        const formatInputPrice = (val?: number) => {
+            if (val === undefined || val === null) return '';
+            return val.toFixed(2).replace('.', ',');
+        };
+        (document.getElementById('p-price') as HTMLInputElement).value = formatInputPrice(product.price);
         (document.getElementById('p-sizes') as HTMLInputElement).value = product.sizes ? product.sizes.join(', ') : '';
 
         currentImageUrl = product.image;
@@ -370,7 +371,7 @@ const openForm = (product?: Product) => {
         });
 
         onsaleCheckbox.checked = !!product.onSale;
-        originalPriceInput.value = (product.originalPrice || '').toString();
+        originalPriceInput.value = formatInputPrice(product.originalPrice);
         originalPriceInput.style.display = product.onSale ? 'block' : 'none';
         seguroCheckbox.checked = !!product.seguro;
         isNewCheckbox.checked = !!product.isNew;
@@ -595,21 +596,15 @@ const applyImageToTarget = (base64: string) => {
 document.getElementById('cropper-save-btn')?.addEventListener('click', () => {
     if (!cropper) return;
     
-    const isVitrine = currentCropTarget === 'vitrine' as any;
-
     const canvas = cropper.getCroppedCanvas({
-        maxWidth: isVitrine ? 1600 : 1200,
-        maxHeight: isVitrine ? 1600 : 1200,
-        fillColor: isVitrine ? '#000' : '#fff', 
+        maxWidth: 1200,
+        maxHeight: 1200,
+        fillColor: '#fff', 
     });
     
-    const base64 = canvas.toDataURL('image/jpeg', isVitrine ? 0.90 : 0.85);
+    const base64 = canvas.toDataURL('image/jpeg', 0.85);
     
-    if (isVitrine) {
-        applyVitrineImage(base64);
-    } else {
-        applyImageToTarget(base64);
-    }
+    applyImageToTarget(base64);
     
     document.getElementById('cropper-modal')?.classList.remove('active');
     if (cropper) {
@@ -935,11 +930,11 @@ document.getElementById('save-product-form')?.addEventListener('submit', async (
             category: mainCat,
             categories: selectedCats,
             description: (document.getElementById('p-desc') as HTMLTextAreaElement).value,
-            price: parseFloat(priceVal),
+            price: parsePrice(priceVal),
             sizes: sizesArray,
             image: finalMainImage,
             onSale: onsaleCheckbox.checked,
-            originalPrice: onsaleCheckbox.checked ? parseFloat(originalPriceInput.value) : undefined,
+            originalPrice: onsaleCheckbox.checked ? parsePrice(originalPriceInput.value) : undefined,
             subcategory: selectedCats.includes('Vestuário') ? (document.getElementById('p-subcategory') as HTMLSelectElement).value : undefined,
             seguro: seguroCheckbox.checked,
             studioBackground: studioCheckbox.checked,
@@ -1149,100 +1144,6 @@ document.getElementById('btn-l-save')?.addEventListener('click', async () => {
         btn.innerText = '🚀 LANÇAR';
     }
 });
-
-// ─── Vitrine Management ───────────────────────────────────
-const vitrinePreviewContainer = document.getElementById("vitrine-preview-container") as HTMLElement;
-const vitrineImageInput = document.getElementById("vitrine-image-input") as HTMLInputElement;
-const vitrinePreview = document.getElementById("vitrine-preview") as HTMLImageElement;
-const vitrinePlaceholder = document.getElementById("vitrine-placeholder-text") as HTMLElement;
-const vitrineSaveBtn = document.getElementById("vitrine-save-btn") as HTMLButtonElement;
-const vitrineStatus = document.getElementById("vitrine-status") as HTMLElement;
-let vitrineBase64 = "";
-
-if (vitrinePreviewContainer) {
-    vitrinePreviewContainer.addEventListener("click", () => {
-        if (!vitrineBase64) {
-            vitrineImageInput.click();
-        } else {
-            openCropper(vitrineBase64, "vitrine" as any);
-        }
-    });
-}
-
-if (vitrineImageInput) {
-    vitrineImageInput.addEventListener("change", () => {
-        if (vitrineImageInput.files && vitrineImageInput.files[0]) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                openCropper(e.target?.result as string, "vitrine" as any);
-            };
-            reader.readAsDataURL(vitrineImageInput.files[0]);
-            vitrineImageInput.value = "";
-        }
-    });
-}
-
-const applyVitrineImage = (base64: string) => {
-    vitrineBase64 = base64;
-    vitrinePreview.src = base64;
-    vitrinePreview.style.display = "block";
-    vitrinePlaceholder.style.display = "none";
-    vitrineSaveBtn.style.display = "block";
-    vitrineStatus.style.display = "none";
-};
-
-
-vitrineSaveBtn?.addEventListener("click", async () => {
-    if (!vitrineBase64) return;
-    vitrineSaveBtn.disabled = true;
-    vitrineSaveBtn.innerText = "Enviando...";
-    vitrineStatus.style.display = "block";
-    vitrineStatus.style.color = "var(--primary)";
-    vitrineStatus.innerText = "Atualizando imagem...";
-
-    const S_URL = (import.meta as any).env?.VITE_SUPABASE_URL;
-    const S_KEY = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY;
-
-    try {
-        if (!S_URL || !S_KEY) throw new Error("Chaves do Supabase não encontradas");
-        
-        const blob = await (await fetch(vitrineBase64)).blob();
-        
-        const finalPath = `destaque-trek-main.png`;
-        const uploadUrl = `${S_URL}/storage/v1/object/products/${finalPath}`;
-        
-        const response = await fetch(uploadUrl, {
-            method: "PUT",
-            headers: {
-                "apikey": S_KEY,
-                "Authorization": `Bearer ${S_KEY}`,
-                "Content-Type": "image/jpeg",
-                "x-upsert": "true"
-            },
-            body: blob
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.error || "Erro ao sobrescrever a imagem");
-        }
-
-        vitrineStatus.style.color = "#2ecc71";
-        vitrineStatus.innerText = "✅ Imagem atualizada com sucesso! Recarregue a página inicial para ver.";
-        vitrineBase64 = "";
-        setTimeout(() => {
-            vitrineSaveBtn.style.display = "none";
-        }, 5000);
-    } catch (err: any) {
-        console.error(err);
-        vitrineStatus.style.color = "#e74c3c";
-        vitrineStatus.innerText = `❌ Erro: ${err.message}`;
-    } finally {
-        vitrineSaveBtn.disabled = false;
-        vitrineSaveBtn.innerText = "🚀 Salvar Nova Imagem";
-    }
-});
-
 // ─── Init ─────────────────────────────────────────────────
 checkAuth();
 renderAdminProducts();

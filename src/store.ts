@@ -252,3 +252,25 @@ export const getLoyaltyClients = async (): Promise<LoyaltyClient[]> => {
     return res.json();
 };
 
+export const formatPrice = (price?: number | string | null): string => {
+  if (price === undefined || price === null || price === '') return 'Sob consulta';
+  const num = typeof price === 'number' ? price : parseFloat(String(price).replace(/\s/g, '').replace(',', '.'));
+  if (isNaN(num)) return 'Sob consulta';
+  
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  }).format(num);
+};
+
+export const parsePrice = (val: string): number => {
+  let clean = val.trim().replace(/\s/g, '');
+  if (clean.includes(',') && clean.includes('.')) {
+    clean = clean.replace(/\./g, '').replace(',', '.');
+  } else if (clean.includes(',')) {
+    clean = clean.replace(',', '.');
+  }
+  const parsed = parseFloat(clean);
+  return isNaN(parsed) ? 0 : parsed;
+};
+

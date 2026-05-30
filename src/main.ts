@@ -11,7 +11,7 @@ if ('serviceWorker' in navigator) {
     });
   });
 }
-import { getProducts, getNewProducts, getLoaderHTML } from './store'
+import { getProducts, getNewProducts, getLoaderHTML, formatPrice } from './store'
 import type { Product } from './store'
 import { initNav } from './nav'
 import { initFeedback } from './feedback'
@@ -112,10 +112,10 @@ const applyFiltersAndRender = () => {
         <p style="display: none;">${product.description}</p>
         <div class="product-price">
           ${product.onSale ? `
-            <span class="original-price">R$ ${product.originalPrice}</span>
-            <span class="current-price">R$ ${product.price}</span>
+            <span class="original-price">${formatPrice(product.originalPrice)}</span>
+            <span class="current-price">${formatPrice(product.price)}</span>
           ` : `
-            <span class="current-price">R$ ${product.price || 'Sob consulta'}</span>
+            <span class="current-price">${formatPrice(product.price)}</span>
           `}
         </div>
         <button class="btn btn-detail open-product-modal">
@@ -310,9 +310,9 @@ const openProductModal = (product: any) => {
     
     if (priceContainer) {
         priceContainer.innerHTML = product.onSale 
-            ? `<span class="original-price" style="font-size: 1.2rem;">R$ ${product.originalPrice}</span>
-               <span class="current-price" style="font-size: 1.8rem; font-weight: 900;">R$ ${product.price}</span>` 
-            : `<span class="current-price" style="font-size: 1.8rem; font-weight: 900;">R$ ${product.price || 'Sob consulta'}</span>`;
+            ? `<span class="original-price" style="font-size: 1.2rem;">${formatPrice(product.originalPrice)}</span>
+               <span class="current-price" style="font-size: 1.8rem; font-weight: 900;">${formatPrice(product.price)}</span>` 
+            : `<span class="current-price" style="font-size: 1.8rem; font-weight: 900;">${formatPrice(product.price)}</span>`;
     }
 
     if (whatsappBtn) {
@@ -543,10 +543,10 @@ const renderNovidades = async () => {
         <span class="novidade-card-brand">${(product.categories || [product.category])[0]}</span>
         <div class="novidade-card-price">
           ${product.onSale ? `
-            <span class="original-price">R$ ${product.originalPrice}</span>
-            <span class="current-price">R$ ${product.price}</span>
+            <span class="original-price">${formatPrice(product.originalPrice)}</span>
+            <span class="current-price">${formatPrice(product.price)}</span>
           ` : `
-            <span class="current-price">R$ ${product.price || 'Sob consulta'}</span>
+            <span class="current-price">${formatPrice(product.price)}</span>
           `}
         </div>
         <div class="novidade-card-cta">
@@ -584,77 +584,6 @@ const renderNovidades = async () => {
   setTimeout(handleReveal, 100);
 };
 
-// ─── Trek Procaliber Showcase Logic ───────────────────────
-const setupTrekShowcase = () => {
-  const mainImg = document.getElementById('trek-main-img') as HTMLImageElement;
-  const thumbnails = document.querySelectorAll('.trek-thumb');
-  const mainDisplay = document.querySelector('.trek-main-display') as HTMLElement;
-
-  if (!mainImg || !thumbnails.length || !mainDisplay) return;
-
-  const S_URL = (import.meta as any).env?.VITE_SUPABASE_URL;
-  if (S_URL) {
-      const publicUrl = `${S_URL}/storage/v1/object/public/products/destaque-trek-main.png?t=${Date.now()}`;
-      const img = new Image();
-      img.onload = () => {
-          mainImg.src = publicUrl;
-          if (thumbnails[0]) {
-             const thumbImg = thumbnails[0].querySelector('img');
-             if (thumbImg) thumbImg.src = publicUrl;
-          }
-      };
-      img.src = publicUrl;
-  }
-
-  // Thumbnail Click Logic
-  thumbnails.forEach(thumb => {
-    thumb.addEventListener('click', () => {
-      thumbnails.forEach(t => t.classList.remove('active'));
-      thumb.classList.add('active');
-      const imgElem = thumb.querySelector('img');
-      const newSrc = imgElem ? imgElem.src : null;
-      if (newSrc) {
-        mainImg.style.opacity = '0.5';
-        setTimeout(() => {
-          mainImg.src = newSrc;
-          mainImg.style.opacity = '1';
-        }, 150);
-      }
-    });
-  });
-
-  // Zoom Logic
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
-  if (!isTouchDevice) {
-    mainDisplay.addEventListener('mousemove', (e: MouseEvent) => {
-      if (!mainImg.classList.contains('zoomed')) return;
-      const rect = mainDisplay.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      
-      const xPercent = (x / rect.width) * 100;
-      const yPercent = (y / rect.height) * 100;
-      
-      mainImg.style.transformOrigin = `${xPercent}% ${yPercent}%`;
-    });
-
-    mainDisplay.addEventListener('click', () => {
-      mainImg.classList.toggle('zoomed');
-      if (!mainImg.classList.contains('zoomed')) {
-        mainImg.style.transformOrigin = 'center center';
-      }
-    });
-
-    mainDisplay.addEventListener('mouseleave', () => {
-      if (mainImg.classList.contains('zoomed')) {
-        mainImg.classList.remove('zoomed');
-        mainImg.style.transformOrigin = 'center center';
-      }
-    });
-  }
-};
-
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('DOM Loaded - Initializing site...');
@@ -667,7 +596,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupWorkshopModal();
   setupProductModalEvents();
   initFeedback();
-  setupTrekShowcase();
   
   // Initial check for reveals
   handleReveal();
