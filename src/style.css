@@ -2160,3 +2160,246 @@ body.page-enter {
     color: var(--primary);
     border: 1px solid var(--primary);
 }
+
+/* ─── Nossa História Section ────────────────────────── */
+.nossa-historia {
+  padding: 100px 0;
+  background: var(--bg-dark);
+  position: relative;
+}
+
+.historia-content {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  margin-top: 40px;
+}
+
+.historia-stats {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 40px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  flex-wrap: wrap;
+}
+
+.historia-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-number {
+  font-family: var(--font-heading);
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.stat-suffix {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 10px;
+}
+
+.historia-stat-divider {
+  width: 1px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .historia-stat-divider {
+    display: none;
+  }
+  .historia-stats {
+    gap: 30px;
+    padding: 30px 20px;
+  }
+  .historia-stat {
+    width: 100%;
+  }
+}
+
+.historia-card {
+  position: relative;
+  border-radius: 24px;
+  background: var(--bg-darker);
+  padding: 3px;
+}
+
+.historia-card-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(245, 166, 35, 0.2), rgba(212, 140, 69, 0.05), transparent);
+  border-radius: 24px;
+  z-index: 0;
+}
+
+.historia-card-inner {
+  position: relative;
+  background: var(--bg-dark);
+  border-radius: 21px;
+  padding: 60px;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+@media (max-width: 992px) {
+  .historia-card-inner {
+    grid-template-columns: 1fr;
+    padding: 40px 30px;
+  }
+}
+
+.historia-quote-icon {
+  font-family: serif;
+  font-size: 4rem;
+  color: var(--primary);
+  opacity: 0.3;
+  line-height: 0.5;
+  margin-bottom: 20px;
+}
+
+.historia-text h3 {
+  font-size: 2rem;
+  margin-bottom: 25px;
+}
+
+.historia-text p {
+  color: var(--text-muted);
+  margin-bottom: 15px;
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.historia-timeline {
+  position: relative;
+  padding-left: 30px;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 5px;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -30px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--gray-medium);
+  border: 2px solid var(--bg-dark);
+  transition: all 0.3s ease;
+}
+
+.timeline-item.active .timeline-dot {
+  background: var(--primary);
+  box-shadow: 0 0 10px rgba(245, 166, 35, 0.5);
+}
+
+.timeline-content {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 15px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.timeline-item:hover .timeline-content {
+  transform: translateX(5px);
+  border-color: rgba(245, 166, 35, 0.3);
+}
+
+.timeline-year {
+  display: block;
+  font-family: var(--font-heading);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+
+.timeline-content p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.historia-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+@media (max-width: 768px) {
+  .historia-pillars {
+    grid-template-columns: 1fr;
+  }
+}
+
+.historia-pillar {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 40px 30px;
+  border-radius: 20px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.historia-pillar:hover {
+  transform: translateY(-10px);
+  border-color: rgba(245, 166, 35, 0.2);
+}
+
+.pillar-icon {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.historia-pillar h4 {
+  font-size: 1.2rem;
+  color: var(--text-light);
+  margin-bottom: 15px;
+}
+
+.historia-pillar p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}

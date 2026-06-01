@@ -584,6 +584,54 @@ const renderNovidades = async () => {
   setTimeout(handleReveal, 100);
 };
 
+// Stats Animation for Nossa História
+const setupStatsAnimation = () => {
+  const stats = document.querySelectorAll('.stat-number');
+  let hasAnimated = false;
+
+  const animateStats = () => {
+    stats.forEach(stat => {
+      const targetStr = stat.getAttribute('data-target');
+      if (!targetStr) return;
+      const target = parseInt(targetStr);
+      const duration = 2000; // 2 seconds
+      const increment = target / (duration / 16); // 60fps
+      let current = 0;
+
+      const updateStat = () => {
+        current += increment;
+        if (current < target) {
+          stat.textContent = Math.ceil(current).toString();
+          requestAnimationFrame(updateStat);
+        } else {
+          stat.textContent = target.toString();
+        }
+      };
+
+      updateStat();
+    });
+  };
+
+  const checkScroll = () => {
+    if (hasAnimated) return;
+    const historySection = document.getElementById('nossa-historia');
+    if (!historySection) return;
+
+    const sectionTop = historySection.getBoundingClientRect().top;
+    const windowHeight = window.innerHeight;
+
+    if (sectionTop < windowHeight * 0.75) {
+      hasAnimated = true;
+      animateStats();
+      window.removeEventListener('scroll', checkScroll);
+    }
+  };
+
+  window.addEventListener('scroll', checkScroll);
+  // Initial check
+  checkScroll();
+};
+
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('DOM Loaded - Initializing site...');
@@ -600,6 +648,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Initial check for reveals
   handleReveal();
   window.addEventListener('scroll', handleReveal);
+  
+  // Setup stats animation
+  setupStatsAnimation();
+  
   console.log('All components initialized.');
 });
 
