@@ -421,4 +421,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupFilterEvents();
   initNav();
   initFeedback();
+
+  // Check if we need to open a product modal directly
+  const urlParams = new URLSearchParams(window.location.search);
+  const targetProduct = urlParams.get('product');
+  if (targetProduct && allProducts.length > 0) {
+      const product = allProducts.find(p => p.name === targetProduct);
+      if (product) {
+          setTimeout(() => openProductModal(product), 300);
+      }
+  }
 });

@@ -99,8 +99,13 @@ export const initSearch = () => {
                     return;
                 }
 
-                searchResults.innerHTML = filtered.map(p => `
-                    <a href="products.html?category=${encodeURIComponent(p.category || '')}" class="search-item">
+                searchResults.innerHTML = filtered.map(p => {
+                    const targetPage = p.category === 'Vestuário' ? 'vestuario.html' : 'products.html';
+                    const categoryParam = p.category && targetPage === 'products.html' ? `&category=${encodeURIComponent(p.category)}` : '';
+                    const url = `${targetPage}?product=${encodeURIComponent(p.name)}${categoryParam}`;
+                    
+                    return `
+                    <a href="${url}" class="search-item">
                         <div class="search-item-img">
                             <img src="${p.image}" alt="${p.name}">
                         </div>
@@ -113,7 +118,7 @@ export const initSearch = () => {
                             <div class="search-item-price">${formatPrice(p.price)}</div>
                         </div>
                     </a>
-                `).join('');
+                `}).join('');
 
                 // Add click listener to close modal after clicking a result
                 searchResults.querySelectorAll('.search-item').forEach(item => {

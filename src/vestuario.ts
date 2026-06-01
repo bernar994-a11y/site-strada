@@ -321,4 +321,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupProductModalEvents();
     initNav();
     initFeedback();
+
+    // Check if we need to open a product modal directly
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetProduct = urlParams.get('product');
+    if (targetProduct) {
+        const { getProducts } = await import('./store');
+        const products = await getProducts();
+        const product = products.find(p => p.name === targetProduct);
+        if (product) {
+            setTimeout(() => openProductModal(product), 300);
+        }
+    }
 });
