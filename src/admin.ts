@@ -13,6 +13,33 @@ let cropper: any = null;
 let currentCropTarget: 'main' | number | null = null;
 
 // ─── Auth ────────────────────────────────────────────────
+// SHA-256 hash of the admin password ('strada2026')
+const ADMIN_HASH = 'd79589275723dc6c7faed086557ac847b0082d31789c95a7a4acaeba21ddea84';
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCKOUT_DURATION_MS = 5 * 60 * 1000; // 5 minutes
+
+// Compute SHA-256 hash of a string
+const hashPassword = async (password: string): Promise<string> => {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+};
+
+const getLoginAttempts = (): { count: number; lockedUntil: number } => {
+    try {
+        const data = sessionStorage.getItem('strada_login_attempts');
+        return data ? JSON.parse(data) : { count: 0, lockedUntil: 0 };
+    } catch {
+        return { count: 0, lockedUntil: 0 };
+    }
+};
+
+const setLoginAttempts = (count: number, lockedUntil: number) => {
+    sessionStorage.setItem('strada_login_attempts', JSON.stringify({ count, lockedUntil }));
+};
+
 const checkAuth = async () => {
     if (sessionStorage.getItem('strada_admin_logged') === 'true') {
         document.getElementById('login-screen')!.style.display = 'none';
@@ -56,12 +83,39 @@ const setupNav = () => {
 };
 
 document.getElementById('login-btn')?.addEventListener('click', async () => {
+    const loginError = document.getElementById('login-error')!;
+    const attempts = getLoginAttempts();
+    
+    // Check if locked out
+    if (attempts.lockedUntil > Date.now()) {
+        const remainingMin = Math.ceil((attempts.lockedUntil - Date.now()) / 60000);
+        loginError.textContent = `⚠️ Muitas tentativas. Tente novamente em ${remainingMin} minuto(s).`;
+        loginError.style.display = 'block';
+        return;
+    }
+
     const pass = (document.getElementById('admin-password') as HTMLInputElement).value;
-    if (pass === 'strada2026') {
+    
+    const inputHash = await hashPassword(pass);
+    
+    if (inputHash === ADMIN_HASH) {
+        // Success - reset attempts
+        setLoginAttempts(0, 0);
         sessionStorage.setItem('strada_admin_logged', 'true');
         await checkAuth();
     } else {
-        document.getElementById('login-error')!.style.display = 'block';
+        // Failed attempt
+        const newCount = attempts.count + 1;
+        if (newCount >= MAX_LOGIN_ATTEMPTS) {
+            const lockUntil = Date.now() + LOCKOUT_DURATION_MS;
+            setLoginAttempts(newCount, lockUntil);
+            loginError.textContent = `🔒 Conta bloqueada por 5 minutos após ${MAX_LOGIN_ATTEMPTS} tentativas incorretas.`;
+        } else {
+            setLoginAttempts(newCount, 0);
+            const remaining = MAX_LOGIN_ATTEMPTS - newCount;
+            loginError.textContent = `❌ Senha incorreta. ${remaining} tentativa(s) restante(s).`;
+        }
+        loginError.style.display = 'block';
     }
 });
 

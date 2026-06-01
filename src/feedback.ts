@@ -65,6 +65,15 @@ export const initFeedback = () => {
     });
 
 
+    // XSS Protection
+    const sanitizeHTML = (str: string): string => {
+        if (!str) return '';
+        const map: Record<string, string> = {
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+        };
+        return str.replace(/[&<>"']/g, (char) => map[char] || char);
+    };
+
     // Form Submission
     feedbackForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -74,10 +83,10 @@ export const initFeedback = () => {
         
         const formData = new FormData(feedbackForm);
         const data = {
-            name: formData.get('name') as string,
+            name: sanitizeHTML((formData.get('name') as string) || ''),
             rating: formData.get('rating') as string,
             type: formData.get('type') as string,
-            comment: formData.get('comment') as string
+            comment: sanitizeHTML((formData.get('comment') as string) || '')
         };
 
         if (!data.rating) {

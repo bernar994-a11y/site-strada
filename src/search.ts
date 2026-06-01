@@ -1,5 +1,17 @@
 import { getProducts, formatPrice } from './store';
 
+// XSS Protection: Sanitize user input before rendering
+const sanitizeHTML = (str: string): string => {
+    const map: Record<string, string> = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;',
+    };
+    return str.replace(/[&<>"']/g, (char) => map[char] || char);
+};
+
 export const initSearch = () => {
     // Inject Search UI if it doesn't exist
     let searchOverlay = document.getElementById('search-overlay');
@@ -93,7 +105,7 @@ export const initSearch = () => {
                     searchResults.innerHTML = `
                         <div class="search-no-results">
                             <span>🚲</span>
-                            <p>Nenhum produto encontrado para "<strong>${query}</strong>"</p>
+                            <p>Nenhum produto encontrado para "<strong>${sanitizeHTML(query)}</strong>"</p>
                         </div>
                     `;
                     return;
