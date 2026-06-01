@@ -1,6 +1,9 @@
 // src/nav.ts
 
+import { initSearch } from './search';
+
 export const initNav = () => {
+    initSearch();
     const navLinks = document.querySelector('.nav-links') as HTMLElement;
     const links = document.querySelectorAll('.nav-links a');
     
