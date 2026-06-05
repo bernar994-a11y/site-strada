@@ -8,7 +8,8 @@ let activeFilters = {
   brand: 'all',
   quality: 'all',
   price: 'all',
-  category: ''
+  category: '',
+  accessorySubcat: 'all'
 };
 
 let allProducts: Product[] = [];
@@ -83,6 +84,39 @@ const renderProducts = async () => {
           if (group) group.style.display = 'none';
       }
   }
+
+  // --- Dynamic Accessory Subcategory Filter Generation ---
+  const accSubcatContainer = document.getElementById('filter-accessory-subcat');
+  const accSubcatGroup = document.getElementById('filter-group-accessory-subcat');
+  if (accSubcatContainer && accSubcatGroup) {
+      if (activeFilters.category === 'Acessórios') {
+          const accProducts = allProducts.filter(p => p.categories?.includes('Acessórios') || p.category === 'Acessórios');
+          const uniqueSubcats = Array.from(new Set(accProducts.map(p => (p as any).accessorySubcategory).filter(s => !!s && s.trim() !== ''))).sort();
+          
+          if (uniqueSubcats.length > 0) {
+              accSubcatContainer.innerHTML = `
+                <button class="filter-btn active" data-accsubcat="all">Todos</button>
+                ${uniqueSubcats.map(sub => `<button class="filter-btn" data-accsubcat="${sub}">${sub}</button>`).join('')}
+              `;
+              accSubcatGroup.style.display = 'block';
+              
+              // Precisa re-atrelar os eventos já que os botões foram recriados
+              const newAccBtns = accSubcatContainer.querySelectorAll('.filter-btn');
+              newAccBtns.forEach(btn => {
+                  btn.addEventListener('click', () => {
+                      newAccBtns.forEach(b => b.classList.remove('active'));
+                      btn.classList.add('active');
+                      activeFilters.accessorySubcat = btn.getAttribute('data-accsubcat') || 'all';
+                      applyFiltersAndRender();
+                  });
+              });
+          } else {
+              accSubcatGroup.style.display = 'none';
+          }
+      } else {
+          accSubcatGroup.style.display = 'none';
+      }
+  }
   
   applyFiltersAndRender();
 };
@@ -121,6 +155,11 @@ const applyFiltersAndRender = () => {
       if (activeFilters.price === '10000-plus') return price > 10000;
       return true;
     });
+  }
+
+  // 5. Accessory Subcategory Filter
+  if (activeFilters.accessorySubcat !== 'all') {
+    filtered = filtered.filter(p => (p as any).accessorySubcategory === activeFilters.accessorySubcat);
   }
 
   if (filtered.length === 0) {
@@ -250,9 +289,10 @@ const resetAllFilters = () => {
   activeFilters.brand = 'all';
   activeFilters.quality = 'all';
   activeFilters.price = 'all';
+  activeFilters.accessorySubcat = 'all';
   
   document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-  document.querySelectorAll('.filter-btn[data-brand="all"], .filter-btn[data-quality="all"], .filter-btn[data-price="all"]').forEach(btn => btn.classList.add('active'));
+  document.querySelectorAll('.filter-btn[data-brand="all"], .filter-btn[data-quality="all"], .filter-btn[data-price="all"], .filter-btn[data-accsubcat="all"]').forEach(btn => btn.classList.add('active'));
   
   applyFiltersAndRender();
 };
