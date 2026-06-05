@@ -20,6 +20,7 @@ export interface Product {
   brand?: string;
   quality?: string;
   sizes?: string[];
+  accessorySubcategory?: string;
 }
 
 export interface LoyaltyClient {

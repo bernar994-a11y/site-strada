@@ -20,10 +20,36 @@ const renderProducts = async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const categoryFilter = urlParams.get('category');
   
+  // ─── Dynamic Nav Active State ─────────────────────────
+  const navLinks = document.querySelectorAll('.nav-links a');
+  navLinks.forEach(link => link.classList.remove('active'));
+  
+  if (categoryFilter === 'Acessórios') {
+    // Mark Acessórios nav link as active
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href') || '';
+      if (href.includes('category=Acess')) {
+        link.classList.add('active');
+      }
+    });
+  } else {
+    // Mark Bicicletas nav link as active (no category param)
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href') || '';
+      if (href === '/products.html' || href === './products.html') {
+        link.classList.add('active');
+      }
+    });
+  }
+  
   if (categoryFilter) {
     const pageTitle = document.getElementById('page-title');
     if (pageTitle) {
-      pageTitle.innerHTML = `${categoryFilter} <span class="highlight">STRADA</span>`;
+      if (categoryFilter === 'Acessórios') {
+        pageTitle.innerHTML = `Nossos <span class="highlight">Acessórios</span>`;
+      } else {
+        pageTitle.innerHTML = `${categoryFilter} <span class="highlight">STRADA</span>`;
+      }
     }
     activeFilters.category = categoryFilter;
   }

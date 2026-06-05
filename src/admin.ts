@@ -266,6 +266,7 @@ const subcategoryGroup = document.getElementById('subcategory-group')!;
 const seguroCheckbox = document.getElementById('p-seguro') as HTMLInputElement;
 const isNewCheckbox = document.getElementById('p-isnew') as HTMLInputElement;
 const brandSelect = document.getElementById('p-brand') as HTMLSelectElement;
+const brandCustomInput = document.getElementById('p-brand-custom') as HTMLInputElement;
 const qualitySelect = document.getElementById('p-quality') as HTMLSelectElement;
 const studioCheckbox = document.getElementById('p-studio') as HTMLInputElement;
 const videoInput = document.getElementById('p-video') as HTMLInputElement;
@@ -275,6 +276,10 @@ const videoProgressContainer = document.getElementById('video-compress-progress-
 const videoProgressBar = document.getElementById('video-compress-bar')!;
 const previewContainer = document.getElementById('p-preview-container')!;
 const previewHint = document.getElementById('p-preview-hint')!;
+const accSubcategoryGroup = document.getElementById('accessory-subcategory-group')!;
+const accSubcategoryInput = document.getElementById('p-accessory-subcategory') as HTMLInputElement;
+const accCustomSubcatWrapper = document.getElementById('acc-custom-subcat-wrapper')!;
+const accCustomSubcatInput = document.getElementById('p-accessory-subcategory-custom') as HTMLInputElement;;
 
 const renderColorVariants = () => {
     const container = document.getElementById('color-variants-container')!;
@@ -429,10 +434,41 @@ const openForm = (product?: Product) => {
         originalPriceInput.style.display = product.onSale ? 'block' : 'none';
         seguroCheckbox.checked = !!product.seguro;
         isNewCheckbox.checked = !!product.isNew;
-        brandSelect.value = product.brand || '';
+        
+        // Sync brand (handle custom brand)
+        const knownBrands = ['Sense','Oggi','Soul','Scott','Cannondale','Specialized','Trek','GT','Caloi','Giro','Bell','Shimano','Garmin','Topeak'];
+        if (product.brand && !knownBrands.includes(product.brand)) {
+            brandSelect.value = 'Outra';
+            brandCustomInput.style.display = 'block';
+            brandCustomInput.value = product.brand;
+        } else {
+            brandSelect.value = product.brand || '';
+            brandCustomInput.style.display = 'none';
+            brandCustomInput.value = '';
+        }
+        
         qualitySelect.value = product.quality || 'Intermediária';
         studioCheckbox.checked = !!product.studioBackground;
         videoInput.value = product.video || '';
+
+        // Sync accessory subcategory
+        const accSubVal = (product as any).accessorySubcategory || '';
+        accSubcategoryInput.value = accSubVal;
+        accSubCards.forEach(card => {
+            const val = (card as HTMLElement).dataset.value || '';
+            if (val === accSubVal) {
+                card.classList.add('active');
+            } else {
+                card.classList.remove('active');
+            }
+        });
+        if (accSubVal === 'Outro') {
+            accCustomSubcatWrapper.style.display = 'block';
+            accCustomSubcatInput.value = accSubVal;
+        } else {
+            accCustomSubcatWrapper.style.display = 'none';
+            accCustomSubcatInput.value = '';
+        }
 
         colorVariants = product.colors ? product.colors.map(c => ({ id: Math.random(), ...c })) : [];
     } else {
@@ -443,6 +479,8 @@ const openForm = (product?: Product) => {
         seguroCheckbox.checked = false;
         isNewCheckbox.checked = false;
         brandSelect.value = '';
+        brandCustomInput.style.display = 'none';
+        brandCustomInput.value = '';
         qualitySelect.value = 'Intermediária';
         studioCheckbox.checked = false;
         colorVariants = [];
@@ -458,6 +496,12 @@ const openForm = (product?: Product) => {
         // Clear subcategory cards
         (document.getElementById('p-subcategory') as HTMLInputElement).value = '';
         subCards.forEach(c => c.classList.remove('active'));
+        
+        // Clear accessory subcategory
+        accSubcategoryInput.value = '';
+        accSubCards.forEach(c => c.classList.remove('active'));
+        accCustomSubcatWrapper.style.display = 'none';
+        accCustomSubcatInput.value = '';
     }
 
     const hasVestuario = product?.categories?.includes('Vestuário') || product?.category === 'Vestuário';
@@ -465,6 +509,13 @@ const openForm = (product?: Product) => {
         subcategoryGroup.style.display = 'block';
     } else {
         subcategoryGroup.style.display = 'none';
+    }
+
+    const hasAcessorios = product?.categories?.includes('Acessórios') || product?.category === 'Acessórios';
+    if (hasAcessorios) {
+        accSubcategoryGroup.style.display = 'block';
+    } else {
+        accSubcategoryGroup.style.display = 'none';
     }
     
     renderColorVariants();
@@ -535,7 +586,9 @@ onsaleCheckbox.addEventListener('change', () => {
 categoryCheckboxes.forEach(cb => {
     cb.addEventListener('change', () => {
         const hasVestuario = Array.from(categoryCheckboxes).some(chk => chk.checked && chk.value === 'Vestuário');
+        const hasAcessorios = Array.from(categoryCheckboxes).some(chk => chk.checked && chk.value === 'Acessórios');
         subcategoryGroup.style.display = hasVestuario ? 'block' : 'none';
+        accSubcategoryGroup.style.display = hasAcessorios ? 'block' : 'none';
         
         // Toggle active class on parent label for better visual feedback
         const label = cb.closest('.cat-label');
@@ -576,6 +629,43 @@ subCards.forEach(card => {
             subInput.value = modVal || typeVal || '';
         }
     });
+});
+
+// ─── Accessory Subcategory Cards ─────────────────────────────
+const accSubCards = document.querySelectorAll('.acc-sub-card');
+
+accSubCards.forEach(card => {
+    card.addEventListener('click', () => {
+        accSubCards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        
+        const val = (card as HTMLElement).dataset.value || '';
+        accSubcategoryInput.value = val;
+        
+        // Se 'Outro' for selecionado, mostrar campo de texto personalizado
+        if (val === 'Outro') {
+            accCustomSubcatWrapper.style.display = 'block';
+            accCustomSubcatInput.focus();
+        } else {
+            accCustomSubcatWrapper.style.display = 'none';
+            accCustomSubcatInput.value = '';
+        }
+    });
+});
+
+accCustomSubcatInput?.addEventListener('input', () => {
+    accSubcategoryInput.value = accCustomSubcatInput.value;
+});
+
+// ─── Brand Custom Input ────────────────────────────────────────
+brandSelect?.addEventListener('change', () => {
+    if (brandSelect.value === 'Outra') {
+        brandCustomInput.style.display = 'block';
+        brandCustomInput.focus();
+    } else {
+        brandCustomInput.style.display = 'none';
+        brandCustomInput.value = '';
+    }
 });
 
 // ─── Cropper ──────────────────────────────────────────────
@@ -990,13 +1080,14 @@ document.getElementById('save-product-form')?.addEventListener('submit', async (
             onSale: onsaleCheckbox.checked,
             originalPrice: onsaleCheckbox.checked ? parsePrice(originalPriceInput.value) : undefined,
             subcategory: selectedCats.includes('Vestuário') ? (document.getElementById('p-subcategory') as HTMLSelectElement).value : undefined,
+            accessorySubcategory: selectedCats.includes('Acessórios') ? (accSubcategoryInput.value || undefined) : undefined,
             seguro: seguroCheckbox.checked,
             studioBackground: studioCheckbox.checked,
             video: formatVideoLink(videoInput.value),
             colors: finalVariants.length > 0 ? finalVariants : undefined,
             isNew: isNewCheckbox.checked,
             newDate: isNewCheckbox.checked ? new Date().toISOString() : undefined,
-            brand: brandSelect.value || undefined,
+            brand: brandSelect.value === 'Outra' ? (brandCustomInput.value.trim() || undefined) : (brandSelect.value || undefined),
             quality: qualitySelect.value || 'Intermediária'
         };
 

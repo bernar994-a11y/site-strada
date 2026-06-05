@@ -547,23 +547,60 @@
                             <label class="cat-label"><input type="checkbox" value="Vestuário" class="cat-checkbox"> 👕 Vestuário</label>
                             <label class="cat-label"><input type="checkbox" value="Acessórios" class="cat-checkbox"> 🎒 Acessórios</label>
                         </div>
-                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;">Dica: Selecione "Vestuário" para abrir as subcategorias específicas.</p>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;">Dica: Selecione "Vestuário" ou "Acessórios" para abrir as subcategorias específicas.</p>
                     </div>
                     <div class="form-group">
                         <label>Marca</label>
-                        <select id="p-brand">
-                            <option value="">Selecione a Marca</option>
-                            <option value="Sense">Sense</option>
-                            <option value="Oggi">Oggi</option>
-                            <option value="Soul">Soul</option>
-                            <option value="Scott">Scott</option>
-                            <option value="Cannondale">Cannondale</option>
-                            <option value="Specialized">Specialized</option>
-                            <option value="Trek">Trek</option>
-                            <option value="GT">GT</option>
-                            <option value="Caloi">Caloi</option>
-                            <option value="Outra">Outra</option>
-                        </select>
+                        <div style="display: flex; gap: 8px;">
+                            <select id="p-brand" style="flex: 1;">
+                                <option value="">Selecione a Marca</option>
+                                <option value="Sense">Sense</option>
+                                <option value="Oggi">Oggi</option>
+                                <option value="Soul">Soul</option>
+                                <option value="Scott">Scott</option>
+                                <option value="Cannondale">Cannondale</option>
+                                <option value="Specialized">Specialized</option>
+                                <option value="Trek">Trek</option>
+                                <option value="GT">GT</option>
+                                <option value="Caloi">Caloi</option>
+                                <option value="Giro">Giro</option>
+                                <option value="Bell">Bell</option>
+                                <option value="Shimano">Shimano</option>
+                                <option value="Garmin">Garmin</option>
+                                <option value="Topeak">Topeak</option>
+                                <option value="Outra">Outra (digitar abaixo)</option>
+                            </select>
+                        </div>
+                        <input type="text" id="p-brand-custom" placeholder="Digite a marca (se não está na lista)" style="margin-top: 8px; display: none;">
+                    </div>
+                    <!-- Subcategorias de Acessórios -->
+                    <div class="form-group full" id="accessory-subcategory-group" style="display: none; background: rgba(255, 122, 0, 0.05); padding: 20px; border-radius: 12px; border: 1px dashed rgba(255, 122, 0, 0.3); margin-top: 10px;">
+                        <input type="hidden" id="p-accessory-subcategory" value="">
+                        <label style="color: var(--primary); font-size: 0.9rem; margin-bottom: 10px; display: block;">🎒 Subcategoria do Acessório</label>
+                        <div id="accessory-subcat-cards" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                            <div class="sub-card acc-sub-card" data-value="Capacete">⛑️ Capacete</div>
+                            <div class="sub-card acc-sub-card" data-value="Luva">🧤 Luva</div>
+                            <div class="sub-card acc-sub-card" data-value="Câmara de Ar">🔵 Câmara de Ar</div>
+                            <div class="sub-card acc-sub-card" data-value="Pneu">⚫ Pneu</div>
+                            <div class="sub-card acc-sub-card" data-value="Ciclocomputador">📡 Ciclocomputador</div>
+                            <div class="sub-card acc-sub-card" data-value="Iluminação">💡 Iluminação</div>
+                            <div class="sub-card acc-sub-card" data-value="Selim">🪑 Selim
+</div>
+                            <div class="sub-card acc-sub-card" data-value="Pedal">🦶 Pedal</div>
+                            <div class="sub-card acc-sub-card" data-value="Guidão">🏹 Guidão</div>
+                            <div class="sub-card acc-sub-card" data-value="Ferramentas">🔧 Ferramentas</div>
+                            <div class="sub-card acc-sub-card" data-value="Bolsa e Mochila">🎒 Bolsa/Mochila</div>
+                            <div class="sub-card acc-sub-card" data-value="Suporte e Carregador">🔌 Suporte/Carregador</div>
+                            <div class="sub-card acc-sub-card" data-value="Óculos">🕶️ Óculos</div>
+                            <div class="sub-card acc-sub-card" data-value="Cadeado e Segurança">🔒 Cadeado/Segurança</div>
+                            <div class="sub-card acc-sub-card" data-value="Bomba de Ar">💨 Bomba de Ar</div>
+                            <div class="sub-card acc-sub-card" data-value="Outro">➕ Outro</div>
+                        </div>
+                        <!-- Campo para subcategoria customizada -->
+                        <div id="acc-custom-subcat-wrapper" style="display: none; margin-top: 10px;">
+                            <input type="text" id="p-accessory-subcategory-custom" placeholder="Digite a subcategoria personalizada" style="width: 100%; padding: 10px; border-radius: 8px; background: var(--bg-dark); border: 1px solid var(--primary); color: white;">
+                        </div>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;">Escolha a subcategoria para organizar melhor este acessório nos filtros.</p>
                     </div>
                     <div class="form-group full" id="subcategory-group" style="display: none; background: rgba(155, 89, 182, 0.05); padding: 20px; border-radius: 12px; border: 1px dashed rgba(155, 89, 182, 0.3); margin-top: 10px;">
                         <input type="hidden" id="p-subcategory" value="">
