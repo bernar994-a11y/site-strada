@@ -14,6 +14,7 @@ export default async function handler(req: any, res: any) {
         "onSale" BOOLEAN DEFAULT false,
         "originalPrice" NUMERIC,
         subcategory VARCHAR(100),
+        "accessorySubcategory" VARCHAR(100),
         seguro BOOLEAN DEFAULT FALSE,
         studio_background BOOLEAN DEFAULT FALSE,
         video TEXT,
@@ -74,6 +75,7 @@ export default async function handler(req: any, res: any) {
       ALTER TABLE stradabike_products ADD COLUMN IF NOT EXISTS "isNew" BOOLEAN DEFAULT FALSE;
       ALTER TABLE stradabike_products ADD COLUMN IF NOT EXISTS "newDate" TIMESTAMPTZ DEFAULT NOW();
       ALTER TABLE stradabike_products ADD COLUMN IF NOT EXISTS "sizes" JSONB DEFAULT '[]'::jsonb;
+      ALTER TABLE stradabike_products ADD COLUMN IF NOT EXISTS "accessorySubcategory" TEXT;
     `;
 
     // Note: Supabase client doesn't support direct DDL like CREATE TABLE via API for security.
