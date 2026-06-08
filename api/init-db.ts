@@ -76,6 +76,7 @@ export default async function handler(req: any, res: any) {
       ALTER TABLE stradabike_products ADD COLUMN IF NOT EXISTS "newDate" TIMESTAMPTZ DEFAULT NOW();
       ALTER TABLE stradabike_products ADD COLUMN IF NOT EXISTS "sizes" JSONB DEFAULT '[]'::jsonb;
       ALTER TABLE stradabike_products ADD COLUMN IF NOT EXISTS "accessorySubcategory" TEXT;
+      ALTER TABLE stradabike_products ADD COLUMN IF NOT EXISTS "maxInstallments" INTEGER DEFAULT 12;
     `;
 
     // Note: Supabase client doesn't support direct DDL like CREATE TABLE via API for security.

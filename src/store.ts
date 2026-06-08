@@ -21,6 +21,7 @@ export interface Product {
   quality?: string;
   sizes?: string[];
   accessorySubcategory?: string;
+  maxInstallments?: number;
 }
 
 export interface LoyaltyClient {
@@ -65,7 +66,8 @@ export const getProducts = async (): Promise<Product[]> => {
       newDate: d.newDate || null,
       brand: d.brand || '',
       quality: d.quality || 'Intermediária',
-      sizes: d.sizes || []
+      sizes: d.sizes || [],
+      maxInstallments: d.maxInstallments || 12
     }));
   } catch (error) {
     console.warn('Usando dados simulados (Fallback Dev). Servidor API indisponível.', error);

@@ -404,6 +404,7 @@ const openForm = (product?: Product) => {
             return val.toFixed(2).replace('.', ',');
         };
         (document.getElementById('p-price') as HTMLInputElement).value = formatInputPrice(product.price);
+        (document.getElementById('p-installments') as HTMLInputElement).value = (product.maxInstallments || 12).toString();
         (document.getElementById('p-sizes') as HTMLInputElement).value = product.sizes ? product.sizes.join(', ') : '';
 
         currentImageUrl = product.image;
@@ -499,6 +500,7 @@ const openForm = (product?: Product) => {
         
         // Clear accessory subcategory
         accSubcategoryInput.value = '';
+        (document.getElementById('p-installments') as HTMLInputElement).value = '12';
         accSubCards.forEach(c => c.classList.remove('active'));
         accCustomSubcatWrapper.style.display = 'none';
         accCustomSubcatInput.value = '';
@@ -1075,6 +1077,7 @@ document.getElementById('save-product-form')?.addEventListener('submit', async (
             categories: selectedCats,
             description: (document.getElementById('p-desc') as HTMLTextAreaElement).value,
             price: parsePrice(priceVal),
+            maxInstallments: parseInt((document.getElementById('p-installments') as HTMLInputElement).value) || 12,
             sizes: sizesArray,
             image: finalMainImage,
             onSale: onsaleCheckbox.checked,

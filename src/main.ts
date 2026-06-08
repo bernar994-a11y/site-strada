@@ -306,6 +306,7 @@ const openProductModal = (product: any) => {
 
     if (installments) {
         installments.style.display = product.price ? 'flex' : 'none';
+        installments.innerHTML = `<span style="font-size: 1.2rem;">💳</span> Em até ${product.maxInstallments || 12}x sem juros no cartão`;
     }
     
     if (priceContainer) {
