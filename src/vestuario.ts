@@ -93,18 +93,35 @@ const renderApparel = async (modality?: string, type?: string) => {
         });
     });
 
-    // Add Hover Preview logic
+    const isMobile = () => window.matchMedia('(max-width: 900px)').matches;
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!isMobile()) return;
+            const card = entry.target;
+            const video = card.querySelector('video');
+            const iframe = card.querySelector('iframe');
+            if (entry.isIntersecting) {
+                if (video) (video as any).play().catch(() => {});
+                if (iframe) { const src = (iframe as HTMLElement).dataset.src; if (src && !iframe.getAttribute('src')) iframe.setAttribute('src', src); }
+            } else {
+                if (video) { (video as any).pause(); (video as any).currentTime = 0; }
+                if (iframe) iframe.removeAttribute('src');
+            }
+        });
+    }, { threshold: 0.6 });
+
     grid.querySelectorAll('.product-card').forEach(card => {
         const video = card.querySelector('video');
         const iframe = card.querySelector('iframe');
         if (video) {
-          card.addEventListener('mouseenter', () => (video as any).play());
-          card.addEventListener('mouseleave', () => { (video as any).pause(); (video as any).currentTime = 0; });
+          card.addEventListener('mouseenter', () => { if (!isMobile()) (video as any).play().catch(() => {}); });
+          card.addEventListener('mouseleave', () => { if (!isMobile()) { (video as any).pause(); (video as any).currentTime = 0; } });
         }
         if (iframe) {
-          card.addEventListener('mouseenter', () => { const src = (iframe as HTMLElement).dataset.src; if (src) iframe.src = src; });
-          card.addEventListener('mouseleave', () => { iframe.src = ''; });
+          card.addEventListener('mouseenter', () => { if (!isMobile()) { const src = (iframe as HTMLElement).dataset.src; if (src) iframe.setAttribute('src', src); } });
+          card.addEventListener('mouseleave', () => { if (!isMobile()) iframe.removeAttribute('src'); });
         }
+        observer.observe(card);
     });
 };
 
