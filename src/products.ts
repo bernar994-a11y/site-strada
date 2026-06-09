@@ -240,30 +240,34 @@ const attachProductCardEvents = (products: Product[]) => {
       entries.forEach(entry => {
           if (!isMobile()) return;
           const card = entry.target;
-          const video = card.querySelector('video');
+          const video = card.querySelector('video') as HTMLVideoElement | null;
           const iframe = card.querySelector('iframe');
           if (entry.isIntersecting) {
-              if (video) (video as any).play().catch(() => {});
+              if (video) {
+                  video.preload = 'auto';
+                  video.load();
+                  video.play().catch(() => {});
+              }
               if (iframe) { const src = (iframe as HTMLElement).dataset.src; if (src && !iframe.getAttribute('src')) iframe.setAttribute('src', src); }
           } else {
-              if (video) { (video as any).pause(); (video as any).currentTime = 0; }
+              if (video) { video.pause(); video.currentTime = 0; }
               if (iframe) iframe.removeAttribute('src');
           }
       });
-  }, { threshold: 0.6 });
+  }, { threshold: 0.3 });
 
   grid.querySelectorAll('.product-card').forEach(card => {
-    const video = card.querySelector('video');
+    const video = card.querySelector('video') as HTMLVideoElement | null;
     const iframe = card.querySelector('iframe');
     if (video) {
-      card.addEventListener('mouseenter', () => { if (!isMobile()) (video as any).play().catch(() => {}); });
-      card.addEventListener('mouseleave', () => { if (!isMobile()) { (video as any).pause(); (video as any).currentTime = 0; } });
+      card.addEventListener('mouseenter', () => { if (!isMobile()) video.play().catch(() => {}); });
+      card.addEventListener('mouseleave', () => { if (!isMobile()) { video.pause(); video.currentTime = 0; } });
     }
     if (iframe) {
       card.addEventListener('mouseenter', () => { if (!isMobile()) { const src = (iframe as HTMLElement).dataset.src; if (src) iframe.setAttribute('src', src); } });
       card.addEventListener('mouseleave', () => { if (!isMobile()) iframe.removeAttribute('src'); });
     }
-    observer.observe(card);
+    if (video || iframe) observer.observe(card);
   });
 };
 
