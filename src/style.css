@@ -1891,12 +1891,16 @@ body.page-enter {
   }
 
   /* MODAIS (RESTAURADO E POLIDO) */
+  .modal {
+    padding: 15px 10px !important;
+  }
+
   .modal-content {
-    width: 94% !important;
-    padding: 40px 20px 25px !important;
+    width: 96% !important;
+    padding: 30px 16px 20px !important;
     border-radius: 20px !important;
-    max-height: 90vh !important;
-    overflow-y: auto !important;
+    max-height: none !important;
+    overflow-y: visible !important;
     border: 1px solid var(--primary) !important;
   }
 
@@ -1939,6 +1943,69 @@ body.page-enter {
     line-height: 1.2 !important;
   }
 
+  /* FEEDBACK MODAL — SEM SCROLL NO MOBILE */
+  .feedback-modal .modal-content {
+    padding: 25px 16px 18px !important;
+    max-width: 96% !important;
+  }
+
+  .feedback-modal .modal-content h2 {
+    font-size: 1.3rem !important;
+    margin-bottom: 5px !important;
+  }
+
+  .feedback-modal .divider {
+    margin: 8px auto 5px !important;
+  }
+
+  .feedback-modal .modal-content > p {
+    font-size: 0.75rem !important;
+    margin-top: 5px !important;
+  }
+
+  .feedback-form-content {
+    gap: 10px !important;
+    margin-top: 10px !important;
+  }
+
+  .feedback-input-group label {
+    font-size: 0.65rem !important;
+  }
+
+  .feedback-input-group input,
+  .feedback-input-group textarea {
+    padding: 8px 12px !important;
+    font-size: 0.8rem !important;
+  }
+
+  .feedback-input-group textarea {
+    rows: 2 !important;
+  }
+
+  .star-rating {
+    gap: 6px !important;
+    margin: 4px 0 !important;
+  }
+
+  .star-rating label {
+    font-size: 1.8rem !important;
+  }
+
+  .feedback-type-group {
+    gap: 6px !important;
+  }
+
+  .type-label {
+    padding: 7px !important;
+    font-size: 0.7rem !important;
+  }
+
+  .feedback-modal .btn-primary {
+    padding: 10px !important;
+    font-size: 0.9rem !important;
+    margin-top: 5px !important;
+  }
+
   /* FALE CONOSCO (MELHOR ADAPTAÇÃO) */
   .contact-card {
     grid-template-columns: 1fr !important;
@@ -1970,28 +2037,67 @@ body.page-enter {
     font-size: 0.75rem !important;
   }
 
-  /* WORKSHOP MODAL / REVISÕES (NÃO EMPILHADO) */
-  .revisions-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px !important;
+  /* WORKSHOP MODAL / REVISÕES — SEM SCROLL NO MOBILE */
+  #workshop-modal .modal-content {
+    padding: 25px 14px 18px !important;
   }
 
-  .revision-item {
-    padding: 15px !important;
-  }
-
-  .revision-item h3 {
-    font-size: 0.9rem !important;
-  }
-
-  .revision-item ul li {
-    font-size: 0.7rem !important;
+  #workshop-modal .modal-content h2 {
+    font-size: 1.2rem !important;
     margin-bottom: 5px !important;
   }
 
+  #workshop-modal .modal-divider {
+    margin: 8px auto 15px !important;
+  }
+
+  .revisions-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    margin-bottom: 15px !important;
+  }
+
+  .revision-item {
+    padding: 12px 10px !important;
+  }
+
+  .revision-header {
+    margin-bottom: 10px !important;
+    padding-bottom: 8px !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+  }
+
+  .revision-item h3 {
+    font-size: 0.8rem !important;
+  }
+
+  .price-tag {
+    font-size: 0.6rem !important;
+    padding: 2px 8px !important;
+  }
+
+  .popular-badge {
+    font-size: 0.5rem !important;
+  }
+
+  .revision-item ul li {
+    font-size: 0.65rem !important;
+    margin-bottom: 3px !important;
+  }
+
   .revision-item.featured {
-    grid-column: 1 / -1 !important; /* Destaque ocupa a largura toda no final ou início */
+    grid-column: 1 / -1 !important;
     transform: none !important;
+  }
+
+  .modal-cta {
+    margin-top: 10px !important;
+  }
+
+  .modal-cta .btn-primary {
+    padding: 10px 20px !important;
+    font-size: 0.85rem !important;
   }
 
   /* HERO & TYPOGRAPHY */
